@@ -3,5 +3,8 @@
 	"displayName": "Procedural Toolkit",
 	"version": "0.0.0",
 	"description": "Procedural Toolkit.",
-	"unity": "2019.4"
+	"unity": "2019.4",
+	"dependencies": {
+		"com.moq": "4.14.7"
+	}
 }
