@@ -3,8 +3,9 @@ using UnityEngine;
 
 namespace ProceduralToolkit
 {
-    public class PlaneGenerator
+    public class PlaneGenerator : IGenerator
     {
+        private const int VERTICES_COUNT = 6;
         private Vector3 center;
         private float length;
         private float width;
@@ -41,8 +42,7 @@ namespace ProceduralToolkit
         {
             get
             {
-                var verticesCount = 6;
-                for (int i = 0; i < verticesCount; i++)
+                for (int i = 0; i < VERTICES_COUNT; i++)
                 {
                     yield return i;
                 }
