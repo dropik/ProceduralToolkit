@@ -29,16 +29,13 @@ namespace ProceduralToolkit
 
         private void UpdateMaterial()
         {
-            if (MaterialIsNotSet())
+            if (MaterialIsNotSet)
             {
                 SetDefaultMaterial();
             }
         }
 
-        private bool MaterialIsNotSet()
-        {
-            return GetComponent<MeshRenderer>().sharedMaterial == null;
-        }
+        private bool MaterialIsNotSet => GetComponent<MeshRenderer>().sharedMaterial == null;
 
         private void SetDefaultMaterial()
         {

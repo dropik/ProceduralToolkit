@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
-using ProceduralToolkit;
 using UnityEngine;
 
-namespace IntegrationTests
+namespace ProceduralToolkit.EditorTests.IntegrationTests
 {
     public class LandscapeGeneratorIT
     {
