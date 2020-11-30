@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace ProceduralToolkit.UI
 {
-    public class SliderWithField : Slider
+    public partial class SliderWithField : Slider
     {
         private FloatField field;
 
