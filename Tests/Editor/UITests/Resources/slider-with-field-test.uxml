@@ -1,0 +1,6 @@
+<ui:UXML
+  xmlns:ui="UnityEngine.UIElements"
+  xmlns:uie="UnityEditor.UIElements"
+  xmlns:pt="ProceduralToolkit.UI">
+    <pt:SliderWithField />
+</ui:UXML>

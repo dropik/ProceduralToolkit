@@ -1,5 +1,5 @@
-﻿using System;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -24,14 +24,22 @@ namespace ProceduralToolkit
 
         public override VisualElement CreateInspectorGUI()
         {
-            RootVisualElement.Clear();
+            ResetRootElement();
             LoadLayoutResource();
+            AddCallbacksToVisualElements();
+            AddCommonEditorStyleSheet();
+            BindToRoot();
             return RootVisualElement;
+        }
+
+        private void ResetRootElement()
+        {
+            rootVisualElement = new VisualElement();
         }
 
         private void LoadLayoutResource()
         {
-            var visualTree = Resources.Load(LayoutPath) as VisualTreeAsset;
+            var visualTree = Resources.Load<VisualTreeAsset>(LayoutPath);
             if (visualTree != null)
             {
                 visualTree.CloneTree(RootVisualElement);
@@ -44,9 +52,39 @@ namespace ProceduralToolkit
         {
             get
             {
-                return Attribute.GetCustomAttribute(
+                return System.Attribute.GetCustomAttribute(
                     typeof(TEditor), typeof(LayoutPathAttribute)) as LayoutPathAttribute;
             }
+        }
+
+        protected virtual void AddCallbacksToVisualElements() { }
+
+        private void AddCommonEditorStyleSheet()
+        {
+            var styleSheet = Resources.Load<StyleSheet>("Styles/CommonEditorStyleSheet");
+            RootVisualElement.styleSheets.Add(styleSheet);
+        }
+
+        private void BindToRoot()
+        {
+            BindTargetToRoot();
+            BindThisToRoot();
+        }
+
+        private void BindTargetToRoot()
+        {
+            BindObjectToRoot(target);
+        }
+
+        private void BindObjectToRoot(Object obj)
+        {
+            var serializedObject = new SerializedObject(obj);
+            RootVisualElement.Bind(serializedObject);
+        }
+
+        private void BindThisToRoot()
+        {
+            BindObjectToRoot(this);
         }
     }
 }

@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:VisualElement focusable="true" class="slider-property">
+        <Style src="/Assets/ProceduralToolkit/Editor/Resources/Styles/slider-property.uss" />
+        <ui:Label text="Slider Property" class="slider-property-label" />
+        <ui:VisualElement focusable="true" class="slider-property-input" style="justify-content: flex-start; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;">
+            <ui:Slider picking-mode="Ignore" value="42,2" high-value="100" class="slider-property-slider" />
+            <uie:FloatField value="42,2" class="slider-property-field" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

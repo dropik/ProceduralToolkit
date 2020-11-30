@@ -5,6 +5,8 @@ namespace ProceduralToolkit
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class LandscapeGenerator : MonoBehaviour
     {
+        public float planeLength = 1f;
+
         private Mesh generatedMesh;
 
         public IGenerator Generator { get; set; }

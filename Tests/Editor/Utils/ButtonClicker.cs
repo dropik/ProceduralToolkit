@@ -10,8 +10,11 @@ namespace ProceduralToolkit.EditorTests.Utils
         public void Click(Button button)
         {
             this.button = button;
-            SendPointerEvent<PointerDownEvent>();
-            SendPointerEvent<PointerUpEvent>();
+            if (button != null)
+            {
+                SendPointerEvent<PointerDownEvent>();
+                SendPointerEvent<PointerUpEvent>();
+            }
         }
 
         private void SendPointerEvent<TEvent>()

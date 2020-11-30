@@ -1,0 +1,22 @@
+.slider-row {
+    flex-direction: row;
+    margin-top: 2px;
+}
+
+.input-container {
+    flex-direction: row;
+    flex: 60%;
+}
+
+.property-label {
+    flex: 40%;
+    margin-left: 5px;
+}
+
+.slider {
+    flex: 3;
+}
+
+.float-field {
+    width: 50px;
+}

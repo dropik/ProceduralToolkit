@@ -10,6 +10,7 @@ namespace ProceduralToolkit.EditorTests.UITests
     public abstract class UITestsBase
     {
         private TestEditorWindow testingWindow;
+        private const string COMMON_EDITOR_STYLESHEET = "CommonEditorStyleSheet";
 
         protected VisualElement RootVisualElement => testingWindow.rootVisualElement;
 
@@ -44,14 +45,38 @@ namespace ProceduralToolkit.EditorTests.UITests
             yield return null;
         }
 
-        protected void AssertThatHasOnlyOneElementWithName<TElement>(string name)
+        protected TElement AssertThatHasOnlyOneElementWithName<TElement>(string name)
             where TElement : VisualElement
         {
             var root = RootVisualElement;
             var rootElementQuery = root.Query<TElement>(name).ToList();
-            Assert.That(rootElementQuery.Count == 1);
+            Assert.That(rootElementQuery.Count == 1, "Was not able to find exaclty 1 element.");
+            return rootElementQuery[0];
         }
 
         protected abstract string RootElementName { get; }
+
+        [UnityTest]
+        public IEnumerator TestCommonEditorStyleSheetIsLoaded()
+        {
+            AssertThatHasStyleSheetWithName(COMMON_EDITOR_STYLESHEET);
+            yield return null;
+        }
+
+        private void AssertThatHasStyleSheetWithName(string name)
+        {
+            var styleSheets = RootVisualElement.styleSheets;
+            var styleSheetIsLoaded = false;
+            for (int i = 0; i < styleSheets.count; i++)
+            {
+                var curStyleSheet = styleSheets[i];
+                if (curStyleSheet.name == name)
+                {
+                    styleSheetIsLoaded = true;
+                    break;
+                }
+            }
+            Assert.That(styleSheetIsLoaded);
+        }
     }
 }

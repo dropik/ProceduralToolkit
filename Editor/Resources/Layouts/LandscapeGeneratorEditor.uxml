@@ -1,12 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<engine:UXML
+<?xml version="1.0" encoding="utf-8"?>
+<UXML
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:engine="UnityEngine.UIElements"
+    xmlns="UnityEngine.UIElements"
     xmlns:editor="UnityEditor.UIElements"
 >
-  <engine:VisualElement name="landscape-generator-editor">
-    <engine:Slider name="plane-length"></engine:Slider>
-    <engine:Slider name="plane-width"></engine:Slider>
-    <engine:Button name="generate" text="Generate"/>
-  </engine:VisualElement>
-</engine:UXML>
+  <VisualElement name="landscape-generator-editor">
+    
+    <VisualElement class="slider-row">
+      <Label class="property-label" text="Plane Length"/>
+      <VisualElement class="input-container">
+        <SliderInt name="plane-length-slider" high-value="10000" class="slider" binding-path="PlaneLengthSlider"/>
+        <editor:FloatField name="plane-length-field" class="float-field" binding-path="planeLength"/>
+      </VisualElement>
+    </VisualElement>
+
+    <VisualElement class="slider-row">
+      <Label class="property-label" text="Plane Width"/>
+      <VisualElement class="input-container">
+        <Slider name="plane-width-slider" class="slider"/>
+        <editor:FloatField name="plane-width-field" class="float-field"/>
+      </VisualElement>
+    </VisualElement>
+    
+    <Button name="generate" text="Generate"/>
+    
+  </VisualElement>
+</UXML>
