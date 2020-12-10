@@ -10,7 +10,7 @@ namespace ProceduralToolkit.EditorTests.UITests
     public abstract class UITestsBase
     {
         private TestEditorWindow testingWindow;
-        private const string COMMON_EDITOR_STYLESHEET = "CommonEditorStyleSheet";
+        private const string COMMON_EDITOR_STYLESHEET = "common-editor";
 
         protected VisualElement RootVisualElement => testingWindow.rootVisualElement;
 
@@ -23,6 +23,15 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         protected abstract Editor CreateEditor();
+
+        protected TElement AssertThatHasOnlyOneElementWithName<TElement>(string name)
+            where TElement : VisualElement
+        {
+            var root = RootVisualElement;
+            var rootElementQuery = root.Query<TElement>(name).ToList();
+            Assert.That(rootElementQuery.Count == 1, "Was not able to find exaclty 1 element.");
+            return rootElementQuery[0];
+        }
 
         [UnityTearDown]
         public virtual IEnumerator TearDown()
@@ -37,24 +46,6 @@ namespace ProceduralToolkit.EditorTests.UITests
             Assert.That(RootVisualElement != null);
             yield return null;
         }
-
-        [UnityTest]
-        public IEnumerator TestCorrectLayoutIsLoaded()
-        {
-            AssertThatHasOnlyOneElementWithName<VisualElement>(RootElementName);
-            yield return null;
-        }
-
-        protected TElement AssertThatHasOnlyOneElementWithName<TElement>(string name)
-            where TElement : VisualElement
-        {
-            var root = RootVisualElement;
-            var rootElementQuery = root.Query<TElement>(name).ToList();
-            Assert.That(rootElementQuery.Count == 1, "Was not able to find exaclty 1 element.");
-            return rootElementQuery[0];
-        }
-
-        protected abstract string RootElementName { get; }
 
         [UnityTest]
         public IEnumerator TestCommonEditorStyleSheetIsLoaded()

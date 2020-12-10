@@ -61,7 +61,7 @@ namespace ProceduralToolkit
 
         private void AddCommonEditorStyleSheet()
         {
-            var styleSheet = Resources.Load<StyleSheet>("Styles/CommonEditorStyleSheet");
+            var styleSheet = Resources.Load<StyleSheet>("Styles/common-editor");
             RootVisualElement.styleSheets.Add(styleSheet);
         }
 
