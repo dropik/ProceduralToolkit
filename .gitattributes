@@ -1,5 +1,13 @@
 * text=auto
 
+# Line endings
+.gitattributes text eol=crlf
+.gitignore text eol=crlf
+*.cs text eol=crlf
+*.uxml text eol=crlf
+*.uss text eol=crlf
+*.json text eol=crlf
+
 # Unity files
 *.meta -text -merge=unityamlmerge
 *.unity -text -merge=unityamlmerge
