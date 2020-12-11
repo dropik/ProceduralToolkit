@@ -73,7 +73,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         [Test]
-        public void TestIncrementingSizeToOneAddsOnlyOneElement()
+        public void TestIncrementingSizeByOneAddsOnlyOneElement()
         {
             sizeField.value++;
 
@@ -82,7 +82,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         [Test]
-        public void TestIncrementingSizeToOneAddsNullElement()
+        public void TestFirstNewElement()
         {
             sizeField.value++;
 
@@ -100,7 +100,16 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         [Test]
-        public void TestIncrementingSizeAddsObjectFieldWithLastTarget()
+        public void TestNewElementWhenPreviousWasNull()
+        {
+            sizeField.value = 2;
+
+            var element1 = listField.Query<ObjectField>("element1").First();
+            Assert.That(SelectorTextOf(element1), Is.EqualTo("None (Scriptable Object)"));
+        }
+
+        [Test]
+        public void TestNewElementWhenPreviousWasNotNull()
         {
             SetupFirstElement();
 
@@ -120,15 +129,6 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         [Test]
-        public void TestIncrementingSizeWithoutTargetSettingsHasCorrectType()
-        {
-            sizeField.value = 2;
-
-            var element1 = listField.Query<ObjectField>("element1").First();
-            Assert.That(SelectorTextOf(element1), Is.EqualTo("None (Scriptable Object)"));
-        }
-
-        [Test]
         public void TestDecrementingSizeRemovesElementsFromTheEnd()
         {
             SetupFirstElement();
@@ -138,6 +138,46 @@ namespace ProceduralToolkit.EditorTests.UITests
 
             var lastElement = listField.Query<ObjectField>().Last();
             Assert.That(lastElement.name, Is.EqualTo("element2"));
+        }
+
+        [Test]
+        public void TestSettingNegativeSizeDoesNotChangeValue()
+        {
+            const int INITIAL_SIZE = 2;
+            sizeField.value = INITIAL_SIZE;
+
+            sizeField.value = -1;
+
+            Assert.That(sizeField.value, Is.EqualTo(INITIAL_SIZE));
+            var elements = listField.Query<ObjectField>().ToList();
+            Assert.That(elements.Count, Is.EqualTo(INITIAL_SIZE));
+        }
+
+        [Test]
+        public void TestValuePropertyUpdatedOnAdd()
+        {
+            SetupFirstElement();
+            AssertThatListIsCorrect(expectedLength: 1, checkId: 0);
+
+            sizeField.value++;
+            AssertThatListIsCorrect(expectedLength: 2, checkId: 1);
+        }
+
+        private void AssertThatListIsCorrect(int expectedLength, int checkId)
+        {
+            var value = listField.value;
+            Assert.That(value.Count, Is.EqualTo(expectedLength));
+            Assert.That(value[checkId].name, Is.EqualTo(TEST_OBJ_NAME));
+        }
+
+        [Test]
+        public void TestValuePropertyUpdatedOnRemove()
+        {
+            SetupFirstElement();
+            sizeField.value = 3;
+            sizeField.value = 2;
+
+            AssertThatListIsCorrect(expectedLength: 2, checkId: 1);
         }
     }
 }
