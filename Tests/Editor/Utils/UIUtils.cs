@@ -2,7 +2,7 @@
 
 namespace ProceduralToolkit.EditorTests.Utils
 {
-    public class UIUtils
+    public static class UIUtils
     {
         public const int DEFAULT_SKIP_FRAMES = 10;
 
