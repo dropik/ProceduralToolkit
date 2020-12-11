@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.TestTools;
-using ProceduralToolkit;
 using ProceduralToolkit.Internal;
 using Moq;
 using static ProceduralToolkit.EditorTests.Utils.UIUtils;
@@ -15,11 +15,13 @@ namespace ProceduralToolkit.EditorTests.UnitTests
         private EditorDISettings settigns;
         private Mock<IContainer> container;
 
+        private const float INJECTION_IDLE_TIME = 0.0001f;
+
         [UnitySetUp]
         public IEnumerator SetUp()
         {
             settigns = new GameObject().AddComponent<EditorDISettings>();
-            settigns.InjectionIdleTime = 0.01f;
+            settigns.InjectionIdleTime = INJECTION_IDLE_TIME;
             container = new Mock<IContainer>();
             settigns.Containers = new List<IContainer>
             {
@@ -46,7 +48,7 @@ namespace ProceduralToolkit.EditorTests.UnitTests
         [UnityTest]
         public IEnumerator TestInjectExecutedContinuously()
         {
-            yield return SkipFrames(60);
+            yield return SkipSeconds(0.1f);
             container.Verify(mock => mock.Inject(), Times.AtLeast(2));
         }
 
