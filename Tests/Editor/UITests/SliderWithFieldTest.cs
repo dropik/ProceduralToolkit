@@ -1,11 +1,8 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.UI;
-using System.Collections;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using UnityEngine.TestTools;
 using UnityEditor;
-using static ProceduralToolkit.EditorTests.Utils.UIUtils;
 
 namespace ProceduralToolkit.EditorTests.UITests
 {
@@ -17,58 +14,48 @@ namespace ProceduralToolkit.EditorTests.UITests
         private const string FIELD_WIDTH = "50px";
         private const float TEST_VALUE = 5f;
 
-        [UnitySetUp]
-        public IEnumerator SetUp()
+        [SetUp]
+        public void SetUp()
         {
             sliderWithField = new SliderWithField();
             window = EditorWindow.CreateWindow<EditorWindow>();
             window.rootVisualElement.Add(sliderWithField);
-            yield return null;
         }
 
-        [UnityTearDown]
-        public IEnumerator TearDown()
+        [TearDown]
+        public void TearDown()
         {
             window.Close();
-            yield return null;
         }
 
-        [UnityTest]
-        public IEnumerator TestHasField()
+        [Test]
+        public void TestHasField()
         {
             var fieldsFound = sliderWithField.Query<FloatField>().ToList();
-            Assert.AreEqual(1, fieldsFound.Count);
-            yield return null;
+            Assert.That(fieldsFound.Count, Is.EqualTo(1));
         }
 
-        [UnityTest]
-        public IEnumerator TestFieldHasFixedWidth()
+        [Test]
+        public void TestFieldHasFixedWidth()
         {
             var field = sliderWithField.Query<FloatField>().First();
-            Assert.AreEqual(FIELD_WIDTH, field.style.width.ToString());
-            yield return null;
+            Assert.That(field.style.width.ToString(), Is.EqualTo(FIELD_WIDTH));
         }
 
-        [UnityTest]
-        public IEnumerator TestChangingGlobalValueChangesFieldValue()
+        [Test]
+        public void TestChangingGlobalValueChangesFieldValue()
         {
             sliderWithField.value = TEST_VALUE;
-
-            yield return SkipFrames();
-
             var field = sliderWithField.Query<FloatField>().First();
-            Assert.AreEqual(TEST_VALUE, field.value);
+            Assert.That(field.value, Is.EqualTo(TEST_VALUE));
         }
 
-        [UnityTest]
-        public IEnumerator TestChangingFieldValueChangesGlobalValue()
+        [Test]
+        public void TestChangingFieldValueChangesGlobalValue()
         {
             var field = sliderWithField.Query<FloatField>().First();
             field.value = TEST_VALUE;
-
-            yield return SkipFrames();
-
-            Assert.AreEqual(TEST_VALUE, sliderWithField.value);
+            Assert.That(sliderWithField.value, Is.EqualTo(TEST_VALUE));
         }
     }
 }
