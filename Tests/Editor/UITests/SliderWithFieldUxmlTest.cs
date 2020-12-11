@@ -1,10 +1,8 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.UI;
-using System.Collections;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
 namespace ProceduralToolkit.EditorTests.UITests
@@ -12,50 +10,46 @@ namespace ProceduralToolkit.EditorTests.UITests
     public class SliderWithFieldUxmlTest
     {
         private EditorWindow window;
+        private VisualElement RootVisualElement => window.rootVisualElement;
 
         private const string TEST_LAYOUT = "slider-with-field-test";
         private const float TEST_VALUE = 5f;
 
-        [UnitySetUp]
-        public IEnumerator SetUp()
+        [SetUp]
+        public void SetUp()
         {
             window = EditorWindow.CreateWindow<EditorWindow>();
             var uxml = Resources.Load<VisualTreeAsset>(TEST_LAYOUT);
-            uxml.CloneTree(window.rootVisualElement);
-            yield return null;
+            uxml.CloneTree(RootVisualElement);
         }
 
-        [UnityTearDown]
-        public IEnumerator TearDown()
+        [TearDown]
+        public void TearDown()
         {
             window.Close();
-            yield return null;
         }
 
-        [UnityTest]
-        public IEnumerator TestFactorySucceeded()
+        [Test]
+        public void TestFactorySucceeded()
         {
-            var sliderWithFieldFound = window.rootVisualElement.Query<SliderWithField>().ToList();
-            Assert.AreEqual(1, sliderWithFieldFound.Count);
-            yield return null;
+            var sliderWithFieldFound = RootVisualElement.Query<SliderWithField>().ToList();
+            Assert.That(sliderWithFieldFound.Count, Is.EqualTo(1));
         }
 
-        [UnityTest]
-        public IEnumerator TestHasField()
+        [Test]
+        public void TestHasField()
         {
-            var fieldFound = window.rootVisualElement.Query<FloatField>().ToList();
-            Assert.AreEqual(1, fieldFound.Count);
-            yield return null;
+            var fieldFound = RootVisualElement.Query<FloatField>().ToList();
+            Assert.That(fieldFound.Count, Is.EqualTo(1));
         }
 
-        [UnityTest]
-        public IEnumerator TestValueParsed()
+        [Test]
+        public void TestValueParsed()
         {
-            var slider = window.rootVisualElement.Query<SliderWithField>().First();
-            var field = window.rootVisualElement.Query<FloatField>().First();
-            Assert.AreEqual(TEST_VALUE, slider.value);
-            Assert.AreEqual(TEST_VALUE, field.value);
-            yield return null;
+            var slider = RootVisualElement.Query<SliderWithField>().First();
+            var field = RootVisualElement.Query<FloatField>().First();
+            Assert.That(slider.value, Is.EqualTo(TEST_VALUE));
+            Assert.That(field.value, Is.EqualTo(TEST_VALUE));
         }
     }
 }
