@@ -17,15 +17,21 @@ namespace ProceduralToolkit.EditorTests.UITests
             var testTarget = CreateTestTarget();
             window = EditorWindow.CreateWindow<EditorWindow>();
             window.rootVisualElement.Add(testTarget);
+            PostWindowCreation();
         }
 
         protected virtual void PreWindowCreation() { }
         protected abstract VisualElement CreateTestTarget();
 
+        protected virtual void PostWindowCreation() { }
+
         [TearDown]
         public void TearDown()
         {
+            PreWindowClose();
             window.Close();
         }
+
+        protected virtual void PreWindowClose() { }
     }
 }
