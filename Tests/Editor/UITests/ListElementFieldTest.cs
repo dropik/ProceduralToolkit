@@ -1,15 +1,14 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.UI;
-using UnityEditor;
 using UnityEngine;
 using Moq;
+using UnityEngine.UIElements;
 
 namespace ProceduralToolkit.EditorTests.UITests
 {
-    public class ListElementFieldTest
+    public class ListElementFieldTest : BaseCustomVETest
     {
         private ListElementField field;
-        private EditorWindow window;
         private Mock<IListField> mockListField;
         private ScriptableObject testObject;
 
@@ -17,12 +16,9 @@ namespace ProceduralToolkit.EditorTests.UITests
         private const string TEST_OBJ_NAME = "Test Object";
         private System.Type TestType => typeof(ScriptableObject);
 
-        [SetUp]
-        public void SetUp()
+        protected override void PreWindowCreation()
         {
             SetupMockList();
-            CreateElement();
-            InitWindow();
             CreateTestObject();
         }
 
@@ -32,28 +28,18 @@ namespace ProceduralToolkit.EditorTests.UITests
             mockListField.SetupGet(m => m.ObjectType).Returns(TestType);
         }
 
-        private void CreateElement()
-        {
-            field = new ListElementField(mockListField.Object, TEST_ID);
-        }
-
-        private void InitWindow()
-        {
-            window = EditorWindow.CreateWindow<EditorWindow>();
-            window.rootVisualElement.Add(field);
-        }
-
         private void CreateTestObject()
         {
             testObject = ScriptableObject.CreateInstance<ScriptableObject>();
             testObject.name = TEST_OBJ_NAME;
         }
 
-        [TearDown]
-        public void TearDown()
+        protected override VisualElement CreateTestTarget()
         {
-            window.Close();
+            field = new ListElementField(mockListField.Object, TEST_ID);
+            return field;
         }
+
 
         [Test]
         public void TestElementProperties()

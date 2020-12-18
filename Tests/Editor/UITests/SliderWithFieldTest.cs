@@ -6,26 +6,17 @@ using UnityEditor;
 
 namespace ProceduralToolkit.EditorTests.UITests
 {
-    public class SliderWithFieldTest
+    public class SliderWithFieldTest : BaseCustomVETest
     {
         private SliderWithField sliderWithField;
-        private EditorWindow window;
 
         private const string FIELD_WIDTH = "50px";
         private const float TEST_VALUE = 5f;
 
-        [SetUp]
-        public void SetUp()
+        protected override VisualElement CreateTestTarget()
         {
             sliderWithField = new SliderWithField();
-            window = EditorWindow.CreateWindow<EditorWindow>();
-            window.rootVisualElement.Add(sliderWithField);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            window.Close();
+            return sliderWithField;
         }
 
         [Test]

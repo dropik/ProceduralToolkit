@@ -8,29 +8,20 @@ using Moq;
 
 namespace ProceduralToolkit.EditorTests.UITests
 {
-    public class ListFieldTest
+    public class ListFieldTest : BaseCustomVETest
     {
         private ListField listField;
-        private EditorWindow window;
         private IntegerField sizeField;
         private Mock<IListElementFactory> mockElementFactory;
 
         private const string TEST_OBJ_NAME = "Some Object";
 
-        [SetUp]
-        public void SetUp()
-        {
-            CreateMockFactory();
-            InitFieldParts();
-            InitWindow();
-        }
-
-        private void CreateMockFactory()
+        protected override void PreWindowCreation()
         {
             mockElementFactory = new Mock<IListElementFactory>();
         }
 
-        private void InitFieldParts()
+        protected override VisualElement CreateTestTarget()
         {
             listField = new ListField()
             {
@@ -38,18 +29,8 @@ namespace ProceduralToolkit.EditorTests.UITests
                 ObjectType = typeof(ScriptableObject)
             };
             sizeField = listField.Query<IntegerField>("size").First();
-        }
 
-        private void InitWindow()
-        {
-            window = EditorWindow.CreateWindow<EditorWindow>();
-            window.rootVisualElement.Add(listField);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            window.Close();
+            return listField;
         }
 
         [Test]

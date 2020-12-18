@@ -7,27 +7,11 @@ using UnityEngine.UIElements;
 
 namespace ProceduralToolkit.EditorTests.UITests
 {
-    public class SliderWithFieldUxmlTest
+    public class SliderWithFieldUxmlTest : BaseUxmlCustomVETest
     {
-        private EditorWindow window;
-        private VisualElement RootVisualElement => window.rootVisualElement;
+        protected override string TestLayout => "slider-with-field-test";
 
-        private const string TEST_LAYOUT = "slider-with-field-test";
         private const float TEST_VALUE = 5f;
-
-        [SetUp]
-        public void SetUp()
-        {
-            window = EditorWindow.CreateWindow<EditorWindow>();
-            var uxml = Resources.Load<VisualTreeAsset>(TEST_LAYOUT);
-            uxml.CloneTree(RootVisualElement);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            window.Close();
-        }
 
         [Test]
         public void TestFactorySucceeded()
