@@ -4,6 +4,7 @@ using UnityEditor;
 using ProceduralToolkit.UI;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using Moq;
 
 namespace ProceduralToolkit.EditorTests.UITests
 {
@@ -12,20 +13,28 @@ namespace ProceduralToolkit.EditorTests.UITests
         private ListField listField;
         private EditorWindow window;
         private IntegerField sizeField;
+        private Mock<IListElementFactory> mockElementFactory;
 
         private const string TEST_OBJ_NAME = "Some Object";
 
         [SetUp]
         public void SetUp()
         {
+            CreateMockFactory();
             InitFieldParts();
             InitWindow();
+        }
+
+        private void CreateMockFactory()
+        {
+            mockElementFactory = new Mock<IListElementFactory>();
         }
 
         private void InitFieldParts()
         {
             listField = new ListField()
             {
+                ElementFactory = mockElementFactory.Object,
                 ObjectType = typeof(ScriptableObject)
             };
             sizeField = listField.Query<IntegerField>("size").First();
@@ -73,49 +82,56 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         [Test]
-        public void TestIncrementingSizeByOneAddsOnlyOneElement()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void TestCreatedElementsCountWhileIncrementingSizeField(int newSize)
         {
-            sizeField.value++;
+            SetupMockToReturnObjects(newSize);
+
+            sizeField.value = newSize;
 
             var elements = listField.Query<ObjectField>().ToList();
-            Assert.That(elements.Count, Is.EqualTo(1));
+            Assert.That(elements.Count, Is.EqualTo(newSize));
+            mockElementFactory.Verify(mock => mock.CreateElement(It.IsAny<int>()), Times.Exactly(newSize));
+        }
+
+        private void SetupMockToReturnObjects(int objectsToCreate)
+        {
+            for (int i = 0; i < objectsToCreate; i++)
+            {
+                mockElementFactory
+                    .Setup(mock => mock.CreateElement(i))
+                    .Returns(new ObjectField() { name = $"element{i}" });
+            }
         }
 
         [Test]
-        public void TestFirstNewElement()
+        [TestCase(1)]
+        [TestCase(2)]
+        public void TestNewElementWhenShouldBeNull(int elementsToCreate)
         {
-            sizeField.value++;
+            SetupMockToReturnObjects(elementsToCreate);
 
-            var element0 = listField.Query<ObjectField>("element0").First();
-            Assert.That(element0, Is.Not.Null);
-            Assert.That(element0.label, Is.EqualTo("Element 0"));
-            Assert.That(element0.value, Is.Null);
-            Assert.That(SelectorTextOf(element0), Is.EqualTo("None (Scriptable Object)"));
-        }
+            sizeField.value = elementsToCreate;
 
-        private string SelectorTextOf(ObjectField element)
-        {
-            var elementSelectorLabel = element.Query<Label>().Last();
-            return elementSelectorLabel.text;
-        }
-
-        [Test]
-        public void TestNewElementWhenPreviousWasNull()
-        {
-            sizeField.value = 2;
-
-            var element1 = listField.Query<ObjectField>("element1").First();
-            Assert.That(SelectorTextOf(element1), Is.EqualTo("None (Scriptable Object)"));
+            for (int i = 0; i < elementsToCreate; i++)
+            {
+                var elementI = listField.Query<ObjectField>($"element{i}").First();
+                Assert.That(elementI.value, Is.Null);
+            }
         }
 
         [Test]
-        public void TestNewElementWhenPreviousWasNotNull()
+        public void TestNewElementWhenShouldNotBeNull()
         {
+            SetupMockToReturnObjects(2);
             SetupFirstElement();
 
             sizeField.value++;
 
             var element1 = listField.Query<ObjectField>("element1").First();
+            Assert.That(element1.value, Is.Not.Null);
             Assert.That(element1.value.name, Is.EqualTo(TEST_OBJ_NAME));
         }
 
@@ -131,6 +147,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         [Test]
         public void TestDecrementingSizeRemovesElementsFromTheEnd()
         {
+            SetupMockToReturnObjects(5);
             SetupFirstElement();
             sizeField.value = 5;
 
@@ -144,6 +161,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         public void TestSettingNegativeSizeDoesNotChangeValue()
         {
             const int INITIAL_SIZE = 2;
+            SetupMockToReturnObjects(INITIAL_SIZE);
             sizeField.value = INITIAL_SIZE;
 
             sizeField.value = -1;
@@ -156,28 +174,25 @@ namespace ProceduralToolkit.EditorTests.UITests
         [Test]
         public void TestValuePropertyUpdatedOnAdd()
         {
-            SetupFirstElement();
-            AssertThatListIsCorrect(expectedLength: 1, checkId: 0);
+            const int VALUES_TO_ADD = 2;
+            SetupMockToReturnObjects(VALUES_TO_ADD);
+            sizeField.value = VALUES_TO_ADD;
 
-            sizeField.value++;
-            AssertThatListIsCorrect(expectedLength: 2, checkId: 1);
-        }
-
-        private void AssertThatListIsCorrect(int expectedLength, int checkId)
-        {
             var value = listField.value;
-            Assert.That(value.Count, Is.EqualTo(expectedLength));
-            Assert.That(value[checkId].name, Is.EqualTo(TEST_OBJ_NAME));
+            Assert.That(value.Count, Is.EqualTo(VALUES_TO_ADD));
         }
 
         [Test]
         public void TestValuePropertyUpdatedOnRemove()
         {
-            SetupFirstElement();
-            sizeField.value = 3;
-            sizeField.value = 2;
+            const int INITIAL_SIZE = 3;
+            const int TARGET_SIZE = 2;
+            SetupMockToReturnObjects(INITIAL_SIZE);
+            sizeField.value = INITIAL_SIZE;
+            sizeField.value = TARGET_SIZE;
 
-            AssertThatListIsCorrect(expectedLength: 2, checkId: 1);
+            var value = listField.value;
+            Assert.That(value.Count, Is.EqualTo(TARGET_SIZE));
         }
     }
 }

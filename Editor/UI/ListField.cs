@@ -11,16 +11,31 @@ namespace ProceduralToolkit.UI
         private Foldout foldout;
         private IntegerField sizeField;
 
+        public IListElementFactory ElementFactory { get; set; }
         public System.Type ObjectType { get; set; }
 
         public ListField() : this("") { }
 
         public ListField(string label) : base(label, null)
         {
-            InitFoldout();
-            InitSizeField();
             InitList();
             CreateHierarchy();
+        }
+
+        private void InitList()
+        {
+            if (value == null)
+            {
+                value = new List<Object>();
+            }
+        }
+
+        private void CreateHierarchy()
+        {
+            InitFoldout();
+            InitSizeField();
+            foldout.Add(sizeField);
+            Add(foldout);
         }
 
         private void InitFoldout()
@@ -40,20 +55,6 @@ namespace ProceduralToolkit.UI
                 value = 0
             };
             sizeField.RegisterValueChangedCallback(OnSizeChanged);
-        }
-
-        private void InitList()
-        {
-            if (value == null)
-            {
-                value = new List<Object>();
-            }
-        }
-
-        private void CreateHierarchy()
-        {
-            foldout.Add(sizeField);
-            Add(foldout);
         }
 
         private void OnSizeChanged(ChangeEvent<int> e)
@@ -109,7 +110,6 @@ namespace ProceduralToolkit.UI
             value.Add(null);
 
             var newElement = InitNewElement(id);
-            newElement.RegisterValueChangedCallback(OnElementUpdate);
             foldout.Add(newElement);
 
             if (id > 0)
@@ -120,20 +120,7 @@ namespace ProceduralToolkit.UI
 
         private ObjectField InitNewElement(int id)
         {
-            return new ObjectField()
-            {
-                name = $"element{id}",
-                label = $"Element {id}",
-                objectType = ObjectType
-            };
-        }
-
-        private void OnElementUpdate(ChangeEvent<Object> e)
-        {
-            var element = e.target as ObjectField;
-            var nameSplit = Regex.Split(element.name, "[a-z]+", RegexOptions.IgnoreCase);
-            var id = int.Parse(nameSplit[1]);
-            value[id] = element.value;
+            return ElementFactory.CreateElement(id);
         }
 
         private void CopyPreviousElement(int id, ObjectField newElement)
