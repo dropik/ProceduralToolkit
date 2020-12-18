@@ -23,8 +23,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         {
             listField = new ListField()
             {
-                ElementFactory = mockElementFactory.Object,
-                ObjectType = typeof(ScriptableObject)
+                ElementFactory = mockElementFactory.Object
             };
 
             return listField;
@@ -78,10 +77,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         {
             SetupMockToReturnObjects(2);
             listField.AddElement();
-            var element0 = listField.Query<ObjectField>("element0").First();
-            var testObject = ScriptableObject.CreateInstance<ScriptableObject>();
-            testObject.name = TEST_OBJ_NAME;
-            element0.value = testObject;
+            SetupTestObjectOnElementAtId(0);
 
             listField.AddElement();
 
@@ -89,12 +85,29 @@ namespace ProceduralToolkit.EditorTests.UITests
             Assert.That(element1.value.name, Is.EqualTo(TEST_OBJ_NAME));
         }
 
+        private void SetupTestObjectOnElementAtId(int id)
+        {
+            var testObject = CreateTestObject();
+            AssignObjectToElementAtId(testObject, id);
+        }
+
+        private Object CreateTestObject()
+        {
+            var testObject = ScriptableObject.CreateInstance<ScriptableObject>();
+            testObject.name = TEST_OBJ_NAME;
+            return testObject;
+        }
+
+        private void AssignObjectToElementAtId(Object testObject, int id)
+        {
+            var element = listField.Query<ObjectField>($"element{id}").First();
+            element.value = testObject;
+        }
+
         [Test]
         public void TestCorrectObjectFieldRemovedOnRemoveElement()
         {
-            SetupMockToReturnObjects(2);
-            listField.AddElement();
-            listField.AddElement();
+            CreateEmptyElements(2);
 
             listField.RemoveElement();
 
@@ -103,21 +116,33 @@ namespace ProceduralToolkit.EditorTests.UITests
             Assert.That(foundElements[0].name, Is.EqualTo("element0"));
         }
 
+        private void CreateEmptyElements(int elementsCount)
+        {
+            SetupMockToReturnObjects(elementsCount);
+            listField.AddElement();
+            listField.AddElement();
+        }
+
         [Test]
         public void TestLastValueRemovedOnRemoveElement()
         {
             const int INITIAL_OBJECTS_COUNT = 2;
             SetupMockToReturnObjects(2);
-            for (int i = 0; i < INITIAL_OBJECTS_COUNT; i++)
-            {
-                listField.AddElement();
-                SetTestElementAtId(i);
-            }
+            SetupListElements(INITIAL_OBJECTS_COUNT);
 
             listField.RemoveElement();
 
             Assert.That(listField.value.Count, Is.EqualTo(1));
             Assert.That(listField.value[0].name, Is.EqualTo($"{TEST_OBJ_NAME}0"));
+        }
+
+        private void SetupListElements(int elementsCount)
+        {
+            for (int i = 0; i < elementsCount; i++)
+            {
+                listField.AddElement();
+                SetTestElementAtId(i);
+            }
         }
 
         private void SetTestElementAtId(int id)
@@ -130,17 +155,45 @@ namespace ProceduralToolkit.EditorTests.UITests
         [Test]
         public void TestCorrectListValueUpdatedOnUpdateValueAt()
         {
-            SetupMockToReturnObjects(2);
-            listField.AddElement();
-            listField.AddElement();
-            var testObject = ScriptableObject.CreateInstance<ScriptableObject>();
-            testObject.name = TEST_OBJ_NAME;
-            var element1 = listField.Query<ObjectField>("element1").First();
-            element1.value = testObject;
+            const int TEST_ID = 1;
+            CreateEmptyElements(2);
+            SetupTestObjectOnElementAtId(TEST_ID);
 
-            listField.UpdateValueAt(1);
+            listField.UpdateValueAt(TEST_ID);
 
-            Assert.That(listField.value[1].name, Is.EqualTo(TEST_OBJ_NAME));
+            Assert.That(listField.value[TEST_ID].name, Is.EqualTo(TEST_OBJ_NAME));
+        }
+
+        [Test]
+        public void TestAddElementBehaviourWhenNoFactoryAssigned()
+        {
+            listField.ElementFactory = null;
+
+            try
+            {
+                listField.AddElement();
+                Assert.Pass();
+            }
+            catch (System.NullReferenceException)
+            {
+                Assert.Fail("Exception occured on AddElement apparently due to ElementFactory reference absence.");
+            }
+        }
+
+        [Test]
+        public void TestSizeFieldAddedToHierarchyWhenAssigned()
+        {
+            var sizeField = new IntegerField
+            {
+                name = "size"
+            };
+
+            listField.SizeField = sizeField;
+
+            var sizeFieldsFound = listField.Query<IntegerField>().ToList();
+
+            Assert.That(sizeFieldsFound.Count, Is.EqualTo(1));
+            Assert.That(sizeFieldsFound[0].name, Is.EqualTo("size"));
         }
     }
 }

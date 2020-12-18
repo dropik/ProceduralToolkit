@@ -8,8 +8,17 @@ namespace ProceduralToolkit.UI
     public class ListField : BaseField<List<Object>>, IListField
     {
         private Foldout foldout;
+        private IntegerField sizeField;
 
-        public IntegerField SizeField { get; set; }
+        public IntegerField SizeField
+        {
+            get => sizeField;
+            set
+            {
+                foldout.Add(value);
+                sizeField = value;
+            }
+        }
         public IListElementFactory ElementFactory { get; set; }
         public System.Type ObjectType { get; set; }
 
@@ -31,7 +40,6 @@ namespace ProceduralToolkit.UI
         private void CreateHierarchy()
         {
             InitFoldout();
-            foldout.Add(SizeField);
             Add(foldout);
         }
 
@@ -47,6 +55,14 @@ namespace ProceduralToolkit.UI
         {
             value.Add(null);
             var id = value.Count - 1;
+            if (ElementFactory != null)
+            {
+                CreateNewElementWithId(id);
+            }
+        }
+
+        private void CreateNewElementWithId(int id)
+        {
             var newElement = ElementFactory.CreateElement(id);
             foldout.Add(newElement);
             if (id > 0)
