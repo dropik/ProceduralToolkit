@@ -10,7 +10,7 @@ namespace ProceduralToolkit.EditorTests.UITests
 {
     public class ListFieldValueMapperTest
     {
-        private ListFieldValueMapper mapper;
+        private IList<Object> mapper;
         private Mock<IListField> listField;
         private IntegerField sizeField;
         private ObjectField[] elements;

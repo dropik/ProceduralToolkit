@@ -48,12 +48,5 @@ namespace ProceduralToolkit.EditorTests.UITests
             Assert.That(field.label, Is.EqualTo($"Element {TEST_ID}"));
             Assert.That(field.objectType, Is.EqualTo(TestType));
         }
-
-        [Test]
-        public void TestUpdatingElementTheListGetsUpdated()
-        {
-            field.value = testObject;
-            mockListField.Verify(mock => mock.UpdateValueAt(TEST_ID), Times.Once);
-        }
     }
 }

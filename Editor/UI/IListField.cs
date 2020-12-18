@@ -10,6 +10,5 @@ namespace ProceduralToolkit.UI
         VisualElement ElementsRoot { get; }
         void AddElement();
         void RemoveElement();
-        void UpdateValueAt(int id);
     }
 }

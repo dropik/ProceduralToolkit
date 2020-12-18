@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.UI
 {
-    public class ListField : BaseField<List<Object>>, IListField
+    public class ListField : BaseField<IList<Object>>, IListField
     {
         private Foldout foldout;
         private IntegerField sizeField;
@@ -21,7 +21,21 @@ namespace ProceduralToolkit.UI
         }
         public VisualElement ElementsRoot => foldout;
         public IListElementFactory ElementFactory { get; set; }
+        public IList<Object> ValueMapper { get; set; }
         public System.Type ObjectType { get; set; }
+
+        public override IList<Object> value
+        {
+            get => ValueMapper;
+            set
+            {
+                ValueMapper?.Clear();
+                foreach (var item in value)
+                {
+                    ValueMapper.Add(item);
+                }
+            }
+        }
 
         public ListField() : this("") { }
         public ListField(string label) : base(label, null)
@@ -54,13 +68,14 @@ namespace ProceduralToolkit.UI
 
         public void AddElement()
         {
-            value.Add(null);
-            var id = value.Count - 1;
+            var id = LastIndex;
             if (ElementFactory != null)
             {
                 CreateNewElementWithId(id);
             }
         }
+
+        private int LastIndex => SizeField.value - 1;
 
         private void CreateNewElementWithId(int id)
         {
@@ -85,16 +100,9 @@ namespace ProceduralToolkit.UI
 
         public void RemoveElement()
         {
-            var id = value.Count - 1;
+            var id = LastIndex;
             var element = GetObjectFieldById(id);
             foldout.Remove(element);
-            value.RemoveAt(id);
-        }
-
-        public void UpdateValueAt(int id)
-        {
-            var updatedElement = GetObjectFieldById(id);
-            value[id] = updatedElement.value;
         }
     }
 }
