@@ -19,6 +19,7 @@ namespace ProceduralToolkit.UI
                 sizeField = value;
             }
         }
+        public VisualElement ElementsRoot => foldout;
         public IListElementFactory ElementFactory { get; set; }
         public System.Type ObjectType { get; set; }
 
@@ -73,21 +74,26 @@ namespace ProceduralToolkit.UI
 
         private void CopyPreviousElement(int id, ObjectField newElement)
         {
-            var prevElement = this.Query<ObjectField>($"element{id - 1}").First();
+            var prevElement = GetObjectFieldById(id - 1);
             newElement.value = prevElement.value;
+        }
+
+        private ObjectField GetObjectFieldById(int id)
+        {
+            return this.Query<ObjectField>($"element{id}").First();
         }
 
         public void RemoveElement()
         {
             var id = value.Count - 1;
-            var element = this.Query<ObjectField>($"element{id}").First();
+            var element = GetObjectFieldById(id);
             foldout.Remove(element);
             value.RemoveAt(id);
         }
 
         public void UpdateValueAt(int id)
         {
-            var updatedElement = this.Query<ObjectField>($"element{id}").First();
+            var updatedElement = GetObjectFieldById(id);
             value[id] = updatedElement.value;
         }
     }
