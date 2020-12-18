@@ -11,7 +11,6 @@ namespace ProceduralToolkit.EditorTests.UITests
     public class ListFieldTest : BaseCustomVETest
     {
         private ListField listField;
-        private IntegerField sizeField;
         private Mock<IListElementFactory> mockElementFactory;
         private Mock<IList<Object>> mockValueMapper;
 
@@ -21,15 +20,21 @@ namespace ProceduralToolkit.EditorTests.UITests
 
         protected override void PreWindowCreation()
         {
+            SetupElementFactory();
+            SetupValueMapper();
+        }
+
+        private void SetupElementFactory()
+        {
             mockElementFactory = new Mock<IListElementFactory>();
+        }
+
+        private void SetupValueMapper()
+        {
             mockValueMapper = new Mock<IList<Object>>();
             mockValueMapper
                 .Setup(mock => mock.Equals(It.Is<string>(obj => obj == MOCK_MAPPER_NAME)))
                 .Returns(true);
-            sizeField = new IntegerField()
-            {
-                name = SIZE_FIELD_NAME
-            };
         }
 
         protected override VisualElement CreateTestTarget()
@@ -37,7 +42,6 @@ namespace ProceduralToolkit.EditorTests.UITests
             listField = new ListField()
             {
                 ElementFactory = mockElementFactory.Object,
-                SizeField = sizeField,
                 ValueMapper = mockValueMapper.Object
             };
 
@@ -61,6 +65,11 @@ namespace ProceduralToolkit.EditorTests.UITests
         [Test]
         public void TestSizeFieldAddedToHierarchyWhenAssigned()
         {
+            var sizeField = new IntegerField()
+            {
+                name = SIZE_FIELD_NAME
+            };
+            listField.SizeField = sizeField;
             var sizeFieldsFound = listField.Query<IntegerField>().ToList();
             Assert.That(sizeFieldsFound.Count, Is.EqualTo(1));
             Assert.That(sizeFieldsFound[0].name, Is.EqualTo(SIZE_FIELD_NAME));
@@ -73,7 +82,7 @@ namespace ProceduralToolkit.EditorTests.UITests
 
             try
             {
-                sizeField.value++;
+                SetupMapperCount(1);
                 listField.AddElement();
                 Assert.Pass();
             }
@@ -83,11 +92,16 @@ namespace ProceduralToolkit.EditorTests.UITests
             }
         }
 
+        private void SetupMapperCount(int count)
+        {
+            mockValueMapper.SetupGet(mock => mock.Count).Returns(count);
+        }
+
         [Test]
         public void TestNewElementIsAddedToHierarchyOnAddElement()
         {
             SetupMockToReturnObjects(1);
-            sizeField.value++;
+            SetupMapperCount(1);
             listField.AddElement();
             mockElementFactory.Verify(
                 mock => mock.CreateElement(It.Is<int>(id => id == 0)),
@@ -109,35 +123,29 @@ namespace ProceduralToolkit.EditorTests.UITests
         [Test]
         public void TestPreviousElementCopiedIfExists()
         {
-            SetupMockToReturnObjects(2);
-            sizeField.value++;
-            listField.AddElement();
-            SetupTestObjectOnElementAtId(0);
-            sizeField.value++;
+            SetupMockToReturnObjects(1);
+            SetupMapperCount(2);
+            SetupTestObjectAtId(0);
 
             listField.AddElement();
 
-            var element1 = listField.Query<ObjectField>("element1").First();
-            Assert.That(element1.value.name, Is.EqualTo(TEST_OBJ_NAME));
+            VerifyNextWasSetAsPrevious();
         }
 
-        private void SetupTestObjectOnElementAtId(int id)
-        {
-            var testObject = CreateTestObject();
-            AssignObjectToElementAtId(testObject, id);
-        }
-
-        private Object CreateTestObject()
+        private void SetupTestObjectAtId(int id)
         {
             var testObject = ScriptableObject.CreateInstance<ScriptableObject>();
             testObject.name = TEST_OBJ_NAME;
-            return testObject;
+            mockValueMapper
+                .SetupGet(mock => mock[It.Is<int>(index => index == id)])
+                .Returns(testObject);
         }
 
-        private void AssignObjectToElementAtId(Object testObject, int id)
+        private void VerifyNextWasSetAsPrevious()
         {
-            var element = listField.Query<ObjectField>($"element{id}").First();
-            element.value = testObject;
+            mockValueMapper.VerifySet(
+                mock => mock[It.Is<int>(index => index == 1)] = It.Is<Object>(obj => obj.name == TEST_OBJ_NAME),
+                Times.Once);
         }
 
         [Test]
@@ -157,7 +165,7 @@ namespace ProceduralToolkit.EditorTests.UITests
             SetupMockToReturnObjects(elementsCount);
             for (int i = 0; i < elementsCount; i++)
             {
-                sizeField.value++;
+                SetupMapperCount(i + 1);
                 listField.AddElement();
             }
         }

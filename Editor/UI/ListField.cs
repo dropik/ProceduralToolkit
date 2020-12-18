@@ -15,7 +15,7 @@ namespace ProceduralToolkit.UI
             get => sizeField;
             set
             {
-                foldout.Add(value);
+                ElementsRoot.Add(value);
                 sizeField = value;
             }
         }
@@ -40,16 +40,7 @@ namespace ProceduralToolkit.UI
         public ListField() : this("") { }
         public ListField(string label) : base(label, null)
         {
-            InitList();
             CreateHierarchy();
-        }
-
-        private void InitList()
-        {
-            if (value == null)
-            {
-                value = new List<Object>();
-            }
         }
 
         private void CreateHierarchy()
@@ -68,41 +59,33 @@ namespace ProceduralToolkit.UI
 
         public void AddElement()
         {
-            var id = LastIndex;
             if (ElementFactory != null)
             {
-                CreateNewElementWithId(id);
+                CreateNewElementWithId(LastIndex);
             }
         }
 
-        private int LastIndex => SizeField.value - 1;
+        private int LastIndex => value.Count - 1;
 
         private void CreateNewElementWithId(int id)
         {
             var newElement = ElementFactory.CreateElement(id);
-            foldout.Add(newElement);
+            ElementsRoot.Add(newElement);
             if (id > 0)
             {
-                CopyPreviousElement(id, newElement);
+                value[id] = value[id - 1];
             }
         }
 
-        private void CopyPreviousElement(int id, ObjectField newElement)
+        public void RemoveElement()
         {
-            var prevElement = GetObjectFieldById(id - 1);
-            newElement.value = prevElement.value;
+            var element = GetObjectFieldById(LastIndex);
+            ElementsRoot.Remove(element);
         }
 
         private ObjectField GetObjectFieldById(int id)
         {
             return this.Query<ObjectField>($"element{id}").First();
-        }
-
-        public void RemoveElement()
-        {
-            var id = LastIndex;
-            var element = GetObjectFieldById(id);
-            foldout.Remove(element);
         }
     }
 }
