@@ -32,7 +32,12 @@ namespace ProceduralToolkit.UI
         private ObjectField GetElementById(int id)
         {
             var root = listField.ElementsRoot;
-            return root.Query<ObjectField>($"element{id}").First();
+            var foundElement = root.Query<ObjectField>($"element{id}").First();
+            if (foundElement is null)
+            {
+                throw new System.IndexOutOfRangeException("Out of bounds when trying to access ListField element.");
+            }
+            return foundElement;
         }
 
         public int Count
@@ -71,37 +76,79 @@ namespace ProceduralToolkit.UI
 
         public void CopyTo(Object[] array, int arrayIndex)
         {
-            throw new System.NotImplementedException();
+            for (int i = 0; i < Count; i++)
+            {
+                array[i + arrayIndex] = this[i];
+            }
         }
 
         public IEnumerator<Object> GetEnumerator()
         {
-            throw new System.NotImplementedException();
+            return new List<Object>.Enumerator();
         }
 
         public int IndexOf(Object item)
         {
-            throw new System.NotImplementedException();
+            for (int i = 0; i < Count; i++)
+            {
+                if (this[i].Equals(item))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         public void Insert(int index, Object item)
         {
-            throw new System.NotImplementedException();
+            CheckOutOfBounds(index);
+            Count++;
+            ShiftValuesForwardFrom(index);
+            this[index] = item;
+        }
+
+        private void ShiftValuesForwardFrom(int index)
+        {
+            for (int i = Count - 1; i > index; i--)
+            {
+                this[i] = this[i - 1];
+            }
+        }
+
+        private void CheckOutOfBounds(int index)
+        {
+            _ = this[index];
         }
 
         public bool Remove(Object item)
         {
-            throw new System.NotImplementedException();
+            var foundId = IndexOf(item);
+            if (foundId < 0)
+            {
+                return false;
+            }
+            RemoveAt(foundId);
+            return true;
         }
 
         public void RemoveAt(int index)
         {
-            throw new System.NotImplementedException();
+            CheckOutOfBounds(index);
+            ShiftValuesBackFrom(index);
+            Count--;
+        }
+
+        private void ShiftValuesBackFrom(int index)
+        {
+            for (int i = index; i < Count - 1; i++)
+            {
+                this[i] = this[i + 1];
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new System.NotImplementedException();
+            return GetEnumerator();
         }
     }
 }
