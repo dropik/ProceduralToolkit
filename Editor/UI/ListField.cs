@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.UI
 {
-    public class ListField : BaseField<IList<Object>>, IListField
+    public partial class ListField : BaseField<IList<Object>>, IListField
     {
         private Foldout foldout;
         private IntegerField sizeField;
