@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+    <ui:ScrollView name="root" class="root">
+        <Style src="/Assets/ProceduralToolkit/Editor/Resources/Styles/new-landscape-generator-window.uss" />
+        <ui:VisualElement name="inspectorRoot" />
+    </ui:ScrollView>
+    <ui:Button text="Create Landscape Generator" name="createGenerator" class="create-generator">
+        <Style src="/Assets/ProceduralToolkit/Editor/Resources/Styles/new-landscape-generator-window.uss" />
+    </ui:Button>
+</ui:UXML>
