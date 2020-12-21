@@ -1,3 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ProceduralToolkit.UI.ListField label="Some Property" />
-</ui:UXML>
