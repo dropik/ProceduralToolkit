@@ -10,7 +10,7 @@ namespace ProceduralToolkit.EditorTests.UnitTests
         [SetUp]
         public void SetUp()
         {
-            plane = new PlaneGenerator(Vector3.zero, 2, 1);
+            plane = new PlaneGenerator(2, 1);
         }
 
         [Test]

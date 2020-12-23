@@ -33,8 +33,7 @@ namespace ProceduralToolkit.EditorTests.IntegrationTests
 
         private void SetupGeneratorWithPlane()
         {
-            landscapeGenerator.transform.position = Vector3.zero;
-            var plane = new PlaneGenerator(Vector3.zero, 2, 1);
+            var plane = new PlaneGenerator(2, 1);
             landscapeGenerator.Generator = plane;
         }
 
@@ -47,7 +46,7 @@ namespace ProceduralToolkit.EditorTests.IntegrationTests
 
         private void GetResultingMesh()
         {
-            resultingMesh =  landscapeGenerator.GetComponent<MeshFilter>().sharedMesh;
+            resultingMesh = landscapeGenerator.GetComponent<MeshFilter>().sharedMesh;
         }
 
         private void AssertThatVerticesAreCorrect()
