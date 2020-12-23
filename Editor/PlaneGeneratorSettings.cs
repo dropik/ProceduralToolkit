@@ -10,7 +10,7 @@ namespace ProceduralToolkit
 
         protected override IGenerator CreateGenerator()
         {
-            return new PlaneGenerator(Vector3.zero, length, width);
+            return new PlaneGenerator(length, width);
         }
     }
 }
