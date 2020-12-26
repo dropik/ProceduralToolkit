@@ -1,11 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace ProceduralToolkit
+﻿namespace ProceduralToolkit
 {
-    public interface IGeneratorBootProvider
+    public interface IGeneratorBootFactory
     {
-        GeneratorBoot GetGeneratorBoot(BaseShapeGeneratorSettings baseShape);
+        void CreateGeneratorBoot(BaseShapeGeneratorSettings baseShape);
     }
 }

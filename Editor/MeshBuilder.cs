@@ -18,6 +18,7 @@ namespace ProceduralToolkit
             resultingMesh = new Mesh();
             AddVertices();
             AddTriangles();
+            resultingMesh.RecalculateNormals();
             return resultingMesh;
         }
 

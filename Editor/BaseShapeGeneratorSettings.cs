@@ -8,7 +8,6 @@ namespace ProceduralToolkit
         private IGenerator generator;
 
         public IEnumerable<Vector3> Vertices => generator.Vertices;
-
         public IEnumerable<int> Triangles => generator.Triangles;
 
         private void Awake()

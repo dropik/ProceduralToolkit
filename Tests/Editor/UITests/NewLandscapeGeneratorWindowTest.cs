@@ -23,7 +23,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         private NewLandscapeGeneratorWindow window;
-        private Mock<IGeneratorBootProvider> mockGeneratorBootProvider;
+        private Mock<IGeneratorBootFactory> mockGeneratorBootFactory;
         private TestBaseShapeGeneratorSettings testObject;
 
         private const string TEST_OBJECT_NAME = "Test Object";
@@ -40,7 +40,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         [SetUp]
         public void SetUp()
         {
-            mockGeneratorBootProvider = new Mock<IGeneratorBootProvider>();
+            mockGeneratorBootFactory = new Mock<IGeneratorBootFactory>();
             testObject = ScriptableObject.CreateInstance<TestBaseShapeGeneratorSettings>();
             testObject.name = TEST_OBJECT_NAME;
             window = EditorWindow.CreateWindow<NewLandscapeGeneratorWindow>();
@@ -49,7 +49,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         private void SetAllFields()
         {
             SetBaseShape();
-            SetGeneratorBootProvider();
+            SetGeneratorBootFactory();
         }
 
         private void SetBaseShape()
@@ -58,9 +58,9 @@ namespace ProceduralToolkit.EditorTests.UITests
             window.OnInspectorUpdate();
         }
 
-        private void SetGeneratorBootProvider()
+        private void SetGeneratorBootFactory()
         {
-            window.GeneratorBootProvider = mockGeneratorBootProvider.Object;
+            window.GeneratorBootFactory = mockGeneratorBootFactory.Object;
             window.OnInspectorUpdate();
         }
 
@@ -86,12 +86,12 @@ namespace ProceduralToolkit.EditorTests.UITests
         [Test]
         public void TestCreateGeneratorIsNotActiveWhenBaseShapeIsNull()
         {
-            SetGeneratorBootProvider();
+            SetGeneratorBootFactory();
             Assert.That(CreateButton.enabledSelf, Is.False);
         }
 
         [Test]
-        public void TestCreateGeneratorIsNotActiveWhenProviderIsNull()
+        public void TestCreateGeneratorIsNotActiveWhenFactoryIsNull()
         {
             SetBaseShape();
             Assert.That(CreateButton.enabledSelf, Is.False);
@@ -105,7 +105,7 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         [UnityTest]
-        public IEnumerator TestGeneratorBootProviderUsedToCreateGenerator()
+        public IEnumerator TestGeneratorBootFactoryUsedToCreateGenerator()
         {
             SetAllFields();
             var buttonClicker = new ButtonClicker();
@@ -114,9 +114,22 @@ namespace ProceduralToolkit.EditorTests.UITests
 
             yield return SkipFrames();
 
-            mockGeneratorBootProvider.Verify(
-                m => m.GetGeneratorBoot(It.Is<BaseShapeGeneratorSettings>(s => s.name == TEST_OBJECT_NAME)),
+            mockGeneratorBootFactory.Verify(
+                m => m.CreateGeneratorBoot(It.Is<BaseShapeGeneratorSettings>(s => s.name == TEST_OBJECT_NAME)),
                 Times.Once);
+        }
+
+        [UnityTest]
+        public IEnumerator TestWindowClosedOnCreateGeneratorClick()
+        {
+            SetAllFields();
+            var buttonClicker = new ButtonClicker();
+
+            buttonClicker.Click(CreateButton);
+
+            yield return SkipFrames();
+
+            Assert.That(window == null);
         }
     }
 }

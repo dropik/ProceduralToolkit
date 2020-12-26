@@ -29,16 +29,24 @@ namespace ProceduralToolkit.EditorTests.UnitTests
         }
 
         [Test]
-        public void TestIfBuildedMeshIsCorrect()
+        public void TestAddedVertices()
         {
             resultingMesh = meshBuilder.Build();
-            AssertThatResultingMeshIsCorrect();
+            CollectionAssert.AreEqual(expectedVertices, resultingMesh.vertices);
         }
 
-        private void AssertThatResultingMeshIsCorrect()
+        [Test]
+        public void TestAddedTriangles()
         {
-            CollectionAssert.AreEqual(expectedVertices, resultingMesh.vertices);
+            resultingMesh = meshBuilder.Build();
             CollectionAssert.AreEqual(expectedTriangles, resultingMesh.triangles);
+        }
+
+        [Test]
+        public void TestRecalculatedNormals()
+        {
+            resultingMesh = meshBuilder.Build();
+            Assert.That(resultingMesh.normals.Length, Is.Not.Zero);
         }
     }
 }

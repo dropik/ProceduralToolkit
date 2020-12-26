@@ -10,13 +10,14 @@ namespace ProceduralToolkit.UI
         [MenuItem("Window/Procedural Toolkit/New Landscape Generator")]
         public static void ShowWindow()
         {
-            GetWindow<NewLandscapeGeneratorWindow>(title: "New Landscape Generator",
-                                                   utility: true);
+            var window = GetWindow<NewLandscapeGeneratorWindow>(title: "New Landscape Generator",
+                                                                utility: true);
+            window.GeneratorBootFactory = new GeneratorBootFactory();
         }
 
         public BaseShapeGeneratorSettings baseShape;
 
-        public IGeneratorBootProvider GeneratorBootProvider { get; set; }
+        public IGeneratorBootFactory GeneratorBootFactory { get; set; }
 
         public void CreateGUI()
         {
@@ -44,7 +45,11 @@ namespace ProceduralToolkit.UI
 
         private void AddCreateGeneratorCallback()
         {
-            CreateButton.clicked += () => GeneratorBootProvider.GetGeneratorBoot(baseShape);
+            CreateButton.clicked += () =>
+            {
+                GeneratorBootFactory.CreateGeneratorBoot(baseShape);
+                Close();
+            };
         }
 
         public void OnInspectorUpdate()
@@ -62,6 +67,6 @@ namespace ProceduralToolkit.UI
 
         private bool IsFormValidated =>
             (baseShape != null) &&
-            (GeneratorBootProvider != null);
+            (GeneratorBootFactory != null);
     }
 }

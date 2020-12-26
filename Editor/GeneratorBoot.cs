@@ -1,18 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class GeneratorBoot : MonoBehaviour
+namespace ProceduralToolkit
 {
-    // Start is called before the first frame update
-    void Start()
+    [ExecuteInEditMode]
+    public class GeneratorBoot : MonoBehaviour
     {
-        
-    }
+        private LandscapeGenerator landscapeGenerator;
+        private IGenerator generator;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public void Awake()
+        {
+            var newObj = new GameObject();
+            newObj.name = "LandscapeGenerator";
+            newObj.transform.parent = transform;
+            landscapeGenerator = newObj.AddComponent<LandscapeGenerator>();
+            landscapeGenerator.DefaultMaterialProvider = new DefaultMaterialProvider();
+        }
+
+        public BaseShapeGeneratorSettings BaseShape
+        {
+            set
+            {
+                generator = value;
+                landscapeGenerator.MeshBuilder = new MeshBuilder(generator);
+            }
+        }
+
+        public void Start()
+        {
+            landscapeGenerator.Generate();
+        }
     }
 }
