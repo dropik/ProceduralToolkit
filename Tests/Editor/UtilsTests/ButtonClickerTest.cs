@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.EditorTests.Utils;
 using System.Collections;
+using UnityEditor;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
@@ -8,14 +9,14 @@ namespace ProceduralToolkit.EditorTests.UtilsTests
 {
     public class ButtonClickerTest
     {
-        private TestEditorWindow window;
+        private EditorWindow window;
         private Button button;
         private ButtonClicker buttonClicker;
 
         [UnitySetUp]
         public IEnumerator SetUp()
         {
-            window = TestEditorWindow.CreateWindow(null);
+            window = EditorWindow.CreateWindow<EditorWindow>();
             button = new Button();
             window.rootVisualElement.Add(button);
             buttonClicker = new ButtonClicker();

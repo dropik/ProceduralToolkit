@@ -1,3 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:PropertyField name="baseShape" binding-path="baseShape" />
-</ui:UXML>
