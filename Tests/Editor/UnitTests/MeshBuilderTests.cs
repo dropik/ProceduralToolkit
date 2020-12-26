@@ -6,12 +6,13 @@ namespace ProceduralToolkit.EditorTests.UnitTests
 {
     public class MeshBuilderTests
     {
-        private Vector3[] expectedVertices = {
+        private readonly Vector3[] expectedVertices = {
             new Vector3(1, 0, 0),
             new Vector3(0, 1, 0),
             new Vector3(0, 0, 1)
         };
-        private int[] expectedTriangles = { 0, 1, 2 };
+        private readonly int[] expectedTriangles = { 0, 1, 2 };
+
         private Mock<IGenerator> mockGenerator;
         private MeshBuilder meshBuilder;
         private Mesh resultingMesh;

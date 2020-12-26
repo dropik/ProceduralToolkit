@@ -47,16 +47,6 @@ namespace ProceduralToolkit.UI
             CreateButton.clicked += () => GeneratorBootProvider.GetGeneratorBoot(baseShape);
         }
 
-        public void OnFocus()
-        {
-            UpdateButtonActiveState();
-        }
-
-        public void OnValidate()
-        {
-            UpdateButtonActiveState();
-        }
-
         public void OnInspectorUpdate()
         {
             UpdateButtonActiveState();

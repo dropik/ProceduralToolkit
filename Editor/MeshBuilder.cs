@@ -3,10 +3,10 @@ using System.Linq;
 
 namespace ProceduralToolkit
 {
-    public class MeshBuilder
+    public class MeshBuilder : IMeshBuilder
     {
+        private readonly IGenerator generator;
         private Mesh resultingMesh;
-        private IGenerator generator;
 
         public MeshBuilder(IGenerator generator)
         {

@@ -5,11 +5,10 @@ namespace ProceduralToolkit
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class LandscapeGenerator : MonoBehaviour
     {
-        public float planeLength = 1f;
-
         private Mesh generatedMesh;
 
-        public IGenerator Generator { get; set; }
+        public IMeshBuilder MeshBuilder { get; set; }
+        public IMaterialProvider DefaultMaterialProvider { get; set; }
 
         public void Generate()
         {
@@ -20,8 +19,7 @@ namespace ProceduralToolkit
 
         private void GenerateMesh()
         {
-            var meshBuilder = new MeshBuilder(Generator);
-            generatedMesh = meshBuilder.Build();
+            generatedMesh = MeshBuilder.Build();
         }
 
         private void UpdateMeshFilter()
@@ -37,11 +35,13 @@ namespace ProceduralToolkit
             }
         }
 
-        private bool MaterialIsNotSet => GetComponent<MeshRenderer>().sharedMaterial == null;
+        private bool MaterialIsNotSet => MeshRenderer.sharedMaterial == null;
+
+        private MeshRenderer MeshRenderer => GetComponent<MeshRenderer>();
 
         private void SetDefaultMaterial()
         {
-            GetComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
+            MeshRenderer.sharedMaterial = DefaultMaterialProvider.GetMaterial();
         }
     }
 }
