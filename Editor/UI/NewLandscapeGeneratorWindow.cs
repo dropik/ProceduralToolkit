@@ -16,10 +16,13 @@ namespace ProceduralToolkit.UI
 
         public BaseShapeGeneratorSettings baseShape;
 
+        public IGeneratorBootProvider GeneratorBootProvider { get; set; }
+
         public void CreateGUI()
         {
             LoadLayout();
             AddInspector();
+            AddCallbacks();
         }
 
         private void LoadLayout()
@@ -34,12 +37,27 @@ namespace ProceduralToolkit.UI
             inspectorRoot.Add(new InspectorElement(this));
         }
 
+        private void AddCallbacks()
+        {
+            AddCreateGeneratorCallback();
+        }
+
+        private void AddCreateGeneratorCallback()
+        {
+            CreateButton.clicked += () => GeneratorBootProvider.GetGeneratorBoot(baseShape);
+        }
+
         public void OnFocus()
         {
             UpdateButtonActiveState();
         }
 
         public void OnValidate()
+        {
+            UpdateButtonActiveState();
+        }
+
+        public void OnInspectorUpdate()
         {
             UpdateButtonActiveState();
         }
@@ -53,6 +71,7 @@ namespace ProceduralToolkit.UI
             rootVisualElement.Query<Button>("createGenerator").First();
 
         private bool IsFormValidated =>
-            baseShape != null;
+            (baseShape != null) &&
+            (GeneratorBootProvider != null);
     }
 }

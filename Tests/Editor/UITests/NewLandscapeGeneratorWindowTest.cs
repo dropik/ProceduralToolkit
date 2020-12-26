@@ -6,6 +6,9 @@ using ProceduralToolkit.UI;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 using UnityEngine;
+using ProceduralToolkit.EditorTests.Utils;
+using Moq;
+using static ProceduralToolkit.EditorTests.Utils.UIUtils;
 
 namespace ProceduralToolkit.EditorTests.UITests
 {
@@ -20,6 +23,10 @@ namespace ProceduralToolkit.EditorTests.UITests
         }
 
         private NewLandscapeGeneratorWindow window;
+        private Mock<IGeneratorBootProvider> mockGeneratorBootProvider;
+        private TestBaseShapeGeneratorSettings testObject;
+
+        private const string TEST_OBJECT_NAME = "Test Object";
 
         private VisualElement Root =>
             window.rootVisualElement;
@@ -33,13 +40,35 @@ namespace ProceduralToolkit.EditorTests.UITests
         [SetUp]
         public void SetUp()
         {
+            mockGeneratorBootProvider = new Mock<IGeneratorBootProvider>();
+            testObject = ScriptableObject.CreateInstance<TestBaseShapeGeneratorSettings>();
+            testObject.name = TEST_OBJECT_NAME;
             window = EditorWindow.CreateWindow<NewLandscapeGeneratorWindow>();
+        }
+
+        private void SetAllFields()
+        {
+            SetBaseShape();
+            SetGeneratorBootProvider();
+        }
+
+        private void SetBaseShape()
+        {
+            window.baseShape = testObject;
+            window.OnInspectorUpdate();
+        }
+
+        private void SetGeneratorBootProvider()
+        {
+            window.GeneratorBootProvider = mockGeneratorBootProvider.Object;
+            window.OnInspectorUpdate();
         }
 
         [TearDown]
         public void TearDown()
         {
             window.Close();
+            Object.DestroyImmediate(testObject);
         }
 
         [Test]
@@ -57,20 +86,37 @@ namespace ProceduralToolkit.EditorTests.UITests
         [Test]
         public void TestCreateGeneratorIsNotActiveWhenBaseShapeIsNull()
         {
+            SetGeneratorBootProvider();
             Assert.That(CreateButton.enabledSelf, Is.False);
         }
 
         [Test]
-        public void TestCreateGeneratorIsActiveWhenBaseShapeIsNotNull()
+        public void TestCreateGeneratorIsNotActiveWhenProviderIsNull()
         {
-            var testObject = ScriptableObject.CreateInstance<TestBaseShapeGeneratorSettings>();
-            window.baseShape = testObject;
+            SetBaseShape();
+            Assert.That(CreateButton.enabledSelf, Is.False);
+        }
 
-            window.OnValidate();
-
+        [Test]
+        public void TestCreateGeneratorIsActiveWhenAllFieldsNotNull()
+        {
+            SetAllFields();
             Assert.That(CreateButton.enabledSelf, Is.True);
+        }
 
-            Object.DestroyImmediate(testObject);
+        [UnityTest]
+        public IEnumerator TestGeneratorBootProviderUsedToCreateGenerator()
+        {
+            SetAllFields();
+            var buttonClicker = new ButtonClicker();
+
+            buttonClicker.Click(CreateButton);
+
+            yield return SkipFrames();
+
+            mockGeneratorBootProvider.Verify(
+                m => m.GetGeneratorBoot(It.Is<BaseShapeGeneratorSettings>(s => s.name == TEST_OBJECT_NAME)),
+                Times.Once);
         }
     }
 }
