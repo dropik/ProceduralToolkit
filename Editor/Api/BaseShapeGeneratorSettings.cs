@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProceduralToolkit
+namespace ProceduralToolkit.Api
 {
     public abstract class BaseShapeGeneratorSettings : ScriptableObject, IGenerator
     {

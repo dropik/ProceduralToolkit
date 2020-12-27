@@ -1,4 +1,4 @@
-﻿namespace ProceduralToolkit
+﻿namespace ProceduralToolkit.Api
 {
     public interface IGeneratorBootFactory
     {

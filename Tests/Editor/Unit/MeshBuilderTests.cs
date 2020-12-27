@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Moq;
 using UnityEngine;
+using ProceduralToolkit.Api;
 
 namespace ProceduralToolkit.EditorTests.Unit
 {
