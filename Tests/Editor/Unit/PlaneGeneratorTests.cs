@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.UnitTests
+namespace ProceduralToolkit.EditorTests.Unit
 {
     public class PlaneGeneratorTests
     {

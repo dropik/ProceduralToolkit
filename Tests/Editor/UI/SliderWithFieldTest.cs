@@ -2,9 +2,8 @@
 using ProceduralToolkit.UI;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using UnityEditor;
 
-namespace ProceduralToolkit.EditorTests.UITests
+namespace ProceduralToolkit.EditorTests.UI
 {
     public class SliderWithFieldTest : BaseCustomVETest
     {

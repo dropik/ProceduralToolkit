@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace ProceduralToolkit.EditorTests.UITests
+namespace ProceduralToolkit.EditorTests.UI
 {
     public abstract class BaseUxmlCustomVETest : BaseCustomVETest
     {

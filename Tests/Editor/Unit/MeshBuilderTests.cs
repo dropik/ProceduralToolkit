@@ -2,7 +2,7 @@
 using Moq;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.UnitTests
+namespace ProceduralToolkit.EditorTests.Unit
 {
     public class MeshBuilderTests
     {

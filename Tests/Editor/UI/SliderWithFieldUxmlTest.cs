@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.UI;
-using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace ProceduralToolkit.EditorTests.UITests
+namespace ProceduralToolkit.EditorTests.UI
 {
     public class SliderWithFieldUxmlTest : BaseUxmlCustomVETest
     {

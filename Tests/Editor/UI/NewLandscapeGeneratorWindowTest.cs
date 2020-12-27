@@ -10,7 +10,7 @@ using ProceduralToolkit.EditorTests.Utils;
 using Moq;
 using static ProceduralToolkit.EditorTests.Utils.UIUtils;
 
-namespace ProceduralToolkit.EditorTests.UITests
+namespace ProceduralToolkit.EditorTests.UI
 {
     public class NewLandscapeGeneratorWindowTest
     {
