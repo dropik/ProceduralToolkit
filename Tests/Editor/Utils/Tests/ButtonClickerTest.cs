@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
 
-namespace ProceduralToolkit.EditorTests.UtilsTests
+namespace ProceduralToolkit.UtilsTests
 {
     public class ButtonClickerTest
     {
