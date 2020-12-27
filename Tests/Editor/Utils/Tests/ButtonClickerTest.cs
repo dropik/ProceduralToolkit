@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine.TestTools;
 using UnityEngine.UIElements;
+using static ProceduralToolkit.EditorTests.Utils.UIUtils;
 
 namespace ProceduralToolkit.UtilsTests
 {
@@ -13,21 +14,19 @@ namespace ProceduralToolkit.UtilsTests
         private Button button;
         private ButtonClicker buttonClicker;
 
-        [UnitySetUp]
-        public IEnumerator SetUp()
+        [SetUp]
+        public void SetUp()
         {
             window = EditorWindow.CreateWindow<EditorWindow>();
             button = new Button();
             window.rootVisualElement.Add(button);
             buttonClicker = new ButtonClicker();
-            yield return null;
         }
 
-        [UnityTearDown]
-        public IEnumerator TearDown()
+        [TearDown]
+        public void TearDown()
         {
             window.Close();
-            yield return null;
         }
 
         [UnityTest]
@@ -37,17 +36,9 @@ namespace ProceduralToolkit.UtilsTests
             button.clicked += () => { wasClicked = true; };
             buttonClicker.Click(button);
 
-            yield return SkipFrames(10);
+            yield return SkipFrames();
 
             Assert.That(wasClicked);
-        }
-
-        private IEnumerator SkipFrames(int frames)
-        {
-            for (int i = 0; i < frames; i++)
-            {
-                yield return null;
-            }
         }
 
         [UnityTest]
@@ -56,7 +47,7 @@ namespace ProceduralToolkit.UtilsTests
             var wasClicked = false;
             buttonClicker.Click(button);
 
-            yield return SkipFrames(10);
+            yield return SkipFrames();
 
             Assert.IsFalse(wasClicked);
         }
@@ -67,7 +58,7 @@ namespace ProceduralToolkit.UtilsTests
             var wasClicked = false;
             buttonClicker.Click(null);
 
-            yield return SkipFrames(10);
+            yield return SkipFrames();
 
             Assert.IsFalse(wasClicked);
         }
@@ -85,7 +76,7 @@ namespace ProceduralToolkit.UtilsTests
             button.RegisterCallback<TEvent>((e) => { wasClicked = true; });
             buttonClicker.Click(button);
 
-            yield return SkipFrames(10);
+            yield return SkipFrames();
 
             Assert.That(wasClicked);
         }
