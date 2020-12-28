@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using ProceduralToolkit.Api;
+using UnityEditor;
 
 namespace ProceduralToolkit
 {
@@ -8,8 +9,10 @@ namespace ProceduralToolkit
         public void CreateGeneratorBoot(BaseShapeGeneratorSettings baseShape)
         {
             var boot = new GameObject().AddComponent<GeneratorBoot>();
-            boot.BaseShape = baseShape;
+            boot.baseShape = baseShape;
             boot.name = "GeneratorBoot";
+            boot.BuildGenerator();
+            Undo.RegisterCreatedObjectUndo(boot.gameObject, "New Landscape Generator");
         }
     }
 }

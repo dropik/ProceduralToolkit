@@ -6,25 +6,35 @@ namespace ProceduralToolkit
     [ExecuteInEditMode]
     public class GeneratorBoot : MonoBehaviour
     {
+        public BaseShapeGeneratorSettings baseShape;
+
         private LandscapeGenerator landscapeGenerator;
         private IGenerator generator;
 
         public void Awake()
         {
-            var newObj = new GameObject();
-            newObj.name = "LandscapeGenerator";
-            newObj.transform.parent = transform;
-            landscapeGenerator = newObj.AddComponent<LandscapeGenerator>();
+            landscapeGenerator = GetComponentInChildren<LandscapeGenerator>();
+            if (landscapeGenerator == null)
+            {
+                var newObj = new GameObject
+                {
+                    name = "LandscapeGenerator"
+                };
+                newObj.transform.parent = transform;
+                landscapeGenerator = newObj.AddComponent<LandscapeGenerator>();
+            }
+            else
+            {
+                BuildGenerator();
+            }
+
             landscapeGenerator.DefaultMaterialProvider = new DefaultMaterialProvider();
         }
 
-        public BaseShapeGeneratorSettings BaseShape
+        public void BuildGenerator()
         {
-            set
-            {
-                generator = value;
-                landscapeGenerator.MeshBuilder = new MeshBuilder(generator);
-            }
+            generator = baseShape;
+            landscapeGenerator.MeshBuilder = new MeshBuilder(generator);
         }
 
         public void Start()
