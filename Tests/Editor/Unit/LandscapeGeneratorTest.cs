@@ -10,6 +10,8 @@ namespace ProceduralToolkit.EditorTests.Unit
         private LandscapeGenerator landscapeGenerator;
         private Mock<IMeshBuilder> mockMeshBuilder;
         private Mock<IMaterialProvider> mockMaterialProvider;
+        private Mock<IMeshContainer> mockMeshContainer;
+        private Mock<IMaterialContainer> mockMaterialContainer;
 
         private const string TEST_MESH_NAME = "Test Mesh";
         private const string TEST_MATERIAL_NAME = "Test Material";
@@ -19,16 +21,20 @@ namespace ProceduralToolkit.EditorTests.Unit
         {
             SetupMock();
             SetupGenerator();
-
         }
 
         private void SetupMock()
         {
             mockMeshBuilder = new Mock<IMeshBuilder>();
-            mockMeshBuilder.Setup(m => m.Build()).Returns(new Mesh() { name = TEST_MESH_NAME });
+            mockMeshBuilder.Setup(m => m.Build())
+                           .Returns(new Mesh() { name = TEST_MESH_NAME });
 
             mockMaterialProvider = new Mock<IMaterialProvider>();
-            mockMaterialProvider.Setup(m => m.GetMaterial()).Returns(new Material(Shader.Find("Standard")) { name = TEST_MATERIAL_NAME });
+            mockMaterialProvider.Setup(m => m.GetMaterial())
+                                .Returns(new Material(Shader.Find("Standard")) { name = TEST_MATERIAL_NAME });
+
+            mockMeshContainer = new Mock<IMeshContainer>();
+            mockMaterialContainer = new Mock<IMaterialContainer>();
         }
 
         private void SetupGenerator()
@@ -36,6 +42,8 @@ namespace ProceduralToolkit.EditorTests.Unit
             landscapeGenerator = new GameObject().AddComponent<LandscapeGenerator>();
             landscapeGenerator.MeshBuilder = mockMeshBuilder.Object;
             landscapeGenerator.DefaultMaterialProvider = mockMaterialProvider.Object;
+            landscapeGenerator.MeshContainer = mockMeshContainer.Object;
+            landscapeGenerator.MaterialContainer = mockMaterialContainer.Object;
         }
 
         [TearDown]
@@ -56,28 +64,36 @@ namespace ProceduralToolkit.EditorTests.Unit
         {
             landscapeGenerator.Generate();
 
-            var meshFilter = landscapeGenerator.GetComponent<MeshFilter>();
-            Assert.That(meshFilter.sharedMesh.name, Is.EqualTo(TEST_MESH_NAME));
+            mockMeshContainer.VerifySet(
+                m => m.Mesh = It.Is<Mesh>(mesh => mesh.name == TEST_MESH_NAME),
+                Times.Once
+            );
         }
 
         [Test]
         public void TestMaterialAssignedWhenWasNotSet()
         {
+            mockMaterialContainer.SetupGet(m => m.Material).Returns(null as Material);
+
             landscapeGenerator.Generate();
 
             mockMaterialProvider.Verify(m => m.GetMaterial(), Times.Once);
-            var meshRenderer = landscapeGenerator.GetComponent<MeshRenderer>();
-            Assert.That(meshRenderer.sharedMaterial.name, Is.EqualTo(TEST_MATERIAL_NAME));
+            mockMaterialContainer.VerifySet(
+                m => m.Material = It.Is<Material>(material => material.name == TEST_MATERIAL_NAME),
+                Times.Once
+            );
         }
 
         [Test]
         public void TestMaterialNotModifiedWhenWasSet()
         {
-            var meshRenderer = landscapeGenerator.GetComponent<MeshRenderer>();
-            meshRenderer.sharedMaterial = new Material(Shader.Find("Standard"));
+            mockMaterialContainer.SetupGet(m => m.Material)
+                                 .Returns(new Material(Shader.Find("Standard")));
 
             landscapeGenerator.Generate();
+
             mockMaterialProvider.Verify(m => m.GetMaterial(), Times.Never);
+            mockMaterialContainer.VerifySet(m => m.Material = It.IsAny<Material>(), Times.Never);
         }
     }
 }

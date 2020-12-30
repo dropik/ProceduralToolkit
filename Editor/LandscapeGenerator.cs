@@ -3,24 +3,23 @@ using ProceduralToolkit.Api;
 
 namespace ProceduralToolkit
 {
-    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class LandscapeGenerator : MonoBehaviour
     {
         private Mesh generatedMesh;
 
         public IMeshBuilder MeshBuilder { get; set; }
         public IMaterialProvider DefaultMaterialProvider { get; set; }
+        public IMeshContainer MeshContainer { get; set; }
+        public IMaterialContainer MaterialContainer { get; set; }
 
         public void Reset()
         {
-            GetComponent<MeshFilter>().sharedMesh = null;
-            MeshRenderer.sharedMaterial = null;
         }
 
         public void Generate()
         {
             GenerateMesh();
-            UpdateMeshFilter();
+            UpdateMeshContainer();
             UpdateMaterial();
         }
 
@@ -29,9 +28,9 @@ namespace ProceduralToolkit
             generatedMesh = MeshBuilder.Build();
         }
 
-        private void UpdateMeshFilter()
+        private void UpdateMeshContainer()
         {
-            GetComponent<MeshFilter>().sharedMesh = generatedMesh;
+            MeshContainer.Mesh = generatedMesh;
         }
 
         private void UpdateMaterial()
@@ -42,13 +41,11 @@ namespace ProceduralToolkit
             }
         }
 
-        private bool MaterialIsNotSet => MeshRenderer.sharedMaterial == null;
-
-        private MeshRenderer MeshRenderer => GetComponent<MeshRenderer>();
+        private bool MaterialIsNotSet => MaterialContainer.Material == null;
 
         private void SetDefaultMaterial()
         {
-            MeshRenderer.sharedMaterial = DefaultMaterialProvider.GetMaterial();
+            MaterialContainer.Material = DefaultMaterialProvider.GetMaterial();
         }
     }
 }
