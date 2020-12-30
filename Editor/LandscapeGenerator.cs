@@ -1,51 +1,82 @@
-﻿using UnityEngine;
-using ProceduralToolkit.Api;
+﻿using ProceduralToolkit.Api;
+using UnityEngine;
 
 namespace ProceduralToolkit
 {
+    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
+    [ExecuteInEditMode]
     public class LandscapeGenerator : MonoBehaviour
     {
-        private Mesh generatedMesh;
-
-        public IMeshBuilder MeshBuilder { get; set; }
-        public IMaterialProvider DefaultMaterialProvider { get; set; }
-        public IMeshContainer MeshContainer { get; set; }
-        public IMaterialContainer MaterialContainer { get; set; }
-
-        public void Reset()
+        internal class MeshContainer : IMeshContainer
         {
-        }
+            private readonly MeshFilter meshFilter;
 
-        public void Generate()
-        {
-            GenerateMesh();
-            UpdateMeshContainer();
-            UpdateMaterial();
-        }
-
-        private void GenerateMesh()
-        {
-            generatedMesh = MeshBuilder.Build();
-        }
-
-        private void UpdateMeshContainer()
-        {
-            MeshContainer.Mesh = generatedMesh;
-        }
-
-        private void UpdateMaterial()
-        {
-            if (MaterialIsNotSet)
+            public MeshContainer(MeshFilter meshFilter)
             {
-                SetDefaultMaterial();
+                this.meshFilter = meshFilter;
+            }
+
+            public Mesh Mesh
+            {
+                get => meshFilter.sharedMesh;
+                set => meshFilter.sharedMesh = value;
             }
         }
 
-        private bool MaterialIsNotSet => MaterialContainer.Material == null;
-
-        private void SetDefaultMaterial()
+        internal class MaterialContainer : IMaterialContainer
         {
-            MaterialContainer.Material = DefaultMaterialProvider.GetMaterial();
+            private readonly MeshRenderer meshRenderer;
+
+            public MaterialContainer(MeshRenderer meshRenderer)
+            {
+                this.meshRenderer = meshRenderer;
+            }
+
+            public Material Material
+            {
+                get => meshRenderer.sharedMaterial;
+                set => meshRenderer.sharedMaterial = value;
+            }
+        }
+
+        private MeshAssembler meshAssembler;
+
+        private T GetLazy<T>()
+            where T : Component
+        {
+            return GetComponent<T>() ?? gameObject.AddComponent<T>();
+        }
+
+        private PlaneSettings PlaneSettings =>
+            GetLazy<PlaneSettings>();
+
+        public void Awake()
+        {
+            if (name == "New Game Object")
+            {
+                name = "LandscapeGenerator";
+            }
+        }
+
+        public void Reset()
+        {
+            PlaneSettings.Reset();
+        }
+
+        public void OnValidate()
+        {
+            var generator = PlaneSettings;
+            meshAssembler = new MeshAssembler(
+                new MeshBuilder(generator),
+                new DefaultMaterialProvider(),
+                new MeshContainer(GetComponent<MeshFilter>()),
+                new MaterialContainer(GetComponent<MeshRenderer>())
+            );
+        }
+
+        public void Start()
+        {
+            meshAssembler.Assemble();
         }
     }
 }

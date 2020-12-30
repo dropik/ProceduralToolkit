@@ -5,9 +5,9 @@ using ProceduralToolkit.Api;
 
 namespace ProceduralToolkit.EditorTests.Unit
 {
-    public class LandscapeGeneratorTest
+    public class MeshAssemblerTests
     {
-        private LandscapeGenerator landscapeGenerator;
+        private MeshAssembler meshAssembler;
         private Mock<IMeshBuilder> mockMeshBuilder;
         private Mock<IMaterialProvider> mockMaterialProvider;
         private Mock<IMeshContainer> mockMeshContainer;
@@ -39,30 +39,25 @@ namespace ProceduralToolkit.EditorTests.Unit
 
         private void SetupGenerator()
         {
-            landscapeGenerator = new GameObject().AddComponent<LandscapeGenerator>();
-            landscapeGenerator.MeshBuilder = mockMeshBuilder.Object;
-            landscapeGenerator.DefaultMaterialProvider = mockMaterialProvider.Object;
-            landscapeGenerator.MeshContainer = mockMeshContainer.Object;
-            landscapeGenerator.MaterialContainer = mockMaterialContainer.Object;
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Object.DestroyImmediate(landscapeGenerator.gameObject);
+            meshAssembler = new MeshAssembler(
+                mockMeshBuilder.Object,
+                mockMaterialProvider.Object,
+                mockMeshContainer.Object,
+                mockMaterialContainer.Object
+            );
         }
 
         [Test]
         public void TestMeshBuiltUsingBuilder()
         {
-            landscapeGenerator.Generate();
+            meshAssembler.Assemble();
             mockMeshBuilder.Verify(m => m.Build(), Times.Once);
         }
 
         [Test]
         public void TestMeshAssignedToMeshFilter()
         {
-            landscapeGenerator.Generate();
+            meshAssembler.Assemble();
 
             mockMeshContainer.VerifySet(
                 m => m.Mesh = It.Is<Mesh>(mesh => mesh.name == TEST_MESH_NAME),
@@ -75,7 +70,7 @@ namespace ProceduralToolkit.EditorTests.Unit
         {
             mockMaterialContainer.SetupGet(m => m.Material).Returns(null as Material);
 
-            landscapeGenerator.Generate();
+            meshAssembler.Assemble();
 
             mockMaterialProvider.Verify(m => m.GetMaterial(), Times.Once);
             mockMaterialContainer.VerifySet(
@@ -90,7 +85,7 @@ namespace ProceduralToolkit.EditorTests.Unit
             mockMaterialContainer.SetupGet(m => m.Material)
                                  .Returns(new Material(Shader.Find("Standard")));
 
-            landscapeGenerator.Generate();
+            meshAssembler.Assemble();
 
             mockMaterialProvider.Verify(m => m.GetMaterial(), Times.Never);
             mockMaterialContainer.VerifySet(m => m.Material = It.IsAny<Material>(), Times.Never);

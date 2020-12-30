@@ -18,9 +18,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         private GameObject Boot =>
             GameObject.Find("LandscapeGenerator");
 
-        private LandscapeGenerator LandscapeGenerator =>
-            Boot.GetComponent<LandscapeGenerator>();
-
         [UnitySetUp]
         public IEnumerator SetUp()
         {
@@ -59,7 +56,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         private void AssertGeneration()
         {
             AssertBootCreated();
-            AssertLandscapeGeneratorCreated();
             AssertMeshCreatedCorrectly();
             AssertMaterialAssigned();
         }
@@ -69,21 +65,16 @@ namespace ProceduralToolkit.EditorTests.E2E
             Assert.That(Boot, Is.Not.Null);
         }
 
-        private void AssertLandscapeGeneratorCreated()
-        {
-            Assert.That(LandscapeGenerator, Is.Not.Null);
-        }
-
         private void AssertMeshCreatedCorrectly()
         {
-            var generatedMesh = LandscapeGenerator.GetComponent<MeshFilter>().sharedMesh;
+            var generatedMesh = Boot.GetComponent<MeshFilter>().sharedMesh;
             Assert.That(generatedMesh, Is.Not.Null);
             Assert.That(generatedMesh.vertexCount, Is.EqualTo(6));
         }
 
         private void AssertMaterialAssigned()
         {
-            var material = LandscapeGenerator.GetComponent<MeshRenderer>().sharedMaterial;
+            var material = Boot.GetComponent<MeshRenderer>().sharedMaterial;
             Assert.That(material, Is.Not.Null);
         }
 
