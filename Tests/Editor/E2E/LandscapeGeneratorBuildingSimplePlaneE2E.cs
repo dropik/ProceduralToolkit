@@ -19,7 +19,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         [SetUp]
         public void SetUp()
         {
-            NewLandscapeGeneratorWindow.ShowWindow();
+            CompositionRoot.ShowWindow();
             window = EditorWindow.GetWindow<NewLandscapeGeneratorWindow>();
         }
 

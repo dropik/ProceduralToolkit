@@ -8,14 +8,6 @@ namespace ProceduralToolkit.UI
 {
     public class NewLandscapeGeneratorWindow : EditorWindow
     {
-        [MenuItem("Window/Procedural Toolkit/New Landscape Generator")]
-        public static void ShowWindow()
-        {
-            var window = GetWindow<NewLandscapeGeneratorWindow>(title: "New Landscape Generator",
-                                                                utility: true);
-            window.GeneratorBootFactory = new GeneratorBootFactory();
-        }
-
         public BaseShapeGeneratorSettings baseShape;
 
         public IGeneratorBootFactory GeneratorBootFactory { get; set; }

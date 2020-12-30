@@ -33,7 +33,7 @@ namespace ProceduralToolkit.EditorTests.IT
         [SetUp]
         public void SetUp()
         {
-            NewLandscapeGeneratorWindow.ShowWindow();
+            CompositionRoot.ShowWindow();
             window = EditorWindow.GetWindow<NewLandscapeGeneratorWindow>();
 
             mockBaseShape = ScriptableObject.CreateInstance<MockBaseShape>();

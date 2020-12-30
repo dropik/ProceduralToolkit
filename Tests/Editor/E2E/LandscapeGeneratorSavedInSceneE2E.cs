@@ -25,7 +25,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         [SetUp]
         public void SetUp()
         {
-            NewLandscapeGeneratorWindow.ShowWindow();
+            CompositionRoot.ShowWindow();
             window = EditorWindow.GetWindow<NewLandscapeGeneratorWindow>();
 
             testScene = EditorSceneManager.OpenScene(TEST_SCENE);
