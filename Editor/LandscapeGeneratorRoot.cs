@@ -1,33 +1,39 @@
 ﻿using UnityEngine;
-using ProceduralToolkit.Api;
 
 namespace ProceduralToolkit
 {
     [ExecuteInEditMode]
     public class LandscapeGeneratorRoot : MonoBehaviour
     {
-        public BaseShapeGeneratorSettings baseShape;
-
-        private IGenerator generator;
+        private T GetLazy<T>()
+            where T : Component
+        {
+            return GetComponent<T>() ?? gameObject.AddComponent<T>();
+        }
 
         private LandscapeGenerator LandscapeGenerator =>
-            GetComponent<LandscapeGenerator>();
+            GetLazy<LandscapeGenerator>();
+
+        private PlaneSettings PlaneSettings =>
+            GetLazy<PlaneSettings>();
 
         public void Awake()
         {
-            name = "LandscapeGenerator";
+            if (name == "New Game Object")
+            {
+                name = "LandscapeGenerator";
+            }
         }
 
         public void Reset()
         {
-            DestroyImmediate(LandscapeGenerator);
-            gameObject.AddComponent<LandscapeGenerator>();
-            baseShape = ScriptableObject.CreateInstance<PlaneGeneratorSettings>();
+            LandscapeGenerator.Reset();
+            PlaneSettings.Reset();
         }
 
         public void OnValidate()
         {
-            generator = baseShape;
+            var generator = PlaneSettings;
             LandscapeGenerator.MeshBuilder = new MeshBuilder(generator);
             LandscapeGenerator.DefaultMaterialProvider = new DefaultMaterialProvider();
         }

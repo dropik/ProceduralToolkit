@@ -11,6 +11,12 @@ namespace ProceduralToolkit
         public IMeshBuilder MeshBuilder { get; set; }
         public IMaterialProvider DefaultMaterialProvider { get; set; }
 
+        public void Reset()
+        {
+            GetComponent<MeshFilter>().sharedMesh = null;
+            MeshRenderer.sharedMaterial = null;
+        }
+
         public void Generate()
         {
             GenerateMesh();
