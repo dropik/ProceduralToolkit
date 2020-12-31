@@ -6,28 +6,25 @@ namespace ProceduralToolkit
     public class MeshAssembler
     {
         private readonly IMeshBuilder meshBuilder;
-        private readonly IMaterialProvider defaultMaterialProvider;
-        private readonly IMeshContainer meshContainer;
-        private readonly IMaterialContainer materialContainer;
+        private readonly IGeneratorView meshGeneratorView;
+        private readonly IGeneratorView materialGeneratorView;
 
         private Mesh generatedMesh;
 
         public MeshAssembler(IMeshBuilder meshBuilder,
-                                  IMaterialProvider defaultMaterialProvider,
-                                  IMeshContainer meshContainer,
-                                  IMaterialContainer materialContainer)
+                             IGeneratorView meshGeneratorView,
+                             IGeneratorView materialGeneratorView)
         {
             this.meshBuilder = meshBuilder;
-            this.defaultMaterialProvider = defaultMaterialProvider;
-            this.meshContainer = meshContainer;
-            this.materialContainer = materialContainer;
+            this.meshGeneratorView = meshGeneratorView;
+            this.materialGeneratorView = materialGeneratorView;
         }
 
         public void Assemble()
         {
             BuildMesh();
-            UpdateMeshContainer();
-            UpdateMaterialContainer();
+            UpdateMesh();
+            UpdateMaterial();
         }
 
         private void BuildMesh()
@@ -35,24 +32,14 @@ namespace ProceduralToolkit
             generatedMesh = meshBuilder.Build();
         }
 
-        private void UpdateMeshContainer()
+        private void UpdateMesh()
         {
-            meshContainer.Mesh = generatedMesh;
+            meshGeneratorView.OnGenerate(generatedMesh);
         }
 
-        private void UpdateMaterialContainer()
+        private void UpdateMaterial()
         {
-            if (MaterialIsNotSet)
-            {
-                SetDefaultMaterial();
-            }
-        }
-
-        private bool MaterialIsNotSet => materialContainer.Material == null;
-
-        private void SetDefaultMaterial()
-        {
-            materialContainer.Material = defaultMaterialProvider.GetMaterial();
+            materialGeneratorView.OnGenerate(generatedMesh);
         }
     }
 }

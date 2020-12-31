@@ -9,12 +9,10 @@ namespace ProceduralToolkit.EditorTests.Unit
     {
         private MeshAssembler meshAssembler;
         private Mock<IMeshBuilder> mockMeshBuilder;
-        private Mock<IMaterialProvider> mockMaterialProvider;
-        private Mock<IMeshContainer> mockMeshContainer;
-        private Mock<IMaterialContainer> mockMaterialContainer;
+        private Mock<IGeneratorView> mockMeshGeneratorView;
+        private Mock<IGeneratorView> mockMaterialGeneratorView;
 
         private const string TEST_MESH_NAME = "Test Mesh";
-        private const string TEST_MATERIAL_NAME = "Test Material";
 
         [SetUp]
         public void SetUp()
@@ -29,21 +27,16 @@ namespace ProceduralToolkit.EditorTests.Unit
             mockMeshBuilder.Setup(m => m.Build())
                            .Returns(new Mesh() { name = TEST_MESH_NAME });
 
-            mockMaterialProvider = new Mock<IMaterialProvider>();
-            mockMaterialProvider.Setup(m => m.GetMaterial())
-                                .Returns(new Material(Shader.Find("Standard")) { name = TEST_MATERIAL_NAME });
-
-            mockMeshContainer = new Mock<IMeshContainer>();
-            mockMaterialContainer = new Mock<IMaterialContainer>();
+            mockMeshGeneratorView = new Mock<IGeneratorView>();
+            mockMaterialGeneratorView = new Mock<IGeneratorView>();
         }
 
         private void SetupGenerator()
         {
             meshAssembler = new MeshAssembler(
                 mockMeshBuilder.Object,
-                mockMaterialProvider.Object,
-                mockMeshContainer.Object,
-                mockMaterialContainer.Object
+                mockMeshGeneratorView.Object,
+                mockMaterialGeneratorView.Object
             );
         }
 
@@ -55,40 +48,25 @@ namespace ProceduralToolkit.EditorTests.Unit
         }
 
         [Test]
-        public void TestMeshAssignedToMeshFilter()
+        public void TestMeshOnGenerateCalled()
         {
             meshAssembler.Assemble();
 
-            mockMeshContainer.VerifySet(
-                m => m.Mesh = It.Is<Mesh>(mesh => mesh.name == TEST_MESH_NAME),
+            mockMeshGeneratorView.Verify(
+                m => m.OnGenerate(It.Is<Mesh>(mesh => mesh.name == TEST_MESH_NAME)),
                 Times.Once
             );
         }
 
         [Test]
-        public void TestMaterialAssignedWhenWasNotSet()
+        public void TestMaterialOnGenerateCalled()
         {
-            mockMaterialContainer.SetupGet(m => m.Material).Returns(null as Material);
-
             meshAssembler.Assemble();
 
-            mockMaterialProvider.Verify(m => m.GetMaterial(), Times.Once);
-            mockMaterialContainer.VerifySet(
-                m => m.Material = It.Is<Material>(material => material.name == TEST_MATERIAL_NAME),
+            mockMaterialGeneratorView.Verify(
+                m => m.OnGenerate(It.IsAny<Mesh>()),
                 Times.Once
             );
-        }
-
-        [Test]
-        public void TestMaterialNotModifiedWhenWasSet()
-        {
-            mockMaterialContainer.SetupGet(m => m.Material)
-                                 .Returns(new Material(Shader.Find("Standard")));
-
-            meshAssembler.Assemble();
-
-            mockMaterialProvider.Verify(m => m.GetMaterial(), Times.Never);
-            mockMaterialContainer.VerifySet(m => m.Material = It.IsAny<Material>(), Times.Never);
         }
     }
 }

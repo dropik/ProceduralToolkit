@@ -66,11 +66,14 @@ namespace ProceduralToolkit
         public void OnValidate()
         {
             var generator = PlaneSettings;
+            var meshContainer = new MeshContainer(GetComponent<MeshFilter>());
+            var materialContainer = new MaterialContainer(GetComponent<MeshRenderer>());
+            var defaultMaterial = new Material(Shader.Find("Standard"));
+
             meshAssembler = new MeshAssembler(
                 new MeshBuilder(generator),
-                new DefaultMaterialProvider(),
-                new MeshContainer(GetComponent<MeshFilter>()),
-                new MaterialContainer(GetComponent<MeshRenderer>())
+                new MeshGeneratorView(meshContainer),
+                new MaterialGeneratorView(materialContainer, defaultMaterial)
             );
         }
 
