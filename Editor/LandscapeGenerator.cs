@@ -69,12 +69,12 @@ namespace ProceduralToolkit
             var meshContainer = new MeshContainer(GetComponent<MeshFilter>());
             var materialContainer = new MaterialContainer(GetComponent<MeshRenderer>());
             var defaultMaterial = new Material(Shader.Find("Standard"));
+            var meshGeneratorView = new MeshGeneratorView(meshContainer);
+            var materialGeneratorView = new MaterialGeneratorView(materialContainer, defaultMaterial);
 
-            meshAssembler = new MeshAssembler(
-                new MeshBuilder(generator),
-                new MeshGeneratorView(meshContainer),
-                new MaterialGeneratorView(materialContainer, defaultMaterial)
-            );
+            meshAssembler = new MeshAssembler(new MeshBuilder(generator));
+            meshAssembler.Generated += meshGeneratorView.OnGenerate;
+            meshAssembler.Generated += materialGeneratorView.OnGenerate;
         }
 
         public void Start()

@@ -9,8 +9,6 @@ namespace ProceduralToolkit.EditorTests.Unit
     {
         private MeshAssembler meshAssembler;
         private Mock<IMeshBuilder> mockMeshBuilder;
-        private Mock<IGeneratorView> mockMeshGeneratorView;
-        private Mock<IGeneratorView> mockMaterialGeneratorView;
 
         private const string TEST_MESH_NAME = "Test Mesh";
 
@@ -26,18 +24,11 @@ namespace ProceduralToolkit.EditorTests.Unit
             mockMeshBuilder = new Mock<IMeshBuilder>();
             mockMeshBuilder.Setup(m => m.Build())
                            .Returns(new Mesh() { name = TEST_MESH_NAME });
-
-            mockMeshGeneratorView = new Mock<IGeneratorView>();
-            mockMaterialGeneratorView = new Mock<IGeneratorView>();
         }
 
         private void SetupGenerator()
         {
-            meshAssembler = new MeshAssembler(
-                mockMeshBuilder.Object,
-                mockMeshGeneratorView.Object,
-                mockMaterialGeneratorView.Object
-            );
+            meshAssembler = new MeshAssembler(mockMeshBuilder.Object);
         }
 
         [Test]
@@ -48,25 +39,28 @@ namespace ProceduralToolkit.EditorTests.Unit
         }
 
         [Test]
-        public void TestMeshOnGenerateCalled()
+        public void TestGeneratedInvokeOkWhenHasNoCallbacks()
         {
-            meshAssembler.Assemble();
-
-            mockMeshGeneratorView.Verify(
-                m => m.OnGenerate(It.Is<Mesh>(mesh => mesh.name == TEST_MESH_NAME)),
-                Times.Once
-            );
+            try
+            {
+                meshAssembler.Assemble();
+                Assert.Pass();
+            }
+            catch (System.NullReferenceException)
+            {
+                Assert.Fail();
+            }
         }
 
         [Test]
-        public void TestMaterialOnGenerateCalled()
+        public void TestGeneratedInvoked()
         {
+            var invoked = false;
+            meshAssembler.Generated += (mesh) => invoked = true;
+
             meshAssembler.Assemble();
 
-            mockMaterialGeneratorView.Verify(
-                m => m.OnGenerate(It.IsAny<Mesh>()),
-                Times.Once
-            );
+            Assert.That(invoked);
         }
     }
 }
