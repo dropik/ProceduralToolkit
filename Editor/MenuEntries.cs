@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using ProceduralToolkit.Landscape;
+using UnityEditor;
 using UnityEngine;
 
 namespace ProceduralToolkit

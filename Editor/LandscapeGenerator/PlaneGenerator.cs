@@ -2,7 +2,7 @@
 using UnityEngine;
 using ProceduralToolkit.Api;
 
-namespace ProceduralToolkit
+namespace ProceduralToolkit.Landscape
 {
     public class PlaneGenerator : IGenerator
     {
