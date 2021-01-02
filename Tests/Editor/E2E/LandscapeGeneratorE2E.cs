@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using NUnit.Framework;
+using ProceduralToolkit.Landscape;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UIElements;
 using static ProceduralToolkit.EditorTests.Utils.UIUtils;
 
 namespace ProceduralToolkit.EditorTests.E2E
@@ -14,6 +17,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         private Scene testScene;
 
         private const string TEST_SCENE = "Assets/ProceduralToolkit/Tests/Editor/E2E/Scenes/LandscapeGeneratorE2E.unity";
+        private const float TEST_LENGTH = 2f;
 
         private GameObject Boot =>
             GameObject.Find("LandscapeGenerator");
@@ -94,11 +98,11 @@ namespace ProceduralToolkit.EditorTests.E2E
         [UnityTest]
         public IEnumerator TestNewLandscapeGeneratorUndo()
         {
-            yield return Act();
+            yield return ExecuteUndo();
             AssertGeneratorBootEliminated();
         }
 
-        private IEnumerator Act()
+        private IEnumerator ExecuteUndo()
         {
             Undo.PerformUndo();
             yield return SkipFrames();
@@ -107,6 +111,30 @@ namespace ProceduralToolkit.EditorTests.E2E
         private void AssertGeneratorBootEliminated()
         {
             Assert.That(Boot == null);
+        }
+
+        [UnityTest]
+        public IEnumerator TestOnPlaneSettingsUpdate()
+        {
+            yield return ChangeLength();
+            AssertNewMeshLength();
+        }
+
+        private IEnumerator ChangeLength()
+        {
+            var plane = Boot.GetComponent<PlaneSettings>();
+            plane.length = TEST_LENGTH;
+            plane.OnValidate();
+
+            yield return SkipFrames();
+        }
+
+        private void AssertNewMeshLength()
+        {
+            var resultingMesh = Boot.GetComponent<MeshFilter>().sharedMesh;
+            var vertices = resultingMesh.vertices;
+            var resultingLength = Vector3.Distance(vertices[0], vertices[1]);
+            Assert.That(resultingLength, Is.EqualTo(TEST_LENGTH));
         }
     }
 }
