@@ -1,13 +1,12 @@
 ﻿using System.Collections;
 using NUnit.Framework;
-using ProceduralToolkit.Landscape;
+using ProceduralToolkit.Components;
+using ProceduralToolkit.Components.GeneratorSettings;
 using UnityEditor;
 using UnityEditor.SceneManagement;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using UnityEngine.UIElements;
 using static ProceduralToolkit.EditorTests.Utils.UIUtils;
 
 namespace ProceduralToolkit.EditorTests.E2E
@@ -19,8 +18,9 @@ namespace ProceduralToolkit.EditorTests.E2E
         private const string TEST_SCENE = "Assets/ProceduralToolkit/Tests/Editor/E2E/Scenes/LandscapeGeneratorE2E.unity";
         private const float TEST_LENGTH = 2f;
 
-        private GameObject Boot =>
-            GameObject.Find("LandscapeGenerator");
+        private GameObject Root => GameObject.Find("LandscapeGenerator");
+        private GeneratorViewRoot View =>
+            Root.GetComponentInChildren<GeneratorViewRoot>();
 
         [UnitySetUp]
         public IEnumerator SetUp()
@@ -44,9 +44,9 @@ namespace ProceduralToolkit.EditorTests.E2E
         [TearDown]
         public void TearDown()
         {
-            if (Boot != null)
+            if (Root != null)
             {
-                Object.DestroyImmediate(Boot);
+                Object.DestroyImmediate(Root);
                 EditorSceneManager.SaveScene(testScene);
             }
         }
@@ -59,26 +59,38 @@ namespace ProceduralToolkit.EditorTests.E2E
 
         private void AssertGeneration()
         {
-            AssertBootCreated();
+            AssertRootCreated();
+            AssertRootHasLandscapeGenerator();
+            AssertViewCreated();
             AssertMeshCreatedCorrectly();
             AssertMaterialAssigned();
         }
 
-        private void AssertBootCreated()
+        private void AssertRootCreated()
         {
-            Assert.That(Boot, Is.Not.Null);
+            Assert.That(Root, Is.Not.Null);
+        }
+
+        private void AssertRootHasLandscapeGenerator()
+        {
+            Assert.That(Root.GetComponent<LandscapeGenerator>(), Is.Not.Null);
+        }
+
+        private void AssertViewCreated()
+        {
+            Assert.That(View, Is.Not.Null);
         }
 
         private void AssertMeshCreatedCorrectly()
         {
-            var generatedMesh = Boot.GetComponent<MeshFilter>().sharedMesh;
+            var generatedMesh = View.GetComponent<MeshFilter>().sharedMesh;
             Assert.That(generatedMesh, Is.Not.Null);
             Assert.That(generatedMesh.vertexCount, Is.EqualTo(6));
         }
 
         private void AssertMaterialAssigned()
         {
-            var material = Boot.GetComponent<MeshRenderer>().sharedMaterial;
+            var material = View.GetComponent<MeshRenderer>().sharedMaterial;
             Assert.That(material, Is.Not.Null);
         }
 
@@ -99,7 +111,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         public IEnumerator TestNewLandscapeGeneratorUndo()
         {
             yield return ExecuteUndo();
-            AssertGeneratorBootEliminated();
+            AssertRootEliminated();
         }
 
         private IEnumerator ExecuteUndo()
@@ -108,9 +120,9 @@ namespace ProceduralToolkit.EditorTests.E2E
             yield return SkipFrames();
         }
 
-        private void AssertGeneratorBootEliminated()
+        private void AssertRootEliminated()
         {
-            Assert.That(Boot == null);
+            Assert.That(Root == null);
         }
 
         [UnityTest]
@@ -122,7 +134,7 @@ namespace ProceduralToolkit.EditorTests.E2E
 
         private IEnumerator ChangeLength()
         {
-            var plane = Boot.GetComponent<PlaneSettings>();
+            var plane = Root.GetComponent<PlaneSettings>();
             plane.length = TEST_LENGTH;
             plane.OnValidate();
 
@@ -131,7 +143,7 @@ namespace ProceduralToolkit.EditorTests.E2E
 
         private void AssertNewMeshLength()
         {
-            var resultingMesh = Boot.GetComponent<MeshFilter>().sharedMesh;
+            var resultingMesh = View.GetComponent<MeshFilter>().sharedMesh;
             var vertices = resultingMesh.vertices;
             var resultingLength = Vector3.Distance(vertices[0], vertices[1]);
             Assert.That(resultingLength, Is.EqualTo(TEST_LENGTH));

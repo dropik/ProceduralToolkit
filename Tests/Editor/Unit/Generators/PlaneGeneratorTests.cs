@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using ProceduralToolkit.Landscape;
+using ProceduralToolkit.Generators;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Landscape
+namespace ProceduralToolkit.EditorTests.Unit.Generators
 {
     public class PlaneGeneratorTests
     {

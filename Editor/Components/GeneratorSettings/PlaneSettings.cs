@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using ProceduralToolkit.Api;
+using ProceduralToolkit.Generators;
 
-namespace ProceduralToolkit.Landscape
+namespace ProceduralToolkit.Components.GeneratorSettings
 {
     public class PlaneSettings : BaseSettings
     {

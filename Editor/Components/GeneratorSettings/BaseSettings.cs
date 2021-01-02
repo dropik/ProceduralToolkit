@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProceduralToolkit.Landscape
+namespace ProceduralToolkit.Components.GeneratorSettings
 {
     public abstract class BaseSettings : MonoBehaviour, IGenerator
     {
