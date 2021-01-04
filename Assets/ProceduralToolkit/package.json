@@ -2,6 +2,6 @@
 	"name": "com.procedural.toolkit",
 	"displayName": "ProceduralToolkit",
 	"version": "0.0.0",
-	"description": "ProceduralToolkit package for Unity.",
+	"description": "ProceduralToolkit for Unity.",
 	"unity": "2019.4"
 }

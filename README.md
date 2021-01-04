@@ -1,7 +1,7 @@
 # ProceduralToolkit
-ProceduralToolkit package for Unity.
+ProceduralToolkit for Unity.
 
 Get started
 ------------
-* Navigate to *GameObject* -> *Procedural Toolkit* -> *New Landscape Generator*
+* Navigate to *GameObject* -> *ProceduralToolkit* -> *New LandscapeGenerator*
 * Locate your newly created *LandscapeGenerator* object on your scene and edit settings.

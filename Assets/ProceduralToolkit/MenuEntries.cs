@@ -6,7 +6,7 @@ namespace ProceduralToolkit
 {
     public static class MenuEntries
     {
-        [MenuItem("GameObject/Procedural Toolkit/New Landscape Generator")]
+        [MenuItem("GameObject/ProceduralToolkit/New LandscapeGenerator")]
         public static void NewLandscapeGenerator()
         {
             var root = new GameObject().AddComponent<LandscapeGenerator>();
