@@ -1,1 +1,1 @@
-Assets/ProceduralToolkit/README.md
+Packages/com.daniil-ryzhkov.proceduraltoolkit/README.md
