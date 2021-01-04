@@ -15,6 +15,6 @@ jobs:
       run: |
         git branch -d upm &> /dev/null || echo upm branch not found
         git subtree split -P "$PKG_ROOT" -b upm
-        git push -u origin upm
+        git push -f -u origin upm
       env:
         PKG_ROOT: Assets/ProceduralToolkit
