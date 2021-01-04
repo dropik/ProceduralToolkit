@@ -28,6 +28,8 @@
 
 # Visual Studio Code
 .vscode/
+[Nn]u[Gg]et/
+omnisharp.json
 
 # Gradle cache directory
 .gradle/
@@ -75,3 +77,4 @@ crashlytics-build.properties
 
 # Mac OS X
 **.DS_Store
+
