@@ -1,0 +1,19 @@
+{
+  "name": "com.daniil-ryzhkov.proceduraltoolkit",
+  "displayName": "ProceduralToolkit",
+  "version": "0.0.0",
+  "description": "This is a toolkit for procedural content generation for Unity.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dropik/ProceduralToolkit.git"
+  },
+  "keywords": [
+    "procedural-generation"
+  ],
+  "unity": "2019.4",
+  "author": {
+    "name": "Daniil Ryzhkov",
+    "email": "daniil.ryzhkov@stud.unifi.it",
+    "url": "https://github.com/dropik"
+  }
+}

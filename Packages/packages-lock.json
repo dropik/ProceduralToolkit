@@ -7,6 +7,12 @@
       "dependencies": {},
       "url": "https://package.openupm.com"
     },
+    "com.daniil-ryzhkov.proceduraltoolkit": {
+      "version": "file:com.daniil-ryzhkov.proceduraltoolkit",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.ext.nunit": {
       "version": "1.0.5",
       "depth": 1,
