@@ -15,7 +15,7 @@ namespace ProceduralToolkit.EditorTests.E2E
     {
         private Scene testScene;
 
-        private const string TEST_SCENE = "Assets/Tests/Editor/E2E/Scenes/LandscapeGeneratorE2E.unity";
+        private const string TEST_SCENE = "Assets/EditorTests/E2E/Scenes/LandscapeGeneratorE2E.unity";
         private const float TEST_LENGTH = 2f;
 
         private GameObject Root => GameObject.Find("LandscapeGenerator");

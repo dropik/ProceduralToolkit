@@ -1,9 +1,10 @@
 {
-    "name": "ProceduralToolkit.Tests.Editor.Utils",
+    "name": "ProceduralToolkit.EditorTests.E2E",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "ProceduralToolkit.Editor"
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:5a584465042cc08429d8455978a1b90f",
+        "GUID:d18d803523f783840a42e45194d959bd"
     ],
     "includePlatforms": [
         "Editor"
