@@ -1,5 +1,5 @@
 {
-    "name": "ProceduralToolkit.Tests.Editor",
+    "name": "ProceduralToolkit.Tests.Editor.Utils",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
@@ -12,11 +12,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
-        "Moq.dll",
-        "Castle.Core.dll",
-        "System.Runtime.CompilerServices.Unsafe.dll",
-        "System.Threading.Tasks.Extensions.dll"
+        "nunit.framework.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

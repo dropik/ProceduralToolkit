@@ -7,7 +7,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using static ProceduralToolkit.EditorTests.Utils.UIUtils;
+using static ProceduralToolkit.EditorTests.Utils.Skips;
 
 namespace ProceduralToolkit.EditorTests.E2E
 {
