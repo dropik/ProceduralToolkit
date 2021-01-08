@@ -3,39 +3,43 @@ trigger:
 
 pool: default
 
-resources:
- repositories:
-   - repository: ProceduralToolkit
-     type: github
-     name: dropik/ProceduralToolkit
-     ref: refs/heads/preview
-     endpoint: dropik
+jobs:
+  - job: Test
+    displayName: ProceduralToolkit Test
+    steps:
+      - checkout: self
 
-steps:
-  - checkout: ProceduralToolkit
-
-  - task: PowerShell@2
-    inputs:
-      filePath: 'testrun.ps1'
-      arguments: '-testType Unit -batchMode'
-    displayName: 'Unit Tests'
+      - task: PowerShell@2
+        inputs:
+          filePath: 'testrun.ps1'
+          arguments: '-testType Unit -batchMode'
+        displayName: Unit Tests
   
-  - task: PowerShell@2
-    inputs:
-      filePath: 'testrun.ps1'
-      arguments: '-testType UI -batchMode'
-    displayName: 'UI Tests'
+      - task: PowerShell@2
+        inputs:
+          filePath: 'testrun.ps1'
+          arguments: '-testType UI -batchMode'
+        displayName: UI Tests
   
-  - task: PowerShell@2
-    inputs:
-      filePath: 'testrun.ps1'
-      arguments: '-testType E2E -batchMode'
-    displayName: "E2E Tests"
+      - task: PowerShell@2
+        inputs:
+          filePath: 'testrun.ps1'
+          arguments: '-testType E2E -batchMode'
+        displayName: E2E Tests
   
-  - script: |
-      git clean
-      git add --renormalize .
-      git checkout master
-      git merge preview
-      git push
-    displayName: "Push to master"
+  - job: PushToMaster
+    displayName: Push ProceduralToolkit To Master
+    dependsOn: Test
+    steps:
+      - script: |
+          git clean -f ./
+          git add --renormalize .
+        displayName: Cleanup working tree
+      
+      - script: |
+          git checkout --track origin/master
+          git merge origin/preview
+        displayName: Merge preview with master
+      
+      - script: git push
+        displayName: Push
