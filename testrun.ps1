@@ -21,6 +21,9 @@ $TestFilter = "$ProjectName.EditorTests..*$testType"
 # Unity batchmode run
 $BatchModeStr = if($batchMode) { "-batchmode" } else { "" }
 
+# Log file name
+$LogFile = $testType.log
+
 # Unity test runner arguments
 $UnityArgs = "
                 -runTests
@@ -30,7 +33,7 @@ $UnityArgs = "
                 -forgetProjectPath
                 -testFilter `"$TestFilter`"
                 -testResults `"$ResultsPath`"
-                -logFile stdout.log
+                -logFile $LogFile
              "
 
 # Verify we can find the unity executable

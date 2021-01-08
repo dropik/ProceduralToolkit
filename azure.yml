@@ -24,6 +24,28 @@ jobs:
           filePath: 'testrun.ps1'
           arguments: '-testType E2E -batchMode'
         displayName: E2E Tests
+
+  - job: Logs
+    displayName: Publishing test logs
+    dependsOn: Test
+    steps:
+      - task: PublishPipelineArtifact@v1
+        inputs:
+          targetPath: Unit.log
+          artifactName: unit.tests.log
+        displayName: Publish Unit tests log
+
+      - task: PublishPipelineArtifact@v1
+        inputs:
+          targetPath: UI.log
+          artifactName: ui.tests.log
+        displayName: Publish UI tests log
+      
+      - task: PublishPipelineArtifact@v1
+        inputs:
+          targetPath: E2E.log
+          artifactName: e2e.tests.log
+        displayName: Publish E2E tests log
   
   - job: PushToMaster
     displayName: Push ProceduralToolkit To Master
