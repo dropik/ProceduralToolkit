@@ -37,7 +37,6 @@ jobs:
           git branch -d master
           git checkout --track origin/master
           git merge origin/preview
-        displayName: Merge preview with master
-      
-      - script: git push
+          git push
         displayName: Push
+
