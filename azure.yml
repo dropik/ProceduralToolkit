@@ -34,7 +34,7 @@ jobs:
         persistCredentials: true
       
       - script: |
-          git branch -d master
+          git branch -D master
           git checkout --track origin/master
           git merge origin/preview
           git push
