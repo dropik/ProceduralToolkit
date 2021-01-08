@@ -1,6 +1,8 @@
 trigger:
   - preview
 
+pool: default
+
 steps:
   - checkout: self
 
