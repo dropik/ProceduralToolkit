@@ -7,8 +7,6 @@ jobs:
   - job: Test
     displayName: ProceduralToolkit Test
     steps:
-      - checkout: self
-
       - task: PowerShell@2
         inputs:
           filePath: 'testrun.ps1'
@@ -31,10 +29,9 @@ jobs:
     displayName: Push ProceduralToolkit To Master
     dependsOn: Test
     steps:
-      - script: |
-          git clean -f ./
-          git add --renormalize .
-        displayName: Cleanup working tree
+      - checkout: self
+        clean: true
+        persistCredentials: true
       
       - script: |
           git checkout --track origin/master
