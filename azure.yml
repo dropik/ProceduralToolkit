@@ -15,13 +15,13 @@ steps:
   - task: PowerShell@2
     inputs:
       filePath: 'testrun.ps1'
-      arguments: '-testType UI'
+      arguments: '-testType UI -batchMode'
     displayName: 'UI Tests'
   
   - task: PowerShell@2
     inputs:
       filePath: 'testrun.ps1'
-      arguments: '-testType E2E'
+      arguments: '-testType E2E -batchMode'
     displayName: "E2E Tests"
   
   - script: |
