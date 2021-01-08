@@ -29,19 +29,19 @@ jobs:
     displayName: Publishing test logs
     dependsOn: Test
     steps:
-      - task: PublishPipelineArtifact@v1
+      - task: PublishPipelineArtifact@1
         inputs:
           targetPath: Unit.log
           artifactName: unit.tests.log
         displayName: Publish Unit tests log
 
-      - task: PublishPipelineArtifact@v1
+      - task: PublishPipelineArtifact@1
         inputs:
           targetPath: UI.log
           artifactName: ui.tests.log
         displayName: Publish UI tests log
       
-      - task: PublishPipelineArtifact@v1
+      - task: PublishPipelineArtifact@1
         inputs:
           targetPath: E2E.log
           artifactName: e2e.tests.log
