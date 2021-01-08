@@ -7,7 +7,7 @@ resources:
  repositories:
    - repository: ProceduralToolkit
      type: github
-     name: dropil/ProceduralToolkit
+     name: dropik/ProceduralToolkit
      ref: refs/heads/preview
      endpoint: dropik
 
