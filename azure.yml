@@ -9,6 +9,7 @@ resources:
      type: github
      name: dropil/ProceduralToolkit
      ref: refs/heads/preview
+     endpoint: dropik
 
 steps:
   - checkout: ProceduralToolkit
