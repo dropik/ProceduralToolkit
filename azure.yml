@@ -27,21 +27,9 @@ jobs:
 
       - task: PublishPipelineArtifact@1
         inputs:
-          targetPath: Unit.log
+          targetPath: Logs
           artifactName: Logs
         displayName: Publish Unit tests log
-
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: UI.log
-          artifactName: Logs
-        displayName: Publish UI tests log
-      
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: E2E.log
-          artifactName: Logs
-        displayName: Publish E2E tests log
 
   - job: PushToMaster
     displayName: Push ProceduralToolkit To Master
