@@ -9,7 +9,7 @@ steps:
   - task: PowerShell@2
     inputs:
       filePath: 'testrun.ps1'
-      arguments: '-testType Unit'
+      arguments: '-testType Unit -batchMode'
     displayName: 'Unit Tests'
   
   - task: PowerShell@2

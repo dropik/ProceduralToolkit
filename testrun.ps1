@@ -1,4 +1,7 @@
-param ([string]$testType)
+param (
+    [string]$testType
+    [switch]$batchMode
+)
 
 # The directory that houses the Unity.exe folder
 $UnityPath = $Env:UnityPath
@@ -15,10 +18,14 @@ $ResultsPath = "$CurrentPath\results.xml"
 # Unity test runner test filter
 $TestFilter = "$ProjectName.EditorTests..*$testType"
 
+# Unity batchmode run
+$BatchModeStr = if($batchMode) { "-batchmode" } else { "" }
+
 # Unity test runner arguments
 $UnityArgs = "
                 -runTests
-                -batchmode
+                $BatchModeStr
+            
                 -projectPath `"$CurrentPath`"
                 -forgetProjectPath
                 -testFilter `"$TestFilter`"
