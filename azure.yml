@@ -25,10 +25,6 @@ jobs:
           arguments: '-testType E2E -batchMode'
         displayName: E2E Tests
 
-  - job: Logs
-    displayName: Publishing test logs
-    dependsOn: Test
-    steps:
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: Unit.log
@@ -46,7 +42,7 @@ jobs:
           targetPath: E2E.log
           artifactName: e2e.tests.log
         displayName: Publish E2E tests log
-  
+
   - job: PushToMaster
     displayName: Push ProceduralToolkit To Master
     dependsOn: Test
@@ -61,4 +57,3 @@ jobs:
           git merge origin/preview
           git push
         displayName: Push
-
