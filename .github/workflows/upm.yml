@@ -11,9 +11,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        ref: master
     - name: split upm branch
       run: |
-        git branch -d upm &> /dev/null || echo upm branch not found
+        git branch -D upm &> /dev/null || echo upm branch not found
         git subtree split -P "$PKG_ROOT" -b upm
         git push -f -u origin upm
       env:
