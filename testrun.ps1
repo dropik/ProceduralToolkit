@@ -1,5 +1,5 @@
 param (
-    [string]$testType
+    [string]$testType,
     [switch]$batchMode
 )
 
