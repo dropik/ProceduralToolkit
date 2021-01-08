@@ -22,7 +22,7 @@ $TestFilter = "$ProjectName.EditorTests..*$testType"
 $BatchModeStr = if($batchMode) { "-batchmode" } else { "" }
 
 # Log file name
-$LogFile = $testType.log
+$LogFile = $CurrentPath\$testType.log
 
 # Unity test runner arguments
 $UnityArgs = "
