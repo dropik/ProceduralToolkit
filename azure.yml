@@ -34,6 +34,7 @@ jobs:
         persistCredentials: true
       
       - script: |
+          git branch -d master
           git checkout --track origin/master
           git merge origin/preview
         displayName: Merge preview with master
