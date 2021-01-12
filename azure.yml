@@ -25,6 +25,13 @@ jobs:
           arguments: '-testType E2E -batchMode'
         displayName: E2E Tests
 
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'NUnit'
+          testResultsFiles: 'TestResults/*.xml'
+          failTaskOnFailedTests: true
+        displayName: Publish test results
+
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: Logs
