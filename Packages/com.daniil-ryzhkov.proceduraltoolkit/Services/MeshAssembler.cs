@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using ProceduralToolkit.Api;
 
-namespace ProceduralToolkit
+namespace ProceduralToolkit.Services
 {
     public class MeshAssembler
     {

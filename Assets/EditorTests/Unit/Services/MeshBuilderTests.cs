@@ -1,9 +1,10 @@
 ﻿using NUnit.Framework;
 using Moq;
 using UnityEngine;
-using ProceduralToolkit.Api;
+using ProceduralToolkit.Services;
+using ProceduralToolkit.Services.Generators;
 
-namespace ProceduralToolkit.EditorTests.Unit
+namespace ProceduralToolkit.EditorTests.Unit.Services
 {
     public class MeshBuilderTests
     {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using ProceduralToolkit.Api;
-using ProceduralToolkit.Generators;
+using ProceduralToolkit.Services.Generators;
 
 namespace ProceduralToolkit.Components.GeneratorSettings
 {

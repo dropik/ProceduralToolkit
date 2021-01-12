@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ProceduralToolkit.Api
+namespace ProceduralToolkit.Services
 {
     public interface IMeshBuilder
     {

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Linq;
-using ProceduralToolkit.Api;
+using ProceduralToolkit.Services.Generators;
 
-namespace ProceduralToolkit
+namespace ProceduralToolkit.Services
 {
     public class MeshBuilder : IMeshBuilder
     {
