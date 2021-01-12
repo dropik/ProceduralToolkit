@@ -10,7 +10,7 @@ jobs:
       - task: PowerShell@2
         inputs:
           filePath: 'testrun.ps1'
-          arguments: '-testType Unit -batchMode'
+          arguments: '-testType Unit -batchMode -enableCodeCoverage'
         displayName: Unit Tests
   
       - task: PowerShell@2
@@ -30,6 +30,12 @@ jobs:
           targetPath: Logs
           artifactName: Logs
         displayName: Publish Unit tests log
+
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: cobertura
+          summaryFileLocation: CodeCoverage/Cobertura.xml
+        displayName: Publish code coverage
 
   - job: PushToMaster
     displayName: Push ProceduralToolkit To Master

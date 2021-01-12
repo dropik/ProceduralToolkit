@@ -78,3 +78,5 @@ crashlytics-build.properties
 # Mac OS X
 **.DS_Store
 
+# Code Coverage
+CodeCoverage/

@@ -1,6 +1,7 @@
 param (
     [string]$testType,
-    [switch]$batchMode
+    [switch]$batchMode,
+    [switch]$enableCodeCoverage
 )
 
 # The directory that houses the Unity.exe folder
@@ -19,10 +20,33 @@ $ResultsPath = "$CurrentPath\results.xml"
 $TestFilter = "$ProjectName.EditorTests..*$testType"
 
 # Unity batchmode run
-$BatchModeStr = if($batchMode) { "-batchmode" } else { "" }
+$BatchModeStr = if ($batchMode) { "-batchmode" } else { "" }
 
 # Log file name
 $LogFile = "$CurrentPath\Logs`\$testType.log"
+
+# Code coverage string
+$CodeCoverageStr = ""
+if ($enableCodeCoverage)
+{
+    # Code coverage results path
+    $CoverageResultsPath = "CodeCoverage"
+
+    # Code coverage assemblies
+    $CoverageAssemblies = "+$ProjectName"
+
+    # Code coverage filters
+    $CoverageFilters = "-*/Components/*,-*/UI/*,-*/MenuEntries.cs"
+
+    # Code coverage options
+    $CoverageOptions = "enableCyclomaticComplexity;assemblyFilters:$CoverageAssemblies;pathFilters:$CoverageFilters"
+
+    # Update code coverage string
+    $CodeCoverageStr = "-enableCodeCoverage -coverageResultsPath `"$CoverageResultsPath`" -coverageOptions $CoverageOptions"
+
+    # Code coverage OpenCover xml results path
+    $CoverageOpenCoverPath = "$CoverageResultsPath\$ProjectName-opencov\EditMode\*.xml"
+}
 
 # Unity test runner arguments
 $UnityArgs = "
@@ -33,11 +57,12 @@ $UnityArgs = "
                 -testFilter `"$TestFilter`"
                 -testResults `"$ResultsPath`"
                 -logFile $LogFile
+                $CodeCoverageStr
              "
 
 # Verify we can find the unity executable
 Write-Host "Verifying that UnityPath is set: " -NoNewline
-if(-not (Test-Path "$UnityPath"))
+if (-not (Test-Path "$UnityPath"))
 {
     Write-Host "Error."
     Write-Error "Could not locate Unity executable using path $UnityPath."
@@ -52,7 +77,7 @@ Wait-Process -InputObject $unityProcess
 
 # Verify we can find the results xml file
 Write-Host "Verifying test results file created: " -NoNewline
-if(-not (Test-Path "$ResultsPath"))
+if (-not (Test-Path "$ResultsPath"))
 {
     Write-Host "Error."
     Write-Error "Could not locate results file $ResultsPath."
@@ -60,9 +85,29 @@ if(-not (Test-Path "$ResultsPath"))
 }
 Write-Host "Ok."
 
+# Parsing test results
 unity-testresult-parser --color yes --summary $CurrentPath\results.xml
 if (-not $?)
 {
     Write-Error "Some tests failed."
     exit 3
+}
+
+# Converting OpenCover to Cobertura
+if ($enableCodeCoverage)
+{
+    if (-not (Test-Path "$CoverageOpenCoverPath"))
+    {
+        Write-Warning "Was not able to find coverage results"
+    }
+    else
+    {
+        
+        $Reports = "-reports:$CoverageOpenCoverPath"
+        $TargetDir = "-targetdir:$CoverageResultsPath"
+        $ReportTypes = "-reporttypes:Cobertura"
+        $SourceDirs = "-sourcedirs:$CurrentPath\Packages\com.daniil-ryzhkov.proceduraltoolkit"
+        
+        ReportGenerator.exe $Reports $TargetDir $ReportTypes $SourceDirs
+    }
 }
