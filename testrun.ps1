@@ -14,7 +14,7 @@ $ProjectName = "ProceduralToolkit"
 $CurrentPath = (Get-Item -Path ".\").FullName
 
 # Test results file
-$ResultsPath = "$CurrentPath\results.xml"
+$ResultsPath = "$CurrentPath\TestResults`\$testType.results.xml"
 
 # Unity test runner test filter
 $TestFilter = "$ProjectName.EditorTests..*$testType"
@@ -86,7 +86,7 @@ if (-not (Test-Path "$ResultsPath"))
 Write-Host "Ok."
 
 # Parsing test results
-unity-testresult-parser --color yes --summary $CurrentPath\results.xml
+unity-testresult-parser --color yes --summary $ResultsPath
 if (-not $?)
 {
     Write-Error "Some tests failed."
