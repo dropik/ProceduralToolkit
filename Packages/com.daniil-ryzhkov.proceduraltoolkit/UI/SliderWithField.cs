@@ -17,24 +17,17 @@ namespace ProceduralToolkit.UI
         {
             field = new FloatField();
             field.style.width = 50;
-            field.RegisterValueChangedCallback(UpdateGlobalValue);
-        }
-
-        private void UpdateGlobalValue(ChangeEvent<float> e)
-        {
-            // Without notify because we don't want a cycle of value updates
-            SetValueWithoutNotify(e.newValue);
         }
 
         public override float value
         {
-            get => base.value;
+            get => field.value;
             set
             {
-                base.value = value;
-
-                // Without notify because we don't want a cycle of value updates
-                field?.SetValueWithoutNotify(value);
+                if (field != null)
+                {
+                    field.value = value;
+                }
             }
         }
     }

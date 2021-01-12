@@ -3,19 +3,19 @@ using ProceduralToolkit.UI;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace ProceduralToolkit.EditorTests.UI
+namespace ProceduralToolkit.EditorTests.Unit.UI
 {
-    public class SliderWithFieldTest : BaseCustomVETest
+    public class SliderWithFieldTest
     {
         private SliderWithField sliderWithField;
 
         private const string FIELD_WIDTH = "50px";
         private const float TEST_VALUE = 5f;
 
-        protected override VisualElement CreateTestTarget()
+        [SetUp]
+        public void SetUp()
         {
             sliderWithField = new SliderWithField();
-            return sliderWithField;
         }
 
         [Test]
