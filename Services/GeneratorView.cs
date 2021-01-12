@@ -1,7 +1,6 @@
-﻿using ProceduralToolkit.Api;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace ProceduralToolkit
+namespace ProceduralToolkit.Services
 {
     public class GeneratorView : IGeneratorView
     {

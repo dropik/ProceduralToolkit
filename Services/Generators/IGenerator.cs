@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProceduralToolkit.Api
+namespace ProceduralToolkit.Services.Generators
 {
     public interface IGenerator
     {

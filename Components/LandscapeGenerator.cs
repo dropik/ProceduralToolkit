@@ -1,7 +1,8 @@
-﻿using ProceduralToolkit.Api;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using ProceduralToolkit.Components.GeneratorSettings;
+using ProceduralToolkit.Services;
+using ProceduralToolkit.Services.Generators;
 
 namespace ProceduralToolkit.Components
 {

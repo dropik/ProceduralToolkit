@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using ProceduralToolkit.Api;
 
-namespace ProceduralToolkit.Generators
+namespace ProceduralToolkit.Services.Generators
 {
     public class PlaneGenerator : IGenerator
     {

@@ -1,7 +1,7 @@
 {
   "name": "com.daniil-ryzhkov.proceduraltoolkit",
   "displayName": "ProceduralToolkit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "This is a toolkit for procedural content generation for Unity.",
   "repository": {
     "type": "git",
