@@ -6,6 +6,7 @@ using ProceduralToolkit.Services.Generators;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
+    [Category("Unit")]
     public class MeshBuilderTests
     {
         private readonly Vector3[] expectedVertices = {

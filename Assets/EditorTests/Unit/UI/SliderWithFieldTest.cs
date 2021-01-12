@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 namespace ProceduralToolkit.EditorTests.Unit.UI
 {
+    [Category("Unit")]
     public class SliderWithFieldTest
     {
         private SliderWithField sliderWithField;

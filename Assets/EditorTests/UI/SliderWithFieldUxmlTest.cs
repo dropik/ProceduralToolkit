@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 
 namespace ProceduralToolkit.EditorTests.UI
 {
+    [Category("UI")]
     public class SliderWithFieldUxmlTest : BaseUxmlCustomVETest
     {
         protected override string TestLayout => "slider-with-field-test";

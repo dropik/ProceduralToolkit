@@ -16,9 +16,6 @@ $CurrentPath = (Get-Item -Path ".\").FullName
 # Test results file
 $ResultsPath = "$CurrentPath\TestResults\results.xml"
 
-# Unity test runner test filter
-$TestFilter = "$ProjectName.EditorTests.$testType.*"
-
 # Unity batchmode run
 $BatchModeStr = if ($batchMode) { "-batchmode" } else { "" }
 
@@ -54,7 +51,7 @@ $UnityArgs = "
                 $BatchModeStr
                 -projectPath `"$CurrentPath`"
                 -forgetProjectPath
-                -testFilter `"$TestFilter`"
+                -testCategory `"$testType`"
                 -testResults `"$ResultsPath`"
                 -logFile $LogFile
                 $CodeCoverageStr

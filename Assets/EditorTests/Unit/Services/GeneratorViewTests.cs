@@ -4,6 +4,7 @@ using ProceduralToolkit.Services;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
+    [Category("Unit")]
     public class GeneratorViewTests
     {
         private MeshFilter meshFilter;

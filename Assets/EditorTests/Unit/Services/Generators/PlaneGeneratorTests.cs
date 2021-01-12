@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
+    [Category("Unit")]
     public class PlaneGeneratorTests
     {
         private PlaneGenerator plane;

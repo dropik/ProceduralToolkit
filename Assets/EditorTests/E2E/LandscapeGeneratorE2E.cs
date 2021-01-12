@@ -11,6 +11,7 @@ using static ProceduralToolkit.EditorTests.Utils.Skips;
 
 namespace ProceduralToolkit.EditorTests.E2E
 {
+    [Category("E2E")]
     public class LandscapeGeneratorE2E
     {
         private Scene testScene;

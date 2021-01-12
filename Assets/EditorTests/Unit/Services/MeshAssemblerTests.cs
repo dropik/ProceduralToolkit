@@ -5,6 +5,7 @@ using ProceduralToolkit.Services;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
+    [Category("Unit")]
     public class MeshAssemblerTests
     {
         private MeshAssembler meshAssembler;
