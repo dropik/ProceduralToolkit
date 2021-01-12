@@ -21,7 +21,7 @@ namespace ProceduralToolkit.Generators
         {
             get
             {
-                var upperLeft = new Vector3(-length / 2, 0, width / 3);
+                var upperLeft = new Vector3(-length / 2, 0, width / 2);
                 yield return upperLeft;
 
                 var upperRight = new Vector3(length / 2, 0, width / 2);
