@@ -45,7 +45,7 @@ if ($enableCodeCoverage)
     $CodeCoverageStr = "-enableCodeCoverage -coverageResultsPath `"$CoverageResultsPath`" -coverageOptions $CoverageOptions"
 
     # Code coverage OpenCover xml results path
-    $CoverageOpenCoverPath = "$CoverageResultsPath\$ProjectName-opencov\EditMode\*.xml"
+    $CoverageOpenCoverPath = "$CoverageResultsPath\*-opencov\EditMode\*.xml"
 }
 
 # Unity test runner arguments
