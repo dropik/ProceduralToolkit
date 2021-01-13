@@ -19,7 +19,7 @@ jobs:
       id: current_ref
       with:
         msg: ${{ github.ref }}
-        separator: '/'
+        seperator: '/'
 
     - name: Split UPM Branch
       run: |
