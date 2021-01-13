@@ -1,0 +1,23 @@
+name: update-development
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  update-development:
+    name: Update Development
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: development
+
+      - name: Merge with Master
+        run: |
+          git config --global user.name 'github-bot'
+          git config --global user.email 'github-bot@users.noreply.github.com'
+          git fetch
+          git merge origin/master
+          git push
