@@ -14,6 +14,12 @@ jobs:
       with:
         fetch-depth: 0
         ref: master
+    
+    - uses: jungwinter/split@v1
+      id: current_ref
+      with:
+        msg: ${{ github.ref }}
+        separator: '/'
 
     - name: Split UPM Branch
       run: |
@@ -28,7 +34,7 @@ jobs:
         git config --global user.email 'github-bot@users.noreply.github.com'
         git checkout main
         git push origin --delete ${{ github.ref }}
-        git tag -a ${{ github.ref }} -m "Release ${{ github.ref }}"
+        git tag -fa ${{ steps.current_ref.outputs._2 }} -m "Release ${{ steps.current_ref.outputs._2 }}"
         git push origin ${{ github.ref }}
 
   create-release:
