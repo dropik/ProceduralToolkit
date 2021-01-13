@@ -1,8 +1,10 @@
-name: upm
+name: release
+
 on:
   push:
     tags:
       - 'v*'
+
 jobs:
   split-upm:
     name: split upm branch
@@ -14,11 +16,17 @@ jobs:
         ref: master
     - name: split upm branch
       run: |
-        git branch -D upm &> /dev/null || echo upm branch not found
-        git subtree split -P "$PKG_ROOT" -b upm
-        git push -f -u origin upm
+        git subtree split -P "$PKG_ROOT" -b main
+        git push -f -u origin main
       env:
         PKG_ROOT: Packages/com.daniil-ryzhkov.proceduraltoolkit
+    - name: transfer tag to upm branch
+      run: |
+        git checkout main
+        git push origin --delete ${{ github.ref }}
+        git tag -fa ${{ github.ref }} -m "Release ${{ github.ref }}"
+        git push origin ${{ github.ref }}
+
   create-release:
     name: Create Release
     needs: [split-upm]
@@ -26,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: upm
+          ref: main
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1

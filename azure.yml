@@ -1,5 +1,5 @@
 trigger:
-  - preview
+  - development
 
 pool:
   vmImage: ubuntu-latest
@@ -74,8 +74,8 @@ stages:
               artifactName: Logs
             displayName: Publish test logs
 
-  - stage: MergeMaster
-    displayName: Merge Preview Branch With Master
+  - stage: MergeDevelopment
+    displayName: Merge Development
     dependsOn: Testing
     jobs:
       - job: MergeAndPush
@@ -88,6 +88,6 @@ stages:
           - script: |
               git branch -D master
               git checkout --track origin/master
-              git merge origin/preview
+              git merge origin/development
               git push
             displayName: Push
