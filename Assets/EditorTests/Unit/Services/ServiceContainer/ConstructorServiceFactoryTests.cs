@@ -30,17 +30,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.ServiceContainer
         }
 
         [Test]
-        public void TestOnRegisteredService()
-        {
-            mockServiceContainer.Setup(m => m.GetService(It.Is<Type>(t => t.Equals(typeof(IExampleService)))))
-                                .Returns(new ExampleService());
-            ExecuteTest<WithDependencyService>(() =>
-            {
-                mockServiceContainer.Verify(m => m.GetService(It.Is<Type>(t => t.Equals(typeof(IExampleService)))), Times.Once);
-            });
-        }
-
-        [Test]
         public void TestOnNotRegisteredService()
         {
             mockServiceContainer.Setup(m => m.GetService(It.Is<Type>(t => t.Equals(typeof(IExampleService)))))
@@ -57,16 +46,34 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.ServiceContainer
             }
         }
 
+        [Test]
+        public void TestRegisterConcreteService()
+        {
+            ExecuteTest<ExampleService, ExampleService>();
+        }
+
         private void ExecuteTest<TImplementation>()
             where TImplementation : class, IExampleService
         {
             ExecuteTest<TImplementation>(null);
         }
 
+        private void ExecuteTest<T, TImplementation>()
+            where TImplementation : class, T
+        {
+            ExecuteTest<T, TImplementation>(null);
+        }
+
         private void ExecuteTest<TImplementation>(Action testPostProcess)
             where TImplementation : class, IExampleService
         {
-            var factory = new ConstructorServiceFactory<IExampleService, TImplementation>(mockServiceContainer.Object);
+            ExecuteTest<IExampleService, TImplementation>(testPostProcess);
+        }
+
+        private void ExecuteTest<T, TImplementation>(Action testPostProcess)
+            where TImplementation : class, T
+        {
+            var factory = new ConstructorServiceFactory<T, TImplementation>(mockServiceContainer.Object);
             var result = factory.CreateService();
             Assert.That(result, Is.InstanceOf<TImplementation>());
             testPostProcess?.Invoke();
