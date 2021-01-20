@@ -1,14 +1,9 @@
 namespace ProceduralToolkit.Services.ServiceContainer
 {
-    public class TransientService<T>
+    public class TransientService<T> : Service<T>
     {
-        private readonly IServiceFactory<T> serviceFactory;
+        public TransientService(IServiceFactory<T> serviceFactory) : base(serviceFactory) { }
 
-        public TransientService(IServiceFactory<T> serviceFactory)
-        {
-            this.serviceFactory = serviceFactory;
-        }
-
-        public T Instance => serviceFactory.CreateService();
+        public override T Instance => ServiceFactory.CreateService();
     }
 }

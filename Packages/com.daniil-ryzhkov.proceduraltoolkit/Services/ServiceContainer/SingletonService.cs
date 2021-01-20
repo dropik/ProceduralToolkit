@@ -1,22 +1,18 @@
 namespace ProceduralToolkit.Services.ServiceContainer
 {
-    public class SingletonService<T>
+    public class SingletonService<T> : Service<T>
     {
-        private readonly IServiceFactory<T> serviceFactory;
         private T instance;
 
-        public SingletonService(IServiceFactory<T> serviceFactory)
-        {
-            this.serviceFactory = serviceFactory;
-        }
+        public SingletonService(IServiceFactory<T> serviceFactory) : base(serviceFactory) { }
 
-        public T Instance
+        public override T Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = serviceFactory.CreateService();
+                    instance = ServiceFactory.CreateService();
                 }
                 return instance;
             }
