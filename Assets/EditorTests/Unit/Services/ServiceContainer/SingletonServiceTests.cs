@@ -5,20 +5,20 @@ using ProceduralToolkit.Services.ServiceContainer;
 namespace ProceduralToolkit.EditorTests.Unit.Services.ServiceContainer
 {
     [Category("Unit")]
-    public class TransientServiceTests
+    public class SingletonServiceTests
     {
         [Test]
-        public void TestTransientService()
+        public void TestSingletonService()
         {
             var mockServiceFactory = new Mock<IServiceFactory<ExampleClass>>();
             mockServiceFactory.Setup(m => m.CreateService()).Returns(() => new ExampleClass());
-            var service = new TransientService<ExampleClass>(mockServiceFactory.Object);
-
+            var service = new SingletonService<ExampleClass>(mockServiceFactory.Object);
+            
             var instance1 = service.Instance;
             var instance2 = service.Instance;
             instance1.Counter++;
-
-            Assert.That(instance2.Counter, Is.Zero);
+            
+            Assert.That(instance2.Counter, Is.EqualTo(1));
         }
     }
 }
