@@ -2,7 +2,7 @@ using System;
 
 namespace ProceduralToolkit.Services.ServiceContainer
 {
-    public class FuncServiceFactory<T>
+    public class FuncServiceFactory<T> : IServiceFactory<T>
     {
         private readonly Func<T> serviceProvider;
 
