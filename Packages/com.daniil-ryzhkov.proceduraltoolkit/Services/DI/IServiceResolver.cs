@@ -1,6 +1,6 @@
 using System;
 
-namespace ProceduralToolkit.Services.ServiceContainer
+namespace ProceduralToolkit.Services.DI
 {
     public interface IServiceResolver
     {

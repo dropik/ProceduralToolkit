@@ -1,4 +1,4 @@
-namespace ProceduralToolkit.Services.ServiceContainer
+namespace ProceduralToolkit.Services.DI
 {
     public class TransientService<T> : Service<T>
     {

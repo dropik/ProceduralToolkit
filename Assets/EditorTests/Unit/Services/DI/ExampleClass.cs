@@ -1,4 +1,4 @@
-namespace ProceduralToolkit.EditorTests.Unit.Services.ServiceContainer
+namespace ProceduralToolkit.EditorTests.Unit.Services.DI
 {
     public class ExampleClass
     {

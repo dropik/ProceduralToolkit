@@ -1,8 +1,8 @@
 using Moq;
 using NUnit.Framework;
-using ProceduralToolkit.Services.ServiceContainer;
+using ProceduralToolkit.Services.DI;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services.ServiceContainer
+namespace ProceduralToolkit.EditorTests.Unit.Services.DI
 {
     [Category("Unit")]
     public class SingletonServiceTests

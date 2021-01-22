@@ -1,4 +1,4 @@
-namespace ProceduralToolkit.Services.ServiceContainer
+namespace ProceduralToolkit.Services.DI
 {
     public abstract class Service<T> : IService<T>
     {

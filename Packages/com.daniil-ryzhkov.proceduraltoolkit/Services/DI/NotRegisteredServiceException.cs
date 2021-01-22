@@ -1,6 +1,6 @@
 using System;
 
-namespace ProceduralToolkit.Services.ServiceContainer
+namespace ProceduralToolkit.Services.DI
 {
     [Serializable]
     public class NotRegisteredServiceException : Exception

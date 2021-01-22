@@ -1,4 +1,4 @@
-namespace ProceduralToolkit.Services.ServiceContainer
+namespace ProceduralToolkit.Services.DI
 {
     public class SingletonService<T> : Service<T>
     {

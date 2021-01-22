@@ -1,6 +1,6 @@
 using System;
 
-namespace ProceduralToolkit.Services.ServiceContainer
+namespace ProceduralToolkit.Services.DI
 {
     public class FuncServiceFactory<T> : IServiceFactory<T>
     {

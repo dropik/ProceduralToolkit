@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace ProceduralToolkit.Services.ServiceContainer
+namespace ProceduralToolkit.Services.DI
 {
     public class ConstructorServiceFactory<T, TImplementation> : IServiceFactory<T>
         where TImplementation : class, T
