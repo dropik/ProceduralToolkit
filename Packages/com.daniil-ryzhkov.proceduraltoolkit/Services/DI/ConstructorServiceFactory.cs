@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 
 namespace ProceduralToolkit.Services.DI
 {
@@ -7,12 +6,12 @@ namespace ProceduralToolkit.Services.DI
         where TImplementation : class, T
     {
         private readonly Type implementationType;
-        private readonly IServiceContainer services;
+        private readonly IServiceResolver resolver;
 
-        public ConstructorServiceFactory(IServiceContainer services)
+        public ConstructorServiceFactory(IServiceResolver resolver)
         {
             implementationType = typeof(TImplementation);
-            this.services = services;
+            this.resolver = resolver;
         }
 
         public T CreateService()
@@ -22,7 +21,7 @@ namespace ProceduralToolkit.Services.DI
             var parameters = new object[parametersInfo.Length];
             for (int i = 0; i < parametersInfo.Length; i++)
             {
-                var settings = services.GetService(parametersInfo[i].ParameterType);
+                var settings = resolver.ResolveService(parametersInfo[i].ParameterType);
                 parameters[i] = settings;
             }
             var newService = constructor.Invoke(parameters);

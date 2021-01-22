@@ -15,12 +15,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
             public WithDependencyService(IExampleService service) { }
         }
 
-        private Mock<IServiceContainer> mockServiceContainer;
+        private Mock<IServiceResolver> mockServiceResolver;
 
         [SetUp]
         public void Setup()
         {
-            mockServiceContainer = new Mock<IServiceContainer>();
+            mockServiceResolver = new Mock<IServiceResolver>();
         }
 
         [Test]
@@ -32,9 +32,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         [Test]
         public void TestOnNotRegisteredService()
         {
-            mockServiceContainer.Setup(m => m.GetService(It.Is<Type>(t => t.Equals(typeof(IExampleService)))))
+            mockServiceResolver.Setup(m => m.ResolveService(It.Is<Type>(t => t.Equals(typeof(IExampleService)))))
                                 .Throws<NotRegisteredServiceException>();
-            var factory = new ConstructorServiceFactory<IExampleService, WithDependencyService>(mockServiceContainer.Object);
+            var factory = new ConstructorServiceFactory<IExampleService, WithDependencyService>(mockServiceResolver.Object);
             try
             {
                 factory.CreateService();
@@ -73,7 +73,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         private void ExecuteTest<T, TImplementation>(Action testPostProcess)
             where TImplementation : class, T
         {
-            var factory = new ConstructorServiceFactory<T, TImplementation>(mockServiceContainer.Object);
+            var factory = new ConstructorServiceFactory<T, TImplementation>(mockServiceResolver.Object);
             var result = factory.CreateService();
             Assert.That(result, Is.InstanceOf<TImplementation>());
             testPostProcess?.Invoke();
