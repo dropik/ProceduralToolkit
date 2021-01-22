@@ -1,6 +1,6 @@
 namespace ProceduralToolkit.Services.DI
 {
-    public class SingletonService<T> : Service<T>
+    public class SingletonService<T> : ServiceWithFactory<T>
     {
         private T instance;
 

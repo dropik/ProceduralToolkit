@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace ProceduralToolkit.Services.DI
 {
@@ -17,10 +16,9 @@ namespace ProceduralToolkit.Services.DI
         {
             foreach (var service in services)
             {
-                var instance = service.Instance;
-                if (type.IsAssignableFrom(instance.GetType()))
+                if (type.IsAssignableFrom(service.InstanceType))
                 {
-                    return instance;
+                    return service.Instance;
                 }
             }
             throw new NotRegisteredServiceException();

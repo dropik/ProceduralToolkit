@@ -1,6 +1,6 @@
 namespace ProceduralToolkit.Services.DI
 {
-    public class TransientService<T> : Service<T>
+    public class TransientService<T> : ServiceWithFactory<T>
     {
         public TransientService(IServiceFactory<T> serviceFactory) : base(serviceFactory) { }
 

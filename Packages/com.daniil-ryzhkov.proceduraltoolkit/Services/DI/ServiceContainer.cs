@@ -25,6 +25,17 @@ namespace ProceduralToolkit.Services.DI
             this.transientFactory = transientFactory;
         }
 
+        public static IServiceContainer Create()
+        {
+            var list = new List<IService>();
+            var resolver = new ServiceResolver(list);
+            return new ServiceContainer(list,
+                                        resolver,
+                                        new ServiceInjector(resolver),
+                                        new SingletonServiceFactory(resolver),
+                                        new TransientServiceFactory(resolver));
+        }
+
         public void AddSingleton<TImplementation>() where TImplementation : class
         {
             AddSingleton<TImplementation, TImplementation>();

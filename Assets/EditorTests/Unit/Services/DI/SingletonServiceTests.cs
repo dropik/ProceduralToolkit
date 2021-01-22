@@ -19,6 +19,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
             instance1.Counter++;
             
             Assert.That(instance2.Counter, Is.EqualTo(1));
+            Assert.That(service.InstanceType, Is.EqualTo(typeof(ExampleClass)));
         }
     }
 }
