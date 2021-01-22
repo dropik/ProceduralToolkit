@@ -5,7 +5,7 @@ namespace ProceduralToolkit.Services.DI
     [Serializable]
     public class NotRegisteredServiceException : Exception
     {
-        public NotRegisteredServiceException() { }
+        public NotRegisteredServiceException() : base("Service not registered") { }
         public NotRegisteredServiceException(string message) : base(message) { }
         public NotRegisteredServiceException(string message, Exception inner) : base(message, inner) { }
         protected NotRegisteredServiceException(
