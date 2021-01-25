@@ -41,9 +41,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
             public override string Message => message;
         }
 
+        internal class ChildComponent : ComponentWithDependency { }
+        internal class Example { }
+
         private Mock<IServiceResolver> mockResolver;
         private ServiceInjector injector;
         private BaseComponent component;
+        private Component genericComponent;
 
         [SetUp]
         public void Setup()
@@ -56,6 +60,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
 
         [TearDown]
         public void TearDown()
+        {
+            DestroyComponent(component);
+            DestroyComponent(genericComponent);
+        }
+
+        private void DestroyComponent(Component component)
         {
             if (component != null)
             {
@@ -73,6 +83,40 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         public IEnumerator TestDependencyNotSet()
         {
             yield return TestWithComponent<ComponentWithoutDependency>("");
+        }
+
+        [UnityTest]
+        public IEnumerator TestDependencySetOnParentClass()
+        {
+            yield return TestWithComponent<ChildComponent>(TEST_MESSAGE);
+        }
+
+        [Test]
+        public void TestDependencySetOnDerivedFromComponent()
+        {
+            genericComponent = new GameObject().AddComponent<BoxCollider>();
+            try
+            {
+                injector.InjectServicesTo(genericComponent);
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
+        }
+
+        [Test]
+        public void TestDependencySetOnDerivedFromObject()
+        {
+            var obj = new Example();
+            try
+            {
+                injector.InjectServicesTo(obj);
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
         }
 
         private IEnumerator TestWithComponent<TComponent>(string expectedMessage) where TComponent : BaseComponent
