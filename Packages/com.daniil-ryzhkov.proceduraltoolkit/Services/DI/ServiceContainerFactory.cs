@@ -7,7 +7,8 @@ namespace ProceduralToolkit.Services.DI
         public static IServiceContainer Create()
         {
             var list = new List<IService>();
-            var resolver = new ServiceResolver(list, () => new CycleProtector());
+            var baseResolver = new ServiceResolver(list);
+            var resolver = new ServiceResolverProxy(() => new CycleProtector(baseResolver));
             return new ServiceContainer(list,
                                         resolver,
                                         new ServiceInjector(resolver),

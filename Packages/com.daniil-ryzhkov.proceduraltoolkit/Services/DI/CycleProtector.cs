@@ -3,16 +3,22 @@ using System.Collections.Generic;
 
 namespace ProceduralToolkit.Services.DI
 {
-    public class CycleProtector : ICycleProtector
+    public class CycleProtector : BaseServiceResolverDecorator
     {
         private readonly List<Type> typesStack;
 
-        public CycleProtector()
+        public CycleProtector(IServiceResolver wrappee) : base(wrappee)
         {
             typesStack = new List<Type>();
         }
 
-        public void Push(Type type)
+        public override object ResolveService(Type type)
+        {
+            TryPushTypeToStack(type);
+            return base.ResolveService(type);
+        }
+
+        private void TryPushTypeToStack(Type type)
         {
             if (CycleOccuredOn(type))
             {

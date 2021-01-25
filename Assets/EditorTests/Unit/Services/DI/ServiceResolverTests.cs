@@ -17,15 +17,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         public class ClassGeneric : IGeneric<int> { }
 
         private Mock<IList<IService>> mockList;
-        private Mock<ICycleProtector> mockCycleProtector;
         private ServiceResolver resolver;
 
         [SetUp]
         public void Setup()
         {
             mockList = new Mock<IList<IService>>();
-            mockCycleProtector = new Mock<ICycleProtector>();
-            resolver = new ServiceResolver(mockList.Object, () => mockCycleProtector.Object);
+            resolver = new ServiceResolver(mockList.Object);
         }
 
         [Test]
@@ -95,34 +93,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
             mockI1Service.Verify(m => m.Instance, Times.Never);
         }
 
-        [Test]
-        public void TestResolverOnCircularDependency()
-        {
-            mockCycleProtector.Setup(m => m.Push(It.IsAny<Type>())).Throws<CircularDependencyException>();
-            var mockService = new Mock<IService>();
-            mockService.Setup(m => m.InstanceType).Returns(typeof(I1));
-            var list = new List<IService>();
-            list.Add(mockService.Object);
-            mockList.Setup(m => m.GetEnumerator()).Returns(list.GetEnumerator());
-
-            try
-            {
-                resolver.ResolveService(typeof(I1));
-                Assert.Fail();
-            }
-            catch (CircularDependencyException)
-            {
-                mockService.Verify(m => m.Instance, Times.Never);
-            }
-        }
-
         private void TestResolveService<T, TExpected>(Func<T> provider)
         {
             mockList.Setup(m => m.GetEnumerator()).Returns(GetServiceEnumerator<T>(provider));
             
             var result = resolver.ResolveService(typeof(T));
             Assert.That(result, Is.InstanceOf<TExpected>());
-            mockCycleProtector.Verify(m => m.Push(It.Is<Type>(t => t.Equals(typeof(T)))), Times.Once);
         }
 
         private IEnumerator<IService> GetServiceEnumerator<T>(Func<T> provider)

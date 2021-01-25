@@ -1,4 +1,5 @@
 using System;
+using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Services.DI;
 
@@ -11,19 +12,28 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         internal class Class1 : I { }
         internal class Class2 : I { }
 
+        private Mock<IServiceResolver> mockResolver;
         private CycleProtector protector;
 
         [SetUp]
         public void Setup()
         {
-            protector = new CycleProtector();
+            mockResolver = new Mock<IServiceResolver>();
+            protector = new CycleProtector(mockResolver.Object);
+        }
+
+        [Test]
+        public void TestBaseCalled()
+        {
+            protector.ResolveService(typeof(Class1));
+            mockResolver.Verify(m => m.ResolveService(It.Is<Type>(t => t.Equals(typeof(Class1)))), Times.Once);
         }
 
         [Test]
         public void TestPushDoesNotThrowExceptionOnDifferentClasses()
         {
-            protector.Push(typeof(Class1));
-            protector.Push(typeof(Class2));
+            protector.ResolveService(typeof(Class1));
+            protector.ResolveService(typeof(Class2));
             Assert.Pass();
         }
 
@@ -32,8 +42,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         {
             TestPush(() =>
             {
-                protector.Push(typeof(Class1));
-                protector.Push(typeof(Class1));
+                protector.ResolveService(typeof(Class1));
+                protector.ResolveService(typeof(Class1));
             });
         }
 
@@ -42,8 +52,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         {
             TestPush(() =>
             {
-                protector.Push(typeof(I));
-                protector.Push(typeof(Class1));
+                protector.ResolveService(typeof(I));
+                protector.ResolveService(typeof(Class1));
             });
         }
 
@@ -52,8 +62,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         {
             TestPush(() =>
             {
-                protector.Push(typeof(Class1));
-                protector.Push(typeof(I));
+                protector.ResolveService(typeof(Class1));
+                protector.ResolveService(typeof(I));
             });
         }
 
