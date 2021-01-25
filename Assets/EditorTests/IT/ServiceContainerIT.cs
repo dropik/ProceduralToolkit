@@ -61,7 +61,7 @@ namespace ProceduralToolkit.EditorTests.IT
         public IEnumerator TestServiceInjection()
         {
             const string TEST_MESSAGE = "Test message";
-            var services = ServiceContainer.Create();
+            var services = ServiceContainerFactory.Create();
             services.AddTransient<ILogger, Logger>();
             services.AddSingleton<MessageContainer>(new MessageContainer() { Message = TEST_MESSAGE });
             var mockMessageReceiver = new Mock<IMessageReceiver>();
