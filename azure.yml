@@ -1,93 +1,73 @@
 trigger:
-  - development
+  branches:
+    exclude:
+      - '*'
 
-pool:
-  vmImage: ubuntu-latest
+pool: default
 
-stages:
-  - stage: Testing
-    pool: default
-    jobs:
-      - job: UnitTest
-        displayName: ProceduralToolkit Unit Test
-        steps:
-          - task: PowerShell@2
-            inputs:
-              filePath: 'testrun.ps1'
-              arguments: '-testType Unit -batchMode -enableCodeCoverage'
-            displayName: Execute tests
+jobs:
+- job: UnitTest
+  displayName: ProceduralToolkit Unit Test
+  steps:
+    - task: PowerShell@2
+      inputs:
+        filePath: 'testrun.ps1'
+        arguments: '-testType Unit -batchMode -enableCodeCoverage'
+      displayName: Execute tests
           
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: 'TestResults/results.xml'
-              failTaskOnFailedTests: true
-            displayName: Publish test results
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'NUnit'
+        testResultsFiles: 'TestResults/results.xml'
+        failTaskOnFailedTests: true
+      displayName: Publish test results
           
-          - task: PublishCodeCoverageResults@1
-            inputs:
-              codeCoverageTool: cobertura
-              summaryFileLocation: CodeCoverage/Cobertura.xml
-            displayName: Publish code coverage
+    - task: PublishCodeCoverageResults@1
+      inputs:
+        codeCoverageTool: cobertura
+        summaryFileLocation: CodeCoverage/Cobertura.xml
+      displayName: Publish code coverage
       
-      - job: UITest
-        displayName: ProceduralToolkit UI Test
-        dependsOn: UnitTest
-        steps:
-          - task: PowerShell@2
-            inputs:
-              filePath: 'testrun.ps1'
-              arguments: '-testType UI -batchMode'
-            displayName: Execute tests
+- job: UITest
+  displayName: ProceduralToolkit UI Test
+  dependsOn: UnitTest
+  steps:
+    - task: PowerShell@2
+      inputs:
+        filePath: 'testrun.ps1'
+        arguments: '-testType UI -batchMode'
+      displayName: Execute tests
           
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: 'TestResults/results.xml'
-              failTaskOnFailedTests: true
-            displayName: Publish test results
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'NUnit'
+        testResultsFiles: 'TestResults/results.xml'
+        failTaskOnFailedTests: true
+      displayName: Publish test results
       
-      - job: E2ETest
-        displayName: ProceduralToolkit E2E Test
-        dependsOn: UITest
-        steps:
-          - task: PowerShell@2
-            inputs:
-              filePath: 'testrun.ps1'
-              arguments: '-testType E2E -batchMode'
-            displayName: Execute tests
+- job: E2ETest
+  displayName: ProceduralToolkit E2E Test
+  dependsOn: UITest
+  steps:
+    - task: PowerShell@2
+      inputs:
+        filePath: 'testrun.ps1'
+        arguments: '-testType E2E -batchMode'
+      displayName: Execute tests
           
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: 'TestResults/results.xml'
-              failTaskOnFailedTests: true
-            displayName: Publish test results
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'NUnit'
+        testResultsFiles: 'TestResults/results.xml'
+        failTaskOnFailedTests: true
+      displayName: Publish test results
       
-      - job: PublishLogs
-        displayName: ProceduralToolkit Publish Test Logs
-        dependsOn: E2ETest
-        steps:
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: Logs
-              artifactName: Logs
-            displayName: Publish test logs
-
-  - stage: MergeDevelopment
-    displayName: Merge Development
-    dependsOn: Testing
-    jobs:
-      - job: MergeAndPush
-        displayName: Merge and Push
-        steps:
-          - checkout: self
-            clean: true
-            persistCredentials: true
-          
-          - script: |
-              git branch -D master
-              git checkout --track origin/master
-              git merge origin/development
-              git push
-            displayName: Push
+- job: PublishLogs
+  displayName: ProceduralToolkit Publish Test Logs
+  dependsOn: E2ETest
+  steps:
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: Logs
+        artifactName: Logs
+      displayName: Publish test logs
