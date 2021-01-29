@@ -28,4 +28,5 @@ jobs:
           delete-branch: true
           base: development
           title: "[${{ steps.feature-name.outputs._2 }}] ${{ steps.feature-name.outputs._3 }}"
+          body: "Automated ${{ steps.feature-name.outputs._2 }} branch pull request."
           labels: ${{ steps.feature-name.outputs._2 }}
