@@ -73,11 +73,11 @@ jobs:
       displayName: Execute tests
     
     - task: PublishTestResults@2
-    inputs:
-      testResultsFormat: 'NUnit'
-      testResultsFiles: 'TestResults/results.xml'
-      failTaskOnFailedTests: true
-    displayName: Publish test results
+      inputs:
+        testResultsFormat: 'NUnit'
+        testResultsFiles: 'TestResults/results.xml'
+        failTaskOnFailedTests: true
+      displayName: Publish test results
       
 - job: PublishLogs
   displayName: ProceduralToolkit Publish Test Logs
