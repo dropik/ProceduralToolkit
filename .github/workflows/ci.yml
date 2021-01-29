@@ -29,13 +29,3 @@ jobs:
           base: development
           title: "[${{ steps.feature-name.outputs._2 }}] ${{ steps.feature-name.outputs._3 }}"
           labels: ${{ steps.feature-name.outputs._2 }}
-
-  run-tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: ProceduralToolkit Testing
-        uses: Azure/pipelines@v1
-        with:
-          azure-devops-project-url: https://daniilryzhkov.visualstudio.com/ProceduralToolkit
-          azure-pipeline-name: 'ProceduralToolkit Testing'
-          azure-devops-token: ${{ secrets.AZURE_DEVOPS_TOKEN }}
