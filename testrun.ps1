@@ -33,7 +33,7 @@ if ($enableCodeCoverage)
     $CoverageAssemblies = "+$ProjectName"
 
     # Code coverage filters
-    $CoverageFilters = "-*/Components/*,-*/UI/*Factory.cs,-*/Services/DI/ServiceContainerFactory.cs,-*/Services/DI/BaseServiceFactory.cs,-*/Services/DI/SingletonServiceFactory.cs,-*/Services/DI/TransientServiceFactory.cs,-*/MenuEntries.cs"
+    $CoverageFilters = "-*/Components/*,-*/*Exception.cs,-*/UI/*Factory.cs,-*/Services/DI/ServiceContainerFactory.cs,-*/Services/DI/BaseServiceFactory.cs,-*/Services/DI/SingletonServiceFactory.cs,-*/Services/DI/TransientServiceFactory.cs,-*/MenuEntries.cs"
 
     # Code coverage options
     $CoverageOptions = "enableCyclomaticComplexity;assemblyFilters:$CoverageAssemblies;pathFilters:$CoverageFilters"
