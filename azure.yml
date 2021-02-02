@@ -1,7 +1,5 @@
 trigger:
-  branches:
-    exclude:
-      - '*'
+  - development
 
 pool: default
 
