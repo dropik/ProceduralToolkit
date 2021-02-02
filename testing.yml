@@ -1,6 +1,7 @@
 trigger:
   - development
 
+  
 pool: default
 
 jobs:
