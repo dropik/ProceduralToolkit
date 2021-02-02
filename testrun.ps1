@@ -1,7 +1,8 @@
 param (
     [string]$testType,
     [switch]$batchMode,
-    [switch]$enableCodeCoverage
+    [switch]$enableCodeCoverage,
+    [string]$settings
 )
 
 # The directory that houses the Unity.exe folder
@@ -45,6 +46,19 @@ if ($enableCodeCoverage)
     $CoverageOpenCoverPath = "$CoverageResultsPath\*-opencov\EditMode\*.xml"
 }
 
+# Obtaining settings file
+$SettingsStr = ""
+if ($settings)
+{
+    if(-not (Test-Path "$settings"))
+    {
+        Write-Error "Could not locate settings file provided"
+        exit 1
+    }
+
+    $SettingsStr = "-testSettingsFile $settings"
+}
+
 # Unity test runner arguments
 $UnityArgs = "
                 -runTests
@@ -55,6 +69,7 @@ $UnityArgs = "
                 -testResults `"$ResultsPath`"
                 -logFile $LogFile
                 $CodeCoverageStr
+                $SettingsStr
              "
 
 # Verify we can find the unity executable
@@ -63,7 +78,7 @@ if (-not (Test-Path "$UnityPath"))
 {
     Write-Host "Error."
     Write-Error "Could not locate Unity executable using path $UnityPath."
-    exit 1
+    exit 2
 }
 Write-Host "Ok."
 
@@ -78,7 +93,7 @@ if (-not (Test-Path "$ResultsPath"))
 {
     Write-Host "Error."
     Write-Error "Could not locate results file $ResultsPath."
-    exit 2
+    exit 3
 }
 Write-Host "Ok."
 
