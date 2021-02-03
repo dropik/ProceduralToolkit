@@ -6,7 +6,7 @@ using ProceduralToolkit.Services.DI;
 using ProceduralToolkit.Services.Generators;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Components
+namespace ProceduralToolkit.EditorTests.Unit.Components.Generators
 {
     [Category("Unit")]
     public class PlaneTests
@@ -108,10 +108,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Components
             act.Invoke(mockPlaneProvider, mockGenerator);
         }
 
-        // [Test]
-        // public void TestGeneratedEventInvoked()
-        // {
-            
-        // }
+        [Test]
+        public void TestGeneratedEventInvoked()
+        {
+            var mockEvent = new Mock<Action>();
+            plane.GeneratorUpdated += mockEvent.Object;
+            plane.OnValidate();
+            mockEvent.Verify(m => m.Invoke(), Times.Once);
+        }
     }
 }
