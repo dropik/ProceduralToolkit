@@ -1,9 +1,9 @@
-﻿using ProceduralToolkit.Components.GeneratorViews;
+﻿using ProceduralToolkit.Components;
 using NUnit.Framework;
 using UnityEngine;
 using ProceduralToolkit.Services.DI;
 
-namespace ProceduralToolkit.EditorTests.Unit.Components.GeneratorViews
+namespace ProceduralToolkit.EditorTests.Unit.Components
 {
     [Category("Unit")]
     public class MeshGeneratorViewTests
@@ -20,10 +20,21 @@ namespace ProceduralToolkit.EditorTests.Unit.Components.GeneratorViews
         [SetUp]
         public void SetUp()
         {
+            InitGameObject();
+            InjectServices();
+        }
+
+        private void InitGameObject()
+        {
             CreateGameObject();
-            var services = InitContainer();
+            view = obj.AddComponent<MeshGeneratorView>();
             InitMeshFilter();
-            InitViewWithContainer(services);
+        }
+
+        private void InjectServices()
+        {
+            var services = InitContainer();
+            services.InjectServicesTo(view);
         }
 
         private void CreateGameObject()
@@ -31,26 +42,20 @@ namespace ProceduralToolkit.EditorTests.Unit.Components.GeneratorViews
             obj = new GameObject();
         }
 
-        private IServiceContainer InitContainer()
-        {
-            var services = ServiceContainerFactory.Create();
-            services.AddSingleton<MeshFilter>(() => obj.GetComponent<MeshFilter>());
-            return services;
-        }
-
         private void InitMeshFilter()
         {
-            meshFilter = obj.AddComponent<MeshFilter>();
+            meshFilter = obj.GetComponent<MeshFilter>();
             meshFilter.sharedMesh = new Mesh()
             {
                 name = TEST_MESH_NAME_1
             };
         }
 
-        private void InitViewWithContainer(IServiceContainer services)
+        private IServiceContainer InitContainer()
         {
-            view = obj.AddComponent<MeshGeneratorView>();
-            services.InjectServicesTo(view);
+            var services = ServiceContainerFactory.Create();
+            services.AddSingleton(() => obj.GetComponent<MeshFilter>());
+            return services;
         }
 
         [TearDown]

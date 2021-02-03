@@ -3,17 +3,22 @@ using UnityEngine;
 using ProceduralToolkit.Components.GeneratorSettings;
 using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.Generators;
+using ProceduralToolkit.Services.DI;
 
-namespace ProceduralToolkit.Components
+namespace ProceduralToolkit.Components.Startups
 {
     [RequireComponent(typeof(PlaneSettings))]
     [ExecuteInEditMode]
     public class LandscapeGenerator : MonoBehaviour
     {
         private MeshAssembler meshAssembler;
+        private IServiceContainer services;
 
+        [SerializeReference]
+        private GameObject view;
+
+        private IGeneratorView MeshGeneratorView => view.GetComponent<IGeneratorView>();
         private PlaneSettings PlaneSettings => GetComponent<PlaneSettings>();
-        private IGeneratorView GeneratorView => GetComponentInChildren<IGeneratorView>();
 
         public void Reset()
         {
@@ -35,20 +40,18 @@ namespace ProceduralToolkit.Components
 
         private void RemoveOldHierarchy()
         {
-            foreach (var child in transform)
+            if (view != null)
             {
-                DestroyImmediate(((Transform)child).gameObject);
+                Object.DestroyImmediate(view);
             }
         }
 
         private void InitView()
         {
-            var viewObj = new GameObject()
-            {
-                name = "view"
-            };
-            viewObj.transform.parent = transform;
-            viewObj.AddComponent<GeneratorViewRoot>();
+            view = new GameObject() { name = "view" };
+            view.transform.parent = transform;
+            view.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
+            view.AddComponent<MeshGeneratorView>();
         }
 
         public void OnValidate()
@@ -56,6 +59,8 @@ namespace ProceduralToolkit.Components
             var generator = ConstructGenerator();
             InitMeshAssembler(generator);
             SetupUpdateCallbacks();
+            ConfigureServices();
+            InjectServices();
         }
 
         private IGenerator ConstructGenerator()
@@ -66,12 +71,23 @@ namespace ProceduralToolkit.Components
         private void InitMeshAssembler(IGenerator generator)
         {
             meshAssembler = new MeshAssembler(new MeshBuilder(generator));
-            meshAssembler.Generated += (mesh) => GeneratorView.NewMesh = mesh;
+            meshAssembler.Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
         }
 
         private void SetupUpdateCallbacks()
         {
             PlaneSettings.GeneratorUpdated += meshAssembler.Assemble;
+        }
+
+        private void ConfigureServices()
+        {
+            services = ServiceContainerFactory.Create();
+            services.AddSingleton(() => view.GetComponent<MeshFilter>());
+        }
+
+        private void InjectServices()
+        {
+            services.InjectServicesTo(MeshGeneratorView);
         }
 
         public void Start()

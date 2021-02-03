@@ -2,8 +2,9 @@
 using ProceduralToolkit.Services.DI;
 using UnityEngine;
 
-namespace ProceduralToolkit.Components.GeneratorViews
+namespace ProceduralToolkit.Components
 {
+    [RequireComponent(typeof(MeshFilter))]
     [ExecuteInEditMode]
     public class MeshGeneratorView : MonoBehaviour, IGeneratorView
     {

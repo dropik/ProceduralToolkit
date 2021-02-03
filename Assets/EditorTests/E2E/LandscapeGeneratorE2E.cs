@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using NUnit.Framework;
-using ProceduralToolkit.Components;
+using ProceduralToolkit.Components.Startups;
 using ProceduralToolkit.Components.GeneratorSettings;
-using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,8 +19,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         private const float TEST_LENGTH = 2f;
 
         private GameObject Root => GameObject.Find("LandscapeGenerator");
-        private GeneratorViewRoot View =>
-            Root.GetComponentInChildren<GeneratorViewRoot>();
+        private GameObject View => Root.transform.Find("view").gameObject;
 
         [UnitySetUp]
         public IEnumerator SetUp()
@@ -106,24 +104,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         {
             EditorSceneManager.SaveScene(testScene);
             yield return OpenScene();
-        }
-
-        [UnityTest]
-        public IEnumerator TestNewLandscapeGeneratorUndo()
-        {
-            yield return ExecuteUndo();
-            AssertRootEliminated();
-        }
-
-        private IEnumerator ExecuteUndo()
-        {
-            Undo.PerformUndo();
-            yield return SkipFrames();
-        }
-
-        private void AssertRootEliminated()
-        {
-            Assert.That(Root == null);
         }
 
         [UnityTest]
