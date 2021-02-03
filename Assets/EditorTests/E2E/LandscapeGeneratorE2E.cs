@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using NUnit.Framework;
 using ProceduralToolkit.Components.Startups;
-using ProceduralToolkit.Components.GeneratorSettings;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -115,7 +114,7 @@ namespace ProceduralToolkit.EditorTests.E2E
 
         private IEnumerator ChangeLength()
         {
-            var plane = Root.GetComponent<PlaneSettings>();
+            var plane = Root.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
             plane.length = TEST_LENGTH;
             plane.OnValidate();
 

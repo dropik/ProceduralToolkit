@@ -1,5 +1,4 @@
-﻿using ProceduralToolkit.Services;
-using ProceduralToolkit.Services.DI;
+﻿using ProceduralToolkit.Services.DI;
 using UnityEngine;
 
 namespace ProceduralToolkit.Components

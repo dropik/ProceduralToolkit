@@ -11,12 +11,6 @@ namespace ProceduralToolkit.Services.Generators
 
         private const int VERTICES_COUNT = 6;
 
-        public PlaneGenerator(float length, float width)
-        {
-            this.length = length;
-            this.width = width;
-        }
-
         public PlaneGenerator(PlaneGeneratorSettings settings)
         {
             this.length = settings.Length;

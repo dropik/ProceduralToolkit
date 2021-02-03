@@ -25,7 +25,7 @@ namespace ProceduralToolkit.Components.Generators
             });
         }
 
-        private void Reset()
+        public override void Reset()
         {
             length = 1;
             width = 1;

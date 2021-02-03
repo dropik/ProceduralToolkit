@@ -28,6 +28,7 @@ namespace ProceduralToolkit.Components.Generators
         public IEnumerable<int> Triangles => Generator.Triangles;
 
         public event Action GeneratorUpdated;
+        public abstract void Reset();
 
         public void OnValidate()
         {
