@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace ProceduralToolkit.Services
 {
-    public class MeshAssembler
+    public class MeshAssembler : IMeshAssembler
     {
         private readonly IMeshBuilder meshBuilder;
 
@@ -11,7 +12,7 @@ namespace ProceduralToolkit.Services
             this.meshBuilder = meshBuilder;
         }
 
-        public event System.Action<Mesh> Generated;
+        public event Action<Mesh> Generated;
 
         public void Assemble()
         {

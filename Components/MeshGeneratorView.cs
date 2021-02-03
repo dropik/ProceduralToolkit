@@ -1,15 +1,14 @@
-﻿using UnityEngine;
+﻿using ProceduralToolkit.Services.DI;
+using UnityEngine;
 
-namespace ProceduralToolkit.Services
+namespace ProceduralToolkit.Components
 {
-    public class GeneratorView : IGeneratorView
+    [RequireComponent(typeof(MeshFilter))]
+    [ExecuteInEditMode]
+    public class MeshGeneratorView : MonoBehaviour, IGeneratorView
     {
+        [Service]
         private readonly MeshFilter meshFilter;
-
-        public GeneratorView(MeshFilter meshFilter)
-        {
-            this.meshFilter = meshFilter;
-        }
 
         public Mesh NewMesh { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ProceduralToolkit.Models;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -10,10 +11,10 @@ namespace ProceduralToolkit.Services.Generators
 
         private const int VERTICES_COUNT = 6;
 
-        public PlaneGenerator(float length, float width)
+        public PlaneGenerator(PlaneGeneratorSettings settings)
         {
-            this.length = length;
-            this.width = width;
+            this.length = settings.Length;
+            this.width = settings.Width;
         }
 
         public IEnumerable<Vector3> Vertices
