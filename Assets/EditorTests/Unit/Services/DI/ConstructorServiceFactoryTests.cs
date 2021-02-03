@@ -47,6 +47,16 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.DI
         }
 
         [Test]
+        public void TestOnRegisteredService()
+        {
+            mockServiceResolver.Setup(m => m.ResolveService(It.Is<Type>(t => t.Equals(typeof(IExampleService)))))
+                               .Returns(new ExampleService());
+            var factory = new ConstructorServiceFactory<IExampleService, WithDependencyService>(mockServiceResolver.Object);
+            var result = factory.CreateService();
+            Assert.That(result, Is.InstanceOf<WithDependencyService>());
+        }
+
+        [Test]
         public void TestRegisterConcreteService()
         {
             ExecuteTest<ExampleService, ExampleService>();

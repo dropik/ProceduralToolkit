@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
 using UnityEngine;
 
@@ -12,7 +13,11 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [SetUp]
         public void SetUp()
         {
-            plane = new PlaneGenerator(2, 1);
+            plane = new PlaneGenerator(new PlaneGeneratorSettings()
+            {
+                Length = 2,
+                Width = 1
+            });
         }
 
         [Test]

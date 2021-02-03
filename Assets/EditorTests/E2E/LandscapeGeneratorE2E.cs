@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using NUnit.Framework;
-using ProceduralToolkit.Components;
-using ProceduralToolkit.Components.GeneratorSettings;
-using UnityEditor;
+using ProceduralToolkit.Components.Startups;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,8 +18,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         private const float TEST_LENGTH = 2f;
 
         private GameObject Root => GameObject.Find("LandscapeGenerator");
-        private GeneratorViewRoot View =>
-            Root.GetComponentInChildren<GeneratorViewRoot>();
+        private GameObject View => Root.transform.Find("view").gameObject;
 
         [UnitySetUp]
         public IEnumerator SetUp()
@@ -109,24 +106,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         }
 
         [UnityTest]
-        public IEnumerator TestNewLandscapeGeneratorUndo()
-        {
-            yield return ExecuteUndo();
-            AssertRootEliminated();
-        }
-
-        private IEnumerator ExecuteUndo()
-        {
-            Undo.PerformUndo();
-            yield return SkipFrames();
-        }
-
-        private void AssertRootEliminated()
-        {
-            Assert.That(Root == null);
-        }
-
-        [UnityTest]
         public IEnumerator TestOnPlaneSettingsUpdate()
         {
             yield return ChangeLength();
@@ -135,7 +114,7 @@ namespace ProceduralToolkit.EditorTests.E2E
 
         private IEnumerator ChangeLength()
         {
-            var plane = Root.GetComponent<PlaneSettings>();
+            var plane = Root.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
             plane.length = TEST_LENGTH;
             plane.OnValidate();
 

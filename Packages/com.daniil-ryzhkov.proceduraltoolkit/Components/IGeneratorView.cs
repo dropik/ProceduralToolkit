@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ProceduralToolkit.Services
+namespace ProceduralToolkit.Components
 {
     public interface IGeneratorView
     {
