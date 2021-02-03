@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Components
 {
+    [ExecuteInEditMode]
     public class MeshAssemblerComponent : MonoBehaviour
     {
         [Service]

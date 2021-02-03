@@ -7,11 +7,10 @@ using ProceduralToolkit.Services.DI;
 
 namespace ProceduralToolkit.Components.Startups
 {
-    [RequireComponent(typeof(PlaneSettings))]
+    [RequireComponent(typeof(PlaneSettings), typeof(MeshAssemblerComponent))]
     [ExecuteInEditMode]
     public class LandscapeGenerator : MonoBehaviour
     {
-        private MeshAssembler meshAssembler;
         private IServiceContainer services;
 
         [SerializeReference]
@@ -56,44 +55,32 @@ namespace ProceduralToolkit.Components.Startups
 
         public void OnValidate()
         {
-            var generator = ConstructGenerator();
-            InitMeshAssembler(generator);
-            SetupUpdateCallbacks();
             ConfigureServices();
             InjectServices();
-        }
-
-        private IGenerator ConstructGenerator()
-        {
-            return PlaneSettings;
-        }
-
-        private void InitMeshAssembler(IGenerator generator)
-        {
-            meshAssembler = new MeshAssembler(new MeshBuilder(generator));
-            meshAssembler.Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
-        }
-
-        private void SetupUpdateCallbacks()
-        {
-            PlaneSettings.GeneratorUpdated += meshAssembler.Assemble;
+            SetupUpdateCallbacks();
         }
 
         private void ConfigureServices()
         {
             services = ServiceContainerFactory.Create();
+            services.AddSingleton<IGenerator>(Generator);
+            services.AddSingleton<MeshBuilder>();
+            services.AddSingleton<MeshAssembler>();
+            services.GetService<IMeshAssembler>().Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
             services.AddSingleton(() => view.GetComponent<MeshFilter>());
         }
 
         private void InjectServices()
         {
+            services.InjectServicesTo(GetComponent<MeshAssemblerComponent>());
             services.InjectServicesTo(MeshGeneratorView);
         }
-
-        public void Start()
+        private void SetupUpdateCallbacks()
         {
-            meshAssembler.Assemble();
+            PlaneSettings.GeneratorUpdated += services.GetService<IMeshAssembler>().Assemble;
         }
+
+        private IGenerator Generator => PlaneSettings;
 
         public void RegisterUndo()
         {
