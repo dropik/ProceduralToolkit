@@ -1,4 +1,5 @@
 ﻿using ProceduralToolkit.Services.Generators;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace ProceduralToolkit.Components.GeneratorSettings
     {
         private IGenerator generator;
 
-        public event System.Action GeneratorUpdated;
+        public event Action GeneratorUpdated;
 
         public void OnValidate()
         {
