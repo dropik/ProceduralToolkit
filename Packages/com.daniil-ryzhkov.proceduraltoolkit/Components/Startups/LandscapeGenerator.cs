@@ -11,8 +11,8 @@ using System.Linq;
 
 namespace ProceduralToolkit.Components.Startups
 {
-    [RequireComponent(typeof(Generators.Plane), typeof(MeshAssemblerComponent))]
-    [ExecuteInEditMode]
+    [RequireComponent(typeof(Generators.Plane))]
+    [RequireComponent(typeof(MeshAssemblerComponent))]
     public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
