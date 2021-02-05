@@ -9,8 +9,13 @@ namespace ProceduralToolkit
         [MenuItem("GameObject/ProceduralToolkit/New LandscapeGenerator")]
         public static void NewLandscapeGenerator()
         {
-            var root = new GameObject().AddComponent<LandscapeGenerator>();
-            root.RegisterUndo();
+            Create<LandscapeGenerator>();
+        }
+
+        public static void Create<TStartup>() where TStartup : Startup
+        {
+            var startup = new GameObject().AddComponent<TStartup>();
+            startup.RegisterUndo();
         }
     }
 }

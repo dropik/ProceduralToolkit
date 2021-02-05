@@ -11,9 +11,9 @@ using System.Linq;
 
 namespace ProceduralToolkit.Components.Startups
 {
-    [RequireComponent(typeof(ProceduralToolkit.Components.Generators.Plane), typeof(MeshAssemblerComponent))]
+    [RequireComponent(typeof(Generators.Plane), typeof(MeshAssemblerComponent))]
     [ExecuteInEditMode]
-    public class LandscapeGenerator : MonoBehaviour
+    public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
 
@@ -49,10 +49,10 @@ namespace ProceduralToolkit.Components.Startups
         {
             if (view != null)
             {
-                UnityEngine.Object.DestroyImmediate(view);
+                DestroyImmediate(view);
             }
         }
-
+        
         private void InitView()
         {
             view = new GameObject() { name = "view" };
@@ -106,7 +106,7 @@ namespace ProceduralToolkit.Components.Startups
             services.InjectServicesTo(MeshGeneratorView);
         }
 
-        public void RegisterUndo()
+        public override void RegisterUndo()
         {
             Undo.RegisterCreatedObjectUndo(gameObject, "New Landscape Generator");
         }
