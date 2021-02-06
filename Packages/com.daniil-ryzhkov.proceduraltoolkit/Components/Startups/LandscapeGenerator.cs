@@ -26,39 +26,22 @@ namespace ProceduralToolkit.Components.Startups
 
         public void Reset()
         {
-            ResetName();
-            ResetSettings();
-            RemoveOldHierarchy();
-            InitView();
-        }
-
-        private void ResetName()
-        {
-            name = "LandscapeGenerator";
-        }
-
-        private void ResetSettings()
-        {
-            foreach (var generator in Generators)
+            var resetter = new StartupResetter(gameObject)
             {
-                generator.Reset();
-            }
-        }
-
-        private void RemoveOldHierarchy()
-        {
-            if (view != null)
-            {
-                DestroyImmediate(view);
-            }
+                DefaultName = "LandscapeGenerator",
+                Generators = Generators
+            };
+            resetter.InitChild += InitView;
+            resetter.Reset();
         }
         
-        private void InitView()
+        private GameObject InitView()
         {
             view = new GameObject() { name = "view" };
             view.transform.parent = transform;
             view.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
             view.AddComponent<MeshGeneratorView>();
+            return view;
         }
 
         public void OnValidate()
