@@ -14,10 +14,11 @@ namespace ProceduralToolkit.EditorTests.IT
     {
         internal class LandscapeGeneratorWithMockMeshAssembler : LandscapeGenerator
         {
+            public Mock<IMeshAssembler> MockMeshAssembler { get; private set; } = new Mock<IMeshAssembler>();
+            
             protected override void SetupMeshAssemblerServices(IServiceContainer services)
             {
-                var mockMeshAssembler = new Mock<IMeshAssembler>();
-                services.AddSingleton(mockMeshAssembler.Object);
+                services.AddSingleton(MockMeshAssembler.Object);
             }
         }
 
@@ -54,6 +55,37 @@ namespace ProceduralToolkit.EditorTests.IT
             Assert.That(meshRenderer != null);
             Assert.That(meshRenderer.sharedMaterial != null);
             Assert.That(view.GetComponent<MeshGeneratorView>() != null);
+        }
+
+        [Test]
+        public void TestMockAssemblerCalled()
+        {
+            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
+            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
+            assembler.Start();
+            landscapeGenerator.MockMeshAssembler.Verify(m => m.Assemble(), Times.Once);
+        }
+
+        [Test]
+        public void TestMockAssemblerCalledOnPlaneChange()
+        {
+            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
+            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
+            var plane = gameObject.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
+            plane.OnValidate();
+            landscapeGenerator.MockMeshAssembler.Verify(m => m.Assemble(), Times.Once);
+        }
+
+        [Test]
+        public void TestMeshAssigned()
+        {
+            var landscapeGenerator = gameObject.AddComponent<LandscapeGenerator>();
+            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
+            assembler.Start();
+            var view = gameObject.GetComponentInChildren<MeshGeneratorView>();
+            view.Update();
+            var meshFilter = gameObject.GetComponentInChildren<MeshFilter>();
+            Assert.That(meshFilter.sharedMesh != null);
         }
     }
 }
