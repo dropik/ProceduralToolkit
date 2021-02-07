@@ -49,29 +49,24 @@ namespace ProceduralToolkit.EditorTests.E2E
             }
         }
 
-        [Test]
-        public void TestNewLandscapeGeneratorBuildingSimplePlane()
+        [UnityTest]
+        public IEnumerator TestNewLandscapeGeneratorSavedOnSceneReload()
         {
+            yield return ReloadScene();
             AssertGeneration();
+        }
+
+        private IEnumerator ReloadScene()
+        {
+            EditorSceneManager.SaveScene(testScene);
+            yield return OpenScene();
         }
 
         private void AssertGeneration()
         {
-            AssertRootCreated();
-            AssertRootHasLandscapeGenerator();
             AssertViewCreated();
             AssertMeshCreatedCorrectly();
             AssertMaterialAssigned();
-        }
-
-        private void AssertRootCreated()
-        {
-            Assert.That(Root, Is.Not.Null);
-        }
-
-        private void AssertRootHasLandscapeGenerator()
-        {
-            Assert.That(Root.GetComponent<LandscapeGenerator>(), Is.Not.Null);
         }
 
         private void AssertViewCreated()
@@ -90,43 +85,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         {
             var material = View.GetComponent<MeshRenderer>().sharedMaterial;
             Assert.That(material, Is.Not.Null);
-        }
-
-        [UnityTest]
-        public IEnumerator TestNewLandscapeGeneratorSavedOnSceneReload()
-        {
-            yield return ReloadScene();
-            AssertGeneration();
-        }
-
-        private IEnumerator ReloadScene()
-        {
-            EditorSceneManager.SaveScene(testScene);
-            yield return OpenScene();
-        }
-
-        [UnityTest]
-        public IEnumerator TestOnPlaneSettingsUpdate()
-        {
-            yield return ChangeLength();
-            AssertNewMeshLength();
-        }
-
-        private IEnumerator ChangeLength()
-        {
-            var plane = Root.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
-            plane.length = TEST_LENGTH;
-            plane.OnValidate();
-
-            yield return SkipFrames();
-        }
-
-        private void AssertNewMeshLength()
-        {
-            var resultingMesh = View.GetComponent<MeshFilter>().sharedMesh;
-            var vertices = resultingMesh.vertices;
-            var resultingLength = Vector3.Distance(vertices[0], vertices[1]);
-            Assert.That(resultingLength, Is.EqualTo(TEST_LENGTH));
         }
     }
 }
