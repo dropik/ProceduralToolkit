@@ -11,9 +11,9 @@ using System.Linq;
 
 namespace ProceduralToolkit.Components.Startups
 {
-    [RequireComponent(typeof(ProceduralToolkit.Components.Generators.Plane), typeof(MeshAssemblerComponent))]
-    [ExecuteInEditMode]
-    public class LandscapeGenerator : MonoBehaviour
+    [RequireComponent(typeof(Generators.Plane))]
+    [RequireComponent(typeof(MeshAssemblerComponent))]
+    public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
 
@@ -26,39 +26,22 @@ namespace ProceduralToolkit.Components.Startups
 
         public void Reset()
         {
-            ResetName();
-            ResetSettings();
-            RemoveOldHierarchy();
-            InitView();
-        }
-
-        private void ResetName()
-        {
-            name = "LandscapeGenerator";
-        }
-
-        private void ResetSettings()
-        {
-            foreach (var generator in Generators)
+            var resetter = new StartupResetter(gameObject)
             {
-                generator.Reset();
-            }
+                DefaultName = "LandscapeGenerator",
+                Generators = Generators
+            };
+            resetter.InitChild += InitView;
+            resetter.Reset();
         }
-
-        private void RemoveOldHierarchy()
-        {
-            if (view != null)
-            {
-                UnityEngine.Object.DestroyImmediate(view);
-            }
-        }
-
-        private void InitView()
+        
+        private GameObject InitView()
         {
             view = new GameObject() { name = "view" };
             view.transform.parent = transform;
             view.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
             view.AddComponent<MeshGeneratorView>();
+            return view;
         }
 
         public void OnValidate()
@@ -106,7 +89,7 @@ namespace ProceduralToolkit.Components.Startups
             services.InjectServicesTo(MeshGeneratorView);
         }
 
-        public void RegisterUndo()
+        public override void RegisterUndo()
         {
             Undo.RegisterCreatedObjectUndo(gameObject, "New Landscape Generator");
         }
