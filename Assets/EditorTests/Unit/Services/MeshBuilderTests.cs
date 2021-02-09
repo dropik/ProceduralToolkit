@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
-using Moq;
 using UnityEngine;
 using ProceduralToolkit.Services;
-using ProceduralToolkit.Services.Generators;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
@@ -16,40 +14,54 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         };
         private readonly int[] expectedTriangles = { 0, 1, 2 };
 
-        private Mock<IGenerator> mockGenerator;
         private MeshBuilder meshBuilder;
-        private Mesh resultingMesh;
 
         [SetUp]
         public void SetUp()
         {
-            mockGenerator = new Mock<IGenerator>();
-            mockGenerator.SetupGet(m => m.Vertices)
-                         .Returns(expectedVertices);
-            mockGenerator.SetupGet(m => m.Triangles)
-                         .Returns(expectedTriangles);
-            meshBuilder = new MeshBuilder(mockGenerator.Object);
+            meshBuilder = new MeshBuilder(() => expectedVertices, () => expectedTriangles);
         }
 
         [Test]
         public void TestAddedVertices()
         {
-            resultingMesh = meshBuilder.Build();
+            var resultingMesh = meshBuilder.Build();
             CollectionAssert.AreEqual(expectedVertices, resultingMesh.vertices);
         }
 
         [Test]
         public void TestAddedTriangles()
         {
-            resultingMesh = meshBuilder.Build();
+            var resultingMesh = meshBuilder.Build();
             CollectionAssert.AreEqual(expectedTriangles, resultingMesh.triangles);
         }
 
         [Test]
         public void TestRecalculatedNormals()
         {
-            resultingMesh = meshBuilder.Build();
+            var resultingMesh = meshBuilder.Build();
             Assert.That(resultingMesh.normals.Length, Is.Not.Zero);
+        }
+
+        [Test]
+        public void TestOnDifferentSizes()
+        {
+            var verticesInSquare = new Vector3[]
+            {
+                new Vector3(0, 0, 0),
+                new Vector3(0, 1, 0),
+                new Vector3(1, 1, 0),
+                new Vector3(1, 0, 0)
+            };
+            var trianglesInSquare = new int[]
+            {
+                0, 1, 2,
+                0, 2, 3
+            };
+            meshBuilder = new MeshBuilder(() => verticesInSquare, () => trianglesInSquare);
+            var resultingMesh = meshBuilder.Build();
+            CollectionAssert.AreEqual(verticesInSquare, resultingMesh.vertices);
+            CollectionAssert.AreEqual(trianglesInSquare, resultingMesh.triangles);
         }
     }
 }

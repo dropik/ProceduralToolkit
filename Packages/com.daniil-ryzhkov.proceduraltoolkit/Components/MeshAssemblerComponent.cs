@@ -17,7 +17,7 @@ namespace ProceduralToolkit.Components
 
         public void Start()
         {
-            meshAssembler.Assemble();
+            meshAssembler?.Assemble();
         }
     }
 }

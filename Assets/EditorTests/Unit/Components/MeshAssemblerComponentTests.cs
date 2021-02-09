@@ -1,3 +1,4 @@
+using System;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Components;
@@ -13,16 +14,16 @@ namespace ProceduralToolkit.EditorTests.Unit.Components
         private GameObject obj;
         private MeshAssemblerComponent meshAssembler;
         private Mock<IMeshAssembler> mockAssembler;
+        private IServiceContainer services;
 
         [SetUp]
         public void Setup()
         {
             obj = new GameObject();
             meshAssembler = obj.AddComponent<MeshAssemblerComponent>();
-            var services = ServiceContainerFactory.Create();
+            services = ServiceContainerFactory.Create();
             mockAssembler = new Mock<IMeshAssembler>();
             services.AddSingleton<IMeshAssembler>(mockAssembler.Object);
-            services.InjectServicesTo(meshAssembler);
         }
 
         [TearDown]
@@ -30,15 +31,29 @@ namespace ProceduralToolkit.EditorTests.Unit.Components
         {
             if (obj != null)
             {
-                Object.DestroyImmediate(obj);
+                UnityEngine.Object.DestroyImmediate(obj);
             }
         }
             
         [Test]
         public void TestAssemblerCalledOnStart()
         {
+            services.InjectServicesTo(meshAssembler);
             meshAssembler.Start();
             mockAssembler.Verify(m => m.Assemble(), Times.Once);
+        }
+
+        [Test]
+        public void TestAssemblerOnStartNotInjected()
+        {
+            try
+            {
+                meshAssembler.Start();
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
         }
     }
 }

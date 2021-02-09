@@ -65,10 +65,10 @@ namespace ProceduralToolkit.Components.Startups
 
         protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
         {
-            services.AddSingleton(Generator);
+            services.AddSingleton<Func<IEnumerable<Vector3>>>(() => Generator.Vertices);
+            services.AddSingleton<Func<IEnumerable<int>>>(() => Generator.Triangles);
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();
-            services.GetService<IMeshAssembler>().Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
         }
 
         protected virtual void SetupViewServices(IServiceContainer services)
@@ -87,6 +87,7 @@ namespace ProceduralToolkit.Components.Startups
             }
             services.InjectServicesTo(GetComponent<MeshAssemblerComponent>());
             services.InjectServicesTo(MeshGeneratorView);
+            services.GetService<IMeshAssembler>().Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
         }
 
         public override void RegisterUndo()

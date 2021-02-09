@@ -67,17 +67,7 @@ namespace ProceduralToolkit.EditorTests.IT
         }
 
         [Test]
-        public void TestMockAssemblerCalledOnPlaneChange()
-        {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
-            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
-            var plane = gameObject.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
-            plane.OnValidate();
-            landscapeGenerator.MockMeshAssembler.Verify(m => m.Assemble(), Times.Once);
-        }
-
-        [Test]
-        public void TestMeshAssigned()
+        public void TestMeshUpdatedOnPlaneChange()
         {
             var landscapeGenerator = gameObject.AddComponent<LandscapeGenerator>();
             var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
@@ -85,7 +75,13 @@ namespace ProceduralToolkit.EditorTests.IT
             var view = gameObject.GetComponentInChildren<MeshGeneratorView>();
             view.Update();
             var meshFilter = gameObject.GetComponentInChildren<MeshFilter>();
-            Assert.That(meshFilter.sharedMesh != null);
+            var vertices1 = meshFilter.sharedMesh.vertices;
+            var plane = gameObject.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
+            plane.length = 10;
+            plane.OnValidate();
+            view.Update();
+            var vertices2 = meshFilter.sharedMesh.vertices;
+            CollectionAssert.AreNotEqual(vertices1, vertices2);
         }
     }
 }

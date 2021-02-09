@@ -1,38 +1,41 @@
 ﻿using UnityEngine;
-using System.Linq;
-using ProceduralToolkit.Services.Generators;
+using System.Collections.Generic;
+using System;
 
 namespace ProceduralToolkit.Services
 {
     public class MeshBuilder : IMeshBuilder
     {
-        private readonly IGenerator generator;
+        private readonly Func<IEnumerable<Vector3>> verticesProvider;
+        private readonly Func<IEnumerable<int>> trianglesProvider;
+
         private Mesh resultingMesh;
 
-        public MeshBuilder(IGenerator generator)
+        public MeshBuilder(Func<IEnumerable<Vector3>> verticesProvider, Func<IEnumerable<int>> trianglesProvider)
         {
-            this.generator = generator;
+            this.verticesProvider = verticesProvider;
+            this.trianglesProvider = trianglesProvider;
         }
 
         public Mesh Build()
         {
             resultingMesh = new Mesh();
-            AddVertices();
-            AddTriangles();
+            var verticesEnumerator = verticesProvider.Invoke().GetEnumerator();
+            var trianglesEnumerator = trianglesProvider.Invoke().GetEnumerator();
+            var verticesList = new List<Vector3>();
+            var trianglesList = new List<int>();
+            while (trianglesEnumerator.MoveNext())
+            {
+                if (verticesEnumerator.MoveNext())
+                {
+                    verticesList.Add(verticesEnumerator.Current);
+                }
+                trianglesList.Add(trianglesEnumerator.Current);
+            }
+            resultingMesh.vertices = verticesList.ToArray();
+            resultingMesh.triangles = trianglesList.ToArray();
             resultingMesh.RecalculateNormals();
             return resultingMesh;
-        }
-
-        private void AddVertices()
-        {
-            var vertices = generator.Vertices.ToList();
-            resultingMesh.vertices = vertices.ToArray();
-        }
-
-        private void AddTriangles()
-        {
-            var triangles = generator.Triangles.ToList();
-            resultingMesh.triangles = triangles.ToArray();
         }
     }
 }
