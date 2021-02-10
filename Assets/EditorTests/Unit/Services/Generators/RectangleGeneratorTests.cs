@@ -6,14 +6,14 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class PlaneGeneratorTests
+    public class RectangleGeneratorTests
     {
-        private PlaneGenerator plane;
+        private RectangleGenerator rect;
 
         [SetUp]
         public void SetUp()
         {
-            plane = new PlaneGenerator(new PlaneGeneratorSettings()
+            rect = new RectangleGenerator(new RectangleGeneratorSettings()
             {
                 Length = 2,
                 Width = 1
@@ -28,18 +28,19 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(-1, 0, 0.5f),
                 new Vector3(1, 0, 0.5f),
                 new Vector3(-1, 0, -0.5f),
-                new Vector3(-1, 0, -0.5f),
-                new Vector3(1, 0, 0.5f),
                 new Vector3(1, 0, -0.5f)
             };
-            CollectionAssert.AreEqual(expectedVertices, plane.Vertices);
+            CollectionAssert.AreEqual(expectedVertices, rect.Vertices);
         }
 
         [Test]
-        public void TestForCorrectTriangles()
+        public void TestForCorrectSquares()
         {
-            var expectedTriangles = new int[] { 0, 1, 2, 3, 4, 5 };
-            CollectionAssert.AreEqual(expectedTriangles, plane.Triangles);
+            var expectedSquares = new Square[]
+            {
+                new Square(0, 1, 3, 2)
+            };
+            CollectionAssert.AreEqual(expectedSquares, rect.Squares);
         }
     }
 }

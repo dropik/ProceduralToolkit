@@ -70,13 +70,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Components.Generators
             rect.length = testLength;
             rect.width = testWidth;
             var settings = rect.Settings;
-            var expectedSettings = new PlaneGeneratorSettings()
+            var expectedSettings = new RectangleGeneratorSettings()
             {
                 Length = testLength,
                 Width = testWidth
             };
-            Assert.That(settings.Length, Is.EqualTo(expectedSettings.Length));
-            Assert.That(settings.Width, Is.EqualTo(expectedSettings.Width));
+            Assert.That(settings, Is.EqualTo(expectedSettings));
         }
     }
 }

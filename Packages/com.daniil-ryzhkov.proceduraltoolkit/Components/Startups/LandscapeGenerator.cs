@@ -53,22 +53,17 @@ namespace ProceduralToolkit.Components.Startups
         private void ConfigureServices()
         {
             services = ServiceContainerFactory.Create();
-            SetupGeneratorServices(services);
             SetupMeshAssemblerServices(services);
             SetupViewServices(services);
-        }
-
-        protected virtual void SetupGeneratorServices(IServiceContainer services)
-        {
-            services.AddSingleton<Func<PlaneGeneratorSettings, IGenerator>>(settings => new PlaneGenerator(settings));
         }
 
         protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
         {
             services.AddSingleton<Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)>>(() =>
             {
-                var generator = new PlaneGenerator(GetComponent<Rectangle>().Settings);
-                return (generator.Vertices, generator.Triangles);
+                var rect = new RectangleGenerator(GetComponent<Rectangle>().Settings);
+                var converter = new SquaresToIndicesConverter(rect.Squares);
+                return (rect.Vertices, converter.Indices);
             });
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();

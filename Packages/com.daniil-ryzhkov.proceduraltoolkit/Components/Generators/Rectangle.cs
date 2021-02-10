@@ -13,7 +13,7 @@ namespace ProceduralToolkit.Components.Generators
 
         public event Action Updated;
 
-        public PlaneGeneratorSettings Settings => new PlaneGeneratorSettings()
+        public RectangleGeneratorSettings Settings => new RectangleGeneratorSettings()
         {
             Length = length,
             Width = width

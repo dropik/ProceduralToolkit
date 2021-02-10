@@ -65,7 +65,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         private void AssertGeneration()
         {
             AssertViewCreated();
-            AssertMeshCreatedCorrectly();
+            AssertMeshCreated();
             AssertMaterialAssigned();
         }
 
@@ -74,11 +74,11 @@ namespace ProceduralToolkit.EditorTests.E2E
             Assert.That(View, Is.Not.Null);
         }
 
-        private void AssertMeshCreatedCorrectly()
+        private void AssertMeshCreated()
         {
             var generatedMesh = View.GetComponent<MeshFilter>().sharedMesh;
             Assert.That(generatedMesh, Is.Not.Null);
-            Assert.That(generatedMesh.vertexCount, Is.EqualTo(6));
+            Assert.That(generatedMesh.vertexCount, Is.GreaterThan(0));
         }
 
         private void AssertMaterialAssigned()

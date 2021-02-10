@@ -13,12 +13,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             var squares = new Square[]
             {
-                new Square(0, 1, 2, 3)
+                new Square(0, 1, 3, 2)
             };
             var expectedIndices = new int[]
             {
-                0, 1, 2,
-                0, 2, 3
+                0, 1, 3,
+                0, 3, 2
             };
             TestConverter(squares, expectedIndices);
         }
