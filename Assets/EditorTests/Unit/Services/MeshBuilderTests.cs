@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 using ProceduralToolkit.Services;
-using ProceduralToolkit.Models;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
@@ -13,18 +12,14 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
             new Vector3(0, 1, 0),
             new Vector3(0, 0, 1)
         };
-        private readonly Triangle[] inputTriangles = new Triangle[]
-        {
-            new Triangle(0, 1, 2)
-        };
-        private readonly int[] expectedTriangles = { 0, 1, 2 };
+        private readonly int[] expectedIndices = { 0, 1, 2 };
 
         private MeshBuilder meshBuilder;
 
         [SetUp]
         public void SetUp()
         {
-            meshBuilder = new MeshBuilder(() => expectedVertices, () => inputTriangles);
+            meshBuilder = new MeshBuilder(() => expectedVertices, () => expectedIndices);
         }
 
         [Test]
@@ -35,10 +30,17 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         }
 
         [Test]
-        public void TestAddedTriangles()
+        public void TestAddedIndices()
         {
             var resultingMesh = meshBuilder.Build();
-            CollectionAssert.AreEqual(expectedTriangles, resultingMesh.triangles);
+            CollectionAssert.AreEqual(expectedIndices, resultingMesh.GetIndices(0));
+        }
+
+        [Test]
+        public void TestTopologyIsTriangles()
+        {
+            var resultingMesh = meshBuilder.Build();
+            Assert.That(resultingMesh.GetTopology(0), Is.EqualTo(MeshTopology.Triangles));
         }
 
         [Test]
@@ -58,20 +60,17 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
                 new Vector3(1, 1, 0),
                 new Vector3(1, 0, 0)
             };
-            var trianglesInSquare = new Triangle[]
-            {
-                new Triangle(0, 1, 2),
-                new Triangle(0, 2, 3)
-            };
-            var expectedTriangles = new int[]
+            var indicesInSquare = new int[]
             {
                 0, 1, 2,
                 0, 2, 3
             };
-            meshBuilder = new MeshBuilder(() => verticesInSquare, () => trianglesInSquare);
+            meshBuilder = new MeshBuilder(() => verticesInSquare, () => indicesInSquare);
+
             var resultingMesh = meshBuilder.Build();
+
             CollectionAssert.AreEqual(verticesInSquare, resultingMesh.vertices);
-            CollectionAssert.AreEqual(expectedTriangles, resultingMesh.triangles);
+            CollectionAssert.AreEqual(indicesInSquare, resultingMesh.GetIndices(0));
         }
     }
 }
