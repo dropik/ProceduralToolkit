@@ -19,7 +19,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         [SetUp]
         public void SetUp()
         {
-            meshBuilder = new MeshBuilder(() => expectedVertices, () => expectedIndices);
+            meshBuilder = new MeshBuilder(() => (expectedVertices, expectedIndices));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
                 0, 1, 2,
                 0, 2, 3
             };
-            meshBuilder = new MeshBuilder(() => verticesInSquare, () => indicesInSquare);
+            meshBuilder = new MeshBuilder(() => (verticesInSquare, indicesInSquare));
 
             var resultingMesh = meshBuilder.Build();
 

@@ -7,13 +7,11 @@ namespace ProceduralToolkit.Services
 {
     public class MeshBuilder : IMeshBuilder
     {
-        private readonly Func<IEnumerable<Vector3>> verticesProvider;
-        private readonly Func<IEnumerable<int>> indicesProvider;
+        private readonly Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)> dataProvider;
 
-        public MeshBuilder(Func<IEnumerable<Vector3>> verticesProvider, Func<IEnumerable<int>> indicesProvider)
+        public MeshBuilder(Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)> dataProvider)
         {
-            this.verticesProvider = verticesProvider;
-            this.indicesProvider = indicesProvider;
+            this.dataProvider = dataProvider;
         }
 
         public Mesh Build()
@@ -25,8 +23,9 @@ namespace ProceduralToolkit.Services
 
         private void BuildToMesh(Mesh mesh)
         {
-            mesh.SetVertices(verticesProvider.Invoke().ToArray());
-            mesh.SetIndices(indicesProvider.Invoke().ToArray(), MeshTopology.Triangles, 0);
+            var (vertices, indices) = dataProvider.Invoke();
+            mesh.SetVertices(vertices.ToArray());
+            mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0);
             mesh.RecalculateNormals();
         }
     }
