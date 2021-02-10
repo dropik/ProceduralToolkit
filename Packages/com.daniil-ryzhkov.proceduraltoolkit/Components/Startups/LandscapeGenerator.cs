@@ -65,8 +65,10 @@ namespace ProceduralToolkit.Components.Startups
 
         protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
         {
-            services.AddSingleton<Func<IEnumerable<Vector3>>>(() => Generator.Vertices);
-            services.AddSingleton<Func<IEnumerable<int>>>(() => Generator.Triangles);
+            services.AddSingleton<Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)>>(() =>
+            {
+                return (Generator.Vertices, Generator.Triangles);
+            });
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();
         }
