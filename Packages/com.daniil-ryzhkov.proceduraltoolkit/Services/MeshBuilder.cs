@@ -1,20 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
+using ProceduralToolkit.Models;
 
 namespace ProceduralToolkit.Services
 {
     public class MeshBuilder : IMeshBuilder
     {
         private readonly Func<IEnumerable<Vector3>> verticesProvider;
-        private readonly Func<IEnumerable<int>> trianglesProvider;
+        private readonly Func<IEnumerable<Triangle>> trianglesProvider;
 
         private IEnumerator<Vector3> verticesEnumerator;
-        private IEnumerator<int> trianglesEnumerator;
+        private IEnumerator<Triangle> trianlgesEnumerator;
         private List<Vector3> verticesList;
         private List<int> trianglesList;
 
-        public MeshBuilder(Func<IEnumerable<Vector3>> verticesProvider, Func<IEnumerable<int>> trianglesProvider)
+        public MeshBuilder(Func<IEnumerable<Vector3>> verticesProvider, Func<IEnumerable<Triangle>> trianglesProvider)
         {
             this.verticesProvider = verticesProvider;
             this.trianglesProvider = trianglesProvider;
@@ -62,7 +63,7 @@ namespace ProceduralToolkit.Services
         private void UpdateEnumerators()
         {
             verticesEnumerator = verticesProvider.Invoke().GetEnumerator();
-            trianglesEnumerator = trianglesProvider.Invoke().GetEnumerator();
+            trianlgesEnumerator = trianglesProvider.Invoke().GetEnumerator();
         }
 
         private void InitLists()
@@ -73,23 +74,21 @@ namespace ProceduralToolkit.Services
 
         private void FillLists()
         {
-            while (trianglesEnumerator.MoveNext())
+            while(verticesEnumerator.MoveNext())
             {
-                HandleOneIndex();
+                verticesList.Add(verticesEnumerator.Current);
+                TryAddTriangle();
             }
         }
 
-        private void HandleOneIndex()
+        private void TryAddTriangle()
         {
-            TryAddVertex();
-            trianglesList.Add(trianglesEnumerator.Current);
-        }
-
-        private void TryAddVertex()
-        {
-            if (verticesEnumerator.MoveNext())
+            if (trianlgesEnumerator.MoveNext())
             {
-                verticesList.Add(verticesEnumerator.Current);
+                var triangle = trianlgesEnumerator.Current;
+                trianglesList.Add(triangle.Index1);
+                trianglesList.Add(triangle.Index2);
+                trianglesList.Add(triangle.Index3);
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 using ProceduralToolkit.Services;
+using ProceduralToolkit.Models;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
@@ -12,6 +13,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
             new Vector3(0, 1, 0),
             new Vector3(0, 0, 1)
         };
+        private readonly Triangle[] inputTriangles = new Triangle[]
+        {
+            new Triangle(0, 1, 2)
+        };
         private readonly int[] expectedTriangles = { 0, 1, 2 };
 
         private MeshBuilder meshBuilder;
@@ -19,7 +24,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         [SetUp]
         public void SetUp()
         {
-            meshBuilder = new MeshBuilder(() => expectedVertices, () => expectedTriangles);
+            meshBuilder = new MeshBuilder(() => expectedVertices, () => inputTriangles);
         }
 
         [Test]
@@ -53,7 +58,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
                 new Vector3(1, 1, 0),
                 new Vector3(1, 0, 0)
             };
-            var trianglesInSquare = new int[]
+            var trianglesInSquare = new Triangle[]
+            {
+                new Triangle(0, 1, 2),
+                new Triangle(0, 2, 3)
+            };
+            var expectedTriangles = new int[]
             {
                 0, 1, 2,
                 0, 2, 3
@@ -61,7 +71,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
             meshBuilder = new MeshBuilder(() => verticesInSquare, () => trianglesInSquare);
             var resultingMesh = meshBuilder.Build();
             CollectionAssert.AreEqual(verticesInSquare, resultingMesh.vertices);
-            CollectionAssert.AreEqual(trianglesInSquare, resultingMesh.triangles);
+            CollectionAssert.AreEqual(expectedTriangles, resultingMesh.triangles);
         }
     }
 }
