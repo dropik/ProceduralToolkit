@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace ProceduralToolkit.Components.Startups
 {
-    [RequireComponent(typeof(Generators.Plane))]
+    [RequireComponent(typeof(Rectangle))]
     [RequireComponent(typeof(MeshAssemblerComponent))]
     public class LandscapeGenerator : Startup
     {
@@ -22,14 +22,14 @@ namespace ProceduralToolkit.Components.Startups
         private GameObject view;
 
         private IGeneratorView MeshGeneratorView => view.GetComponent<IGeneratorView>();
-        private IEnumerable<IGeneratorComponent> Generators => GetComponents<IGeneratorComponent>();
+        private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
 
         public void Reset()
         {
             var resetter = new StartupResetter(gameObject)
             {
                 DefaultName = "LandscapeGenerator",
-                Generators = Generators
+                GeneratorSettings = GeneratorSettings
             };
             resetter.InitChild += InitView;
             resetter.Reset();
@@ -67,7 +67,8 @@ namespace ProceduralToolkit.Components.Startups
         {
             services.AddSingleton<Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)>>(() =>
             {
-                return (Generator.Vertices, Generator.Triangles);
+                var generator = new PlaneGenerator(GetComponent<Rectangle>().Settings);
+                return (generator.Vertices, generator.Triangles);
             });
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();
@@ -78,14 +79,11 @@ namespace ProceduralToolkit.Components.Startups
             services.AddSingleton(() => view.GetComponent<MeshFilter>());
         }
 
-        private IGenerator Generator => Generators.First();
-
         private void InjectServices()
         {
-            foreach (var generator in Generators)
+            foreach (var generator in GeneratorSettings)
             {
-                services.InjectServicesTo(generator);
-                generator.GeneratorUpdated += services.GetService<IMeshAssembler>().Assemble;
+                generator.Updated += services.GetService<IMeshAssembler>().Assemble;
             }
             services.InjectServicesTo(GetComponent<MeshAssemblerComponent>());
             services.InjectServicesTo(MeshGeneratorView);

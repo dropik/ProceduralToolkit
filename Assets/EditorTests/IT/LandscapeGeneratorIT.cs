@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Components;
+using ProceduralToolkit.Components.Generators;
 using ProceduralToolkit.Components.Startups;
 using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
@@ -76,9 +77,9 @@ namespace ProceduralToolkit.EditorTests.IT
             view.Update();
             var meshFilter = gameObject.GetComponentInChildren<MeshFilter>();
             var vertices1 = meshFilter.sharedMesh.vertices;
-            var plane = gameObject.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
-            plane.length = 10;
-            plane.OnValidate();
+            var rect = gameObject.GetComponent<Rectangle>();
+            rect.length = 10;
+            rect.OnValidate();
             view.Update();
             var vertices2 = meshFilter.sharedMesh.vertices;
             CollectionAssert.AreNotEqual(vertices1, vertices2);
