@@ -4,33 +4,17 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class ReturnDiamond : IState
+    public class ReturnDiamond : BaseReturnVertex
     {
-        private readonly IEnumerator<Vector3> inputVerticesEnumerator;
-        private readonly DiamondContext context;
+        public ReturnDiamond(
+            IEnumerator<Vector3> inputVerticesEnumerator,
+            DiamondContext context)
+        : base(inputVerticesEnumerator, context) { }
 
-        public ReturnDiamond(IEnumerator<Vector3> inputVerticesEnumerator, DiamondContext context)
+        protected override void SetCurrentWithVertex(Vector3 vertex)
         {
-            this.inputVerticesEnumerator = inputVerticesEnumerator;
-            this.context = context;
-        }
-
-        public IState NextState { get; set; }
-
-        public void MoveNext()
-        {
-            inputVerticesEnumerator.MoveNext();
-            var vertex = inputVerticesEnumerator.Current;
-            context.OriginalVertices[context.Column] = vertex;
-            context.Current = vertex + context.XZShift;
-
-            context.Column++;
-            if (context.Column >= context.Length)
-            {
-                context.Row++;
-                context.Column = 0;
-                context.State = NextState;
-            }
+            Context.OriginalVertices[Context.Column] = vertex;
+            Context.Current = vertex + Context.XZShift;
         }
     }
 }
