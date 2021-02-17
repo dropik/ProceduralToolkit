@@ -8,14 +8,14 @@ namespace ProceduralToolkit.Services.Generators
     {
         private readonly IEnumerator<Vector3> inputVerticesEnumerator;
         private readonly DiamondContext context;
-        private IState next;
 
-        public ReturnOriginal(IEnumerator<Vector3> inputVerticesEnumerator, DiamondContext context, IState next)
+        public ReturnOriginal(IEnumerator<Vector3> inputVerticesEnumerator, DiamondContext context)
         {
             this.inputVerticesEnumerator = inputVerticesEnumerator;
             this.context = context;
-            this.next = next;
         }
+        
+        public IState NextState { get; set; }
 
         public void MoveNext()
         {
@@ -25,7 +25,7 @@ namespace ProceduralToolkit.Services.Generators
             if (context.Column >= context.Length)
             {
                 context.Column = 0;
-                context.State = next;
+                context.State = NextState;
             }
         }
     }
