@@ -21,6 +21,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             inputVerticesEnumerator.MoveNext();
             context.Current = inputVerticesEnumerator.Current;
+            context.Column++;
             context.State = NextState;
         }
     }

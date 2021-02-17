@@ -66,6 +66,14 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         }
 
         [Test]
+        public void TestColumnZeroedIfEndedColumn()
+        {
+            returnDiamond.MoveNext();
+            returnDiamond.MoveNext();
+            Assert.That(context.Column, Is.Zero);
+        }
+
+        [Test]
         public void TestRowIncrementedIfEndedColumn()
         {
             returnDiamond.MoveNext();

@@ -45,5 +45,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             storeFirst.MoveNext();
             Assert.That(context.State.Equals("mock"));
         }
+
+        [Test]
+        public void TestColumnIncremented()
+        {
+            storeFirst.MoveNext();
+            Assert.That(context.Column, Is.EqualTo(1));
+        }
     }
 }

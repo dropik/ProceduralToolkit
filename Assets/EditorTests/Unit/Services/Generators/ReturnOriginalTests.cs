@@ -25,8 +25,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             context = new DiamondContext(2);
             mockNextState = new Mock<IState>();
             mockNextState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
-            returnOriginal = new ReturnOriginal(((IEnumerable<Vector3>)inputVertices).GetEnumerator(), context);
-            returnOriginal.NextState = mockNextState.Object;
+            returnOriginal = new ReturnOriginal(((IEnumerable<Vector3>)inputVertices).GetEnumerator(), context)
+            {
+                NextState = mockNextState.Object
+            };
         }
 
         [Test]
@@ -36,17 +38,36 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             Assert.That(context.Current, Is.EqualTo(inputVertices[0]));
             Assert.That(context.Column, Is.EqualTo(1));
         }
-
+        
         [Test]
-        public void TestNextStateSetOnColumnReachedLength()
+        public void TestNextStateDidNotChangeIfColumnNotEnded()
         {
             returnOriginal.MoveNext();
             Assert.That(context.State, Is.Null);
+        }
 
+        [Test]
+        public void TestNextStateSetIfEndedColumn()
+        {
+            returnOriginal.MoveNext();
             returnOriginal.MoveNext();
             Assert.That(context.State.Equals("mock"));
-            Assert.That(context.Current, Is.EqualTo(inputVertices[1]));
+        }
+
+        [Test]
+        public void TestColumnIsZeroedIfEndedColumn()
+        {
+            returnOriginal.MoveNext();
+            returnOriginal.MoveNext();
             Assert.That(context.Column, Is.Zero);
+        }
+
+        [Test]
+        public void TestRowIncrementedIfEndedColumn()
+        {
+            returnOriginal.MoveNext();
+            returnOriginal.MoveNext();
+            Assert.That(context.Row, Is.EqualTo(1));
         }
     }
 }

@@ -28,6 +28,7 @@ namespace ProceduralToolkit.Services.Generators
             if (context.Column >= context.Length)
             {
                 context.Row++;
+                context.Column = 0;
                 context.State = NextState;
             }
         }
