@@ -22,10 +22,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [SetUp]
         public void Setup()
         {
-            context = new DiamondContext()
-            {
-                Length = 2
-            };
+            context = new DiamondContext(2);
             mockNextState = new Mock<IState>();
             mockNextState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
             returnOriginal = new ReturnOriginal(((IEnumerable<Vector3>)inputVertices).GetEnumerator(), context);
