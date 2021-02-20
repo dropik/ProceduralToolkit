@@ -16,6 +16,5 @@ namespace ProceduralToolkit.Models
         public Vector3[] VerticesCopies { get; }
         public Vector3 Current { get; set; }
         public int Column { get; set; }
-        public int Row { get; set; }
     }
 }

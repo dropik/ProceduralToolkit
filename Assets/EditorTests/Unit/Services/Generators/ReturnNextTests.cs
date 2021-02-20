@@ -80,15 +80,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         }
 
         [Test]
-        public void TestMoveNextIncrementsRowIfEndedColumnd()
-        {
-            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            ReturnNext.MoveNext();
-            ReturnNext.MoveNext();
-            Assert.That(Context.Row, Is.EqualTo(1));
-        }
-
-        [Test]
         public void TestMoveNextSetsNextStateIfEndedColumn()
         {
             MockEnumerator.Setup(m => m.MoveNext()).Returns(true);

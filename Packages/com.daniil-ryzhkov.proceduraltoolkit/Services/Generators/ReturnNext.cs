@@ -34,7 +34,6 @@ namespace ProceduralToolkit.Services.Generators
             if (Context.Column >= Context.ColumnsInRow)
             {
                 Context.Column = 0;
-                Context.Row++;
                 Context.State = NextState;
             }
 
