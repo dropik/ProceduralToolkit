@@ -17,6 +17,7 @@ namespace ProceduralToolkit.Models
         public int Row { get; set; }
         public int Column { get; set; }
         public Vector3[] OriginalVertices { get; }
+        public Vector3 First { get; set; }
         public Vector3 XZShift { get; set; }
     }
 }

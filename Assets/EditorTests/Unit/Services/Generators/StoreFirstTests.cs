@@ -33,6 +33,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         }
 
         [Test]
+        public void TestFirstStored()
+        {
+            storeFirst.MoveNext();
+            Assert.That(context.First, Is.EqualTo(inputVertices[0]));
+        }
+
+        [Test]
         public void TestCurrentSetAsInputVertex()
         {
             storeFirst.MoveNext();

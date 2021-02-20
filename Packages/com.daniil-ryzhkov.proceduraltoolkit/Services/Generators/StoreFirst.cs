@@ -20,7 +20,9 @@ namespace ProceduralToolkit.Services.Generators
         public void MoveNext()
         {
             inputVerticesEnumerator.MoveNext();
-            context.Current = inputVerticesEnumerator.Current;
+            var vertex = inputVerticesEnumerator.Current;
+            context.First = vertex;
+            context.Current = vertex;
             context.Column++;
             context.State = NextState;
         }
