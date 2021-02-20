@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ProceduralToolkit.Models;
 using UnityEngine;
 

@@ -37,9 +37,12 @@ namespace ProceduralToolkit.Services.Generators
 
         public Vector3? MoveNext(Vector3 vertex)
         {
+            PreprocessVertex(vertex);
             SwitchState();
             return GetResultVertex(vertex);
         }
+
+        protected virtual void PreprocessVertex(Vector3 vertex) { }
 
         private void SwitchState()
         {
