@@ -1,10 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using ProceduralToolkit.Models;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class RowDuplicator
+    public partial class RowDuplicator
     {
+        private readonly Func<IEnumerable<Vector3>, int, RowDuplicatorContext> contextProvider;
+
+        public RowDuplicator(Func<IEnumerable<Vector3>, int, RowDuplicatorContext> contextProvider)
+        {
+            this.contextProvider = contextProvider;
+        }
+
         public IEnumerable<Vector3> InputVertices
         {
             get => inputVertices ?? (new Vector3[0]);
@@ -23,31 +32,10 @@ namespace ProceduralToolkit.Services.Generators
         {
             get
             {
-                var rowCounter = 0;
-                var columnCounter = 0;
-                var vertexCopies = new Vector3[ColumnsInRow];
-                foreach (var vertex in InputVertices)
+                var context = contextProvider?.Invoke(InputVertices, ColumnsInRow);
+                while (context.State.MoveNext())
                 {
-                    if ((rowCounter > 0) && (ColumnsInRow > 0))
-                    {
-                        vertexCopies[columnCounter] = vertex;
-                    }
-
-                    yield return vertex;
-                    columnCounter++;
-
-                    if (columnCounter >= ColumnsInRow)
-                    {
-                        columnCounter = 0;
-                        if (rowCounter > 0)
-                        {
-                            foreach (var copy in vertexCopies)
-                            {
-                                yield return copy;
-                            }
-                        }
-                        rowCounter++;
-                    }
+                    yield return context.Current;
                 }
             }
         }

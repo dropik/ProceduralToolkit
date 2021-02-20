@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
-using System.Linq;
 using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
@@ -8,76 +9,62 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     [Category("Unit")]
     public class RowDuplicatorTests
     {
-        [Test]
-        public void TestRowsAreDuplicated()
+        private RowDuplicator duplicator;
+        private Mock<IRowDuplicatorState> mockState;
+        private RowDuplicatorContext context;
+
+        [SetUp]
+        public void Setup()
         {
-            var row1 = new Vector3[]
+            mockState = new Mock<IRowDuplicatorState>();
+            context = new RowDuplicatorContext(2)
             {
-                new Vector3(0, 0, 0),
-                new Vector3(1, 0, 0)
+                State = mockState.Object
             };
-            var row2 = new Vector3[]
-            {
-                new Vector3(0, 0, 1),
-                new Vector3(1, 0, 1)
-            };
-            var row3 = new Vector3[]
-            {
-                new Vector3(0, 0, 2),
-                new Vector3(1, 0, 2)
-            };
-            var inputVertices = row1.Concat(row2).Concat(row3);
-            var expectedVertices = row1.Concat(row2).Concat(row2).Concat(row3).Concat(row3);
-            var duplicator = new RowDuplicator()
-            {
-                InputVertices = inputVertices,
-                ColumnsInRow = 2
-            };
-            CollectionAssert.AreEqual(expectedVertices, duplicator.OutputVertices);
+            duplicator = new RowDuplicator((vertices, columns) => context);
         }
 
         [Test]
         public void TestOnInputVerticesNotSet()
         {
-            var duplicator = new RowDuplicator()
-            {
-                ColumnsInRow = 2
-            };
             var expectedVertices = new Vector3[0];
-            CollectionAssert.AreEqual(expectedVertices, duplicator.OutputVertices);
-        }
-
-        [Test]
-        public void TestOnColumnsInRowNotSet()
-        {
-            var inputVertices = new Vector3[]
-            {
-                new Vector3(0, 0, 0),
-                new Vector3(1, 0, 0),
-                new Vector3(2, 0, 0)
-            };
-            var duplicator = new RowDuplicator()
-            {
-                InputVertices = inputVertices
-            };
-            CollectionAssert.AreEqual(inputVertices, duplicator.OutputVertices);
+            CollectionAssert.AreEqual(expectedVertices, duplicator.InputVertices);
         }
 
         [Test]
         public void TestOnNegativeColumnsInRow()
         {
-            var inputVertices = new Vector3[]
-           {
-                new Vector3(0, 0, 0),
-                new Vector3(1, 0, 0),
-                new Vector3(2, 0, 0)
-           };
-            var duplicator = new RowDuplicator()
-            {
-                InputVertices = inputVertices,
-                ColumnsInRow = -2
-            };
-            CollectionAssert.AreEqual(inputVertices, duplicator.OutputVertices);
+            duplicator.ColumnsInRow = -2;
+            Assert.That(duplicator.ColumnsInRow, Is.Zero);
+        }
+
+        [Test]
+        public void TestStateMoveNextUsed()
+        {
+            var enumerator = duplicator.OutputVertices.GetEnumerator();
+            enumerator.MoveNext();
+            mockState.Verify(m => m.MoveNext(), Times.Once);
+        }
+
+        [Test]
+        public void TestEnumerableFinishesWhenStateMoveNextReturnsFalse()
+        {
+            mockState.Setup(m => m.MoveNext()).Returns(false);
+            var enumerator = duplicator.OutputVertices.GetEnumerator();
+            Assert.That(enumerator.MoveNext(), Is.False);
+        }
+
+        [Test]
+        public void TestEnumerableReturnsContextCurrent()
+        {
+            mockState.Setup(m => m.MoveNext()).Returns(true);
+            var testVertex = new Vector3(1, 2, 3);
+            context.Current = testVertex;
+            var enumerator = duplicator.OutputVertices.GetEnumerator();
+
+            enumerator.MoveNext();
+
+            Assert.That(enumerator.Current, Is.EqualTo(testVertex));
         }
     }
 }

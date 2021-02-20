@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class ReturnNext
+    public class ReturnNext : IRowDuplicatorState
     {
         protected IEnumerator<Vector3> InputVerticesEnumerator { get; private set; }
         protected RowDuplicatorContext Context { get; private set; }
