@@ -1,73 +1,25 @@
-using System.Collections;
+using ProceduralToolkit.Models;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class DiamondTiling
+    public partial class DiamondTiling : BaseDiamondGenerator<DiamondTilingContext>
     {
-        private readonly IEnumerable<Vector3> inputVertices;
-        private readonly int length;
+        public DiamondTiling(Func<IEnumerable<Vector3>, int, DiamondTilingContext> contextProvider) : base(contextProvider) { }
 
-        public DiamondTiling(IEnumerable<Vector3> inputVertices, int length)
-        {
-            this.inputVertices = inputVertices;
-            this.length = length;
-        }
-
-        public IEnumerable<Vector3> Vertices
+        public override IEnumerable<Vector3> OutputVertices
         {
             get
             {
-                var rowCounter = 0;
-                var columnCounter = 0;
-                var originalVertices = new Vector3[length];
-                var first = Vector3.zero;
-                var xzShift = Vector3.zero;
-
-                foreach (var vertex in inputVertices)
+                var context = ContextProvider.Invoke(InputVertices, ColumnsInRow);
+                foreach (var vertex in InputVertices)
                 {
-                    if (rowCounter == 0)
+                    var next = context.State?.MoveNext(vertex);
+                    if (next != null)
                     {
-                        yield return vertex;
-
-                        if (columnCounter == 0)
-                        {
-                            first = vertex;
-                        }
-                    }
-                    else
-                    {
-                        originalVertices[columnCounter] = vertex;
-
-                        if ((rowCounter == 1) && (columnCounter == 1))
-                        {
-                            xzShift = (first - vertex) / 2;
-                            xzShift.y = 0;
-                        }
-
-                        if (columnCounter > 0)
-                        {
-                            var newVertex = new Vector3(vertex.x, 0, vertex.z);
-                            newVertex += xzShift;
-                            yield return newVertex;
-                        }
-                    }
-
-                    columnCounter++;
-                    if (columnCounter >= length)
-                    {
-                        columnCounter = 0;
-                        
-                        if (rowCounter > 0)
-                        {
-                            foreach (var original in originalVertices)
-                            {
-                                yield return original;
-                            }
-                        }
-
-                        rowCounter++;
+                        yield return (Vector3)next;
                     }
                 }
             }

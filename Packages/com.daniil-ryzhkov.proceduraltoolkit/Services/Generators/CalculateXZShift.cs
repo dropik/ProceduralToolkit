@@ -12,6 +12,7 @@ namespace ProceduralToolkit.Services.Generators
             if (Context.XZShift == Vector3.zero)
             {
                 Context.XZShift = (Context.First - vertex) / 2;
+                Context.XZShift = new Vector3(Context.XZShift.x, 0, Context.XZShift.z);
             }
         }
     }

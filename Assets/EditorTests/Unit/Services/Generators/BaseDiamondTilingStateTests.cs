@@ -10,7 +10,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     {
         protected Vector3[] InputVertices => new Vector3[]
         {
-            new Vector3(1, 0, 0),
+            new Vector3(1, 2, 0),
             new Vector3(2, 0, 0)
         };
         protected DiamondTilingContext Context { get; private set; }

@@ -18,8 +18,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             Context.Column = 1;
             Context.First = Vector3.zero;
-            ReturnVertex.MoveNext(InputVertices[1]);
-            var expectedShift = new Vector3(-2, 0, 0) / 2;
+            ReturnVertex.MoveNext(InputVertices[0]);
+            var expectedShift = new Vector3(-1, 0, 0) / 2;
             Assert.That(Context.XZShift, Is.EqualTo(expectedShift));
         }
 

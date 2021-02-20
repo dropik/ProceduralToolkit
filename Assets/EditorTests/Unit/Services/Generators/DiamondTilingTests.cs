@@ -1,43 +1,93 @@
+using Moq;
 using NUnit.Framework;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
-using System.Linq;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class DiamondTilingTests
+    public class DiamondTilingTests : BaseDiamondGeneratorTests<DiamondTilingContext>
     {
-        [Test]
-        public void TestTiling()
+        private readonly Vector3[] defaultInputVertices = new Vector3[]
         {
-            var firstRow = new Vector3[]
-            {
-                new Vector3(0, 5, 3),
-                new Vector3(1, 2, 3),
-                new Vector3(2, 87, 3),
-                new Vector3(3, 2, 3)
-            };
-            var secondRow = new Vector3[]
-            {
-                new Vector3(0, 2, 2),
-                new Vector3(1, 3, 2),
-                new Vector3(2, 6, 2),
-                new Vector3(3, 9, 2)
-            };
-            var inputVertices = firstRow.Concat(secondRow);
+            new Vector3(1, 0, 0),
+            new Vector3(2, 0, 0)
+        };
 
-            var d = new Vector3(0.5f, 0, -0.5f);
-            var expectedMiddle = new Vector3[]
+        private Mock<IDiamondTilingState> mockState;
+        private DiamondTilingContext context;
+
+        protected override Func<IEnumerable<Vector3>, int, DiamondTilingContext> ContextProvider => (vertices, columns) => context;
+
+        protected override BaseDiamondGenerator<DiamondTilingContext> CreateGenerator()
+        {
+            return new DiamondTiling(ContextProvider);
+        }
+
+        [SetUp]
+        public override void Setup()
+        {
+            mockState = new Mock<IDiamondTilingState>();
+            context = new DiamondTilingContext(2)
             {
-                new Vector3(0, 0, 3) + d,
-                new Vector3(1, 0, 3) + d,
-                new Vector3(2, 0, 3) + d
+                State = mockState.Object
             };
-            var expectedVertices = firstRow.Concat(expectedMiddle).Concat(secondRow);
-            
-            var tiling = new DiamondTiling(inputVertices, 4);
-            CollectionAssert.AreEqual(expectedVertices, tiling.Vertices);
+            base.Setup();
+        }
+
+        [Test]
+        public void TestOutputHasNextIfStateHasNext()
+        {
+            Generator.InputVertices = defaultInputVertices;
+            mockState.Setup(m => m.MoveNext(It.Is<Vector3>(v => v == defaultInputVertices[0]))).Returns(Vector3.zero);
+
+            var enumerator = Generator.OutputVertices.GetEnumerator();
+            Assert.That(enumerator.MoveNext(), Is.True);
+        }
+
+        [Test]
+        public void TestOutputHasNotNextIfStateHasNotNext()
+        {
+            Generator.InputVertices = defaultInputVertices;
+            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(null as Vector3?);
+
+            var enumerator = Generator.OutputVertices.GetEnumerator();
+            Assert.That(enumerator.MoveNext(), Is.False);
+        }
+
+        [Test]
+        public void TestOutputHasNotNextIfStateIsNull()
+        {
+            Generator.InputVertices = defaultInputVertices;
+            context.State = null;
+
+            var enumerator = Generator.OutputVertices.GetEnumerator();
+            Assert.That(enumerator.MoveNext(), Is.False);
+        }
+
+        [Test]
+        public void TestOutputHasNoNextIfInputIsEmpty()
+        {
+            Generator.InputVertices = new Vector3[0];
+            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(Vector3.zero);
+            var enumerator = Generator.OutputVertices.GetEnumerator();
+            Assert.That(enumerator.MoveNext(), Is.False);
+            mockState.Verify(m => m.MoveNext(It.IsAny<Vector3>()), Times.Never);
+        }
+
+        [Test]
+        public void TestOutputReturnsStateValueAsCurrent()
+        {
+            var expectedVertex = new Vector3(1, 2, 3);
+            Generator.InputVertices = defaultInputVertices;
+            mockState.Setup(m => m.MoveNext(It.Is<Vector3>(v => v == defaultInputVertices[0]))).Returns(expectedVertex);
+
+            var enumerator = Generator.OutputVertices.GetEnumerator();
+            enumerator.MoveNext();
+            Assert.That(enumerator.Current, Is.EqualTo(expectedVertex));
         }
     }
 }
