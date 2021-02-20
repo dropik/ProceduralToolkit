@@ -22,7 +22,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public void Setup()
         {
             Context = new DiamondContext(2);
-            SetupContext(Context);
 
             mockNextStateWhenRowEnded = new Mock<IState>();
             mockNextStateWhenRowContinues = new Mock<IState>();
@@ -33,8 +32,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             ReturnVertex.StateWhenEndedRow = mockNextStateWhenRowEnded.Object;
             ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
         }
-
-        protected virtual void SetupContext(DiamondContext context) { }
 
         protected abstract BaseReturnVertex GetReturnVertex(DiamondContext context);
 
