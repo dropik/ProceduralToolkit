@@ -1,7 +1,8 @@
 using Moq;
 using NUnit.Framework;
-using ProceduralToolkit.Models;
+using ProceduralToolkit.Models.FSMContexts;
 using ProceduralToolkit.Services.Generators;
+using ProceduralToolkit.Services.Generators.FSM;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
