@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,6 +31,23 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             ReturnNext.MoveNext();
 
             Assert.That(Context.VerticesCopies[Context.Column - 1], Is.EqualTo(testVertex));
+        }
+
+        [Test]
+        public void TestVertexStoredIfColumnsInRowIsGraterThanZero()
+        {
+            var nextState = ReturnNext.NextState;
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
+            var storeCopy = CreateReturnNext(MockEnumerator.Object, new RowDuplicatorContext(0), nextState);
+
+            try
+            {
+                storeCopy.MoveNext();
+            }
+            catch (Exception)
+            {
+                Assert.Fail();
+            }
         }
     }
 }

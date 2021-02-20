@@ -13,7 +13,10 @@ namespace ProceduralToolkit.Services.Generators
 
         protected override void HandleVertex(Vector3 vertex)
         {
-            Context.VerticesCopies[Context.Column] = vertex;
+            if (Context.ColumnsInRow > 0)
+            {
+                Context.VerticesCopies[Context.Column] = vertex;
+            }
         }
     }
 }

@@ -28,5 +28,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             ReturnVertex.MoveNext();
             Assert.That(Context.Current, Is.EqualTo(expectedVertex));
         }
+
+        protected override BaseReturnVertex GetReturnVertex(DiamondContext context)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

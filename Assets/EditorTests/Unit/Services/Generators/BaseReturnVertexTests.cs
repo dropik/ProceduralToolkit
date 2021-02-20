@@ -15,7 +15,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             new Vector3(2, 0, 0)
         };
         protected DiamondContext Context { get; private set; }
-        private Mock<IState> mockNextState;
+        private Mock<IState> mockNextStateWhenRowEnded;
+        private Mock<IState> mockNextStateWhenRowContinues;
         protected BaseReturnVertex ReturnVertex { get; private set; }
 
         [SetUp]
@@ -25,14 +26,18 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             {
                 XZShift = new Vector3(0.5f, 0, 0.5f)
             };
-            mockNextState = new Mock<IState>();
-            mockNextState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
+            mockNextStateWhenRowEnded = new Mock<IState>();
+            mockNextStateWhenRowContinues = new Mock<IState>();
+            mockNextStateWhenRowEnded.Setup(m => m.Equals(It.Is<string>(s => s == "ended"))).Returns(true);
+            mockNextStateWhenRowContinues.Setup(m => m.Equals(It.Is<string>(s => s == "continue"))).Returns(true);
             var enumerator = ((IEnumerable<Vector3>)InputVertices).GetEnumerator();
             ReturnVertex = GetReturnVertex(enumerator, Context);
-            ReturnVertex.NextState = mockNextState.Object;
+            ReturnVertex.StateWhenEndedRow = mockNextStateWhenRowEnded.Object;
+            ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
         }
 
         protected abstract BaseReturnVertex GetReturnVertex(IEnumerator<Vector3> inputVerticesEnumerator, DiamondContext context);
+        protected abstract BaseReturnVertex GetReturnVertex(DiamondContext context);
 
         [Test]
         public void TestNextStateDidNotChangeIfNotEndedColumn()
@@ -46,7 +51,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             ReturnVertex.MoveNext();
             ReturnVertex.MoveNext();
-            Assert.That(Context.State.Equals("mock"));
+            Assert.That(Context.State.Equals("ended"));
         }
 
         [Test]
@@ -63,6 +68,44 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             ReturnVertex.MoveNext();
             ReturnVertex.MoveNext();
             Assert.That(Context.Row, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TestMoveNextIncrementsColumn()
+        {
+            ReturnVertex = GetReturnVertex(Context);
+            ReturnVertex.MoveNext(InputVertices[0]);
+            Assert.That(Context.Column, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void TestMoveNextSetsAppropriateStateWhenColumnContinues()
+        {
+            ReturnVertex = GetReturnVertex(Context);
+            ReturnVertex.StateWhenEndedRow = mockNextStateWhenRowEnded.Object;
+            ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
+            ReturnVertex.MoveNext(InputVertices[0]);
+            Assert.That(Context.State.Equals("continue"));
+        }
+
+        [Test]
+        public void TestMoveNextZeroesColumnIfEndedRow()
+        {
+            Context.Column = 1;
+            ReturnVertex = GetReturnVertex(Context);
+            ReturnVertex.MoveNext(InputVertices[1]);
+            Assert.That(Context.Column, Is.Zero);
+        }
+
+        [Test]
+        public void TestMoveNextChangesStateIfEndedRow()
+        {
+            Context.Column = 1;
+            ReturnVertex = GetReturnVertex(Context);
+            ReturnVertex.StateWhenEndedRow = mockNextStateWhenRowEnded.Object;
+            ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
+            ReturnVertex.MoveNext(InputVertices[1]);
+            Assert.That(Context.State.Equals("ended"));
         }
     }
 }

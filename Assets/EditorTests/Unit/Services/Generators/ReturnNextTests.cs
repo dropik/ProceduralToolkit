@@ -71,7 +71,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         }
 
         [Test]
-        public void TestMoveNextResetsColumnToZeroIfEndedColumn()
+        public void TestMoveNextResetsColumnToZeroIfEndedRow()
         {
             MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
             ReturnNext.MoveNext();
@@ -80,7 +80,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         }
 
         [Test]
-        public void TestMoveNextSetsNextStateIfEndedColumn()
+        public void TestMoveNextSetsNextStateIfEndedRow()
         {
             MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
             ReturnNext.MoveNext();

@@ -11,6 +11,11 @@ namespace ProceduralToolkit.Services.Generators
             DiamondContext context)
         : base(inputVerticesEnumerator, context) { }
 
+        protected override Vector3? GetResultVertex(Vector3 vertex)
+        {
+            throw new System.NotImplementedException();
+        }
+
         protected override void SetCurrentWithVertex(Vector3 vertex)
         {
             Context.OriginalVertices[Context.Column] = vertex;
