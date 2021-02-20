@@ -6,25 +6,25 @@ using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
-    public abstract class BaseReturnVertexTests
+    public abstract class BaseDiamondTilingStateTests
     {
         protected Vector3[] InputVertices => new Vector3[]
         {
             new Vector3(1, 0, 0),
             new Vector3(2, 0, 0)
         };
-        protected DiamondContext Context { get; private set; }
-        private Mock<IState> mockNextStateWhenRowEnded;
-        private Mock<IState> mockNextStateWhenRowContinues;
-        protected BaseReturnVertex ReturnVertex { get; private set; }
+        protected DiamondTilingContext Context { get; private set; }
+        private Mock<IDiamondTilingState> mockNextStateWhenRowEnded;
+        private Mock<IDiamondTilingState> mockNextStateWhenRowContinues;
+        protected BaseDiamondTilingState ReturnVertex { get; private set; }
 
         [SetUp]
         public void Setup()
         {
-            Context = new DiamondContext(2);
+            Context = new DiamondTilingContext(2);
 
-            mockNextStateWhenRowEnded = new Mock<IState>();
-            mockNextStateWhenRowContinues = new Mock<IState>();
+            mockNextStateWhenRowEnded = new Mock<IDiamondTilingState>();
+            mockNextStateWhenRowContinues = new Mock<IDiamondTilingState>();
             mockNextStateWhenRowEnded.Setup(m => m.Equals(It.Is<string>(s => s == "ended"))).Returns(true);
             mockNextStateWhenRowContinues.Setup(m => m.Equals(It.Is<string>(s => s == "continue"))).Returns(true);
 
@@ -33,7 +33,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
         }
 
-        protected abstract BaseReturnVertex GetReturnVertex(DiamondContext context);
+        protected abstract BaseDiamondTilingState GetReturnVertex(DiamondTilingContext context);
 
         [Test]
         public void TestMoveNextIncrementsColumn()

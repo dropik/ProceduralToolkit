@@ -14,7 +14,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             Assert.That(Context.First, Is.EqualTo(InputVertices[0]));
         }
 
-        protected override BaseReturnVertex GetReturnVertex(DiamondContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(DiamondTilingContext context)
         {
             return new StoreFirst(context);
         }

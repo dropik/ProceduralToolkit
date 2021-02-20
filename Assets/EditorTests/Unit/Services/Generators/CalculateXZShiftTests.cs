@@ -8,7 +8,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     [Category("Unit")]
     public class CalculateXZShiftTests : ReturnDiamondTests
     {
-        protected override BaseReturnVertex GetReturnVertex(DiamondContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(DiamondTilingContext context)
         {
             return new CalculateXZShift(context);
         }

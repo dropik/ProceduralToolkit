@@ -5,7 +5,7 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class CalculateXZShift : ReturnDiamond
     {
-        public CalculateXZShift(DiamondContext context) : base(context) { }
+        public CalculateXZShift(DiamondTilingContext context) : base(context) { }
 
         protected override void PreprocessVertex(Vector3 vertex)
         {

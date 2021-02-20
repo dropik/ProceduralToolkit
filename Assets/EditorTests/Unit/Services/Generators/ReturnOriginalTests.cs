@@ -5,9 +5,9 @@ using ProceduralToolkit.Services.Generators;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class ReturnOriginalTests : BaseReturnVertexTests
+    public class ReturnOriginalTests : BaseDiamondTilingStateTests
     {
-        protected override BaseReturnVertex GetReturnVertex(DiamondContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(DiamondTilingContext context)
         {
             return new ReturnOriginal(context);
         }

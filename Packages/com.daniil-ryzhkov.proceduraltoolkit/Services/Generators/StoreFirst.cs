@@ -5,7 +5,7 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class StoreFirst : ReturnOriginal
     {
-        public StoreFirst(DiamondContext context) : base(context) { }
+        public StoreFirst(DiamondTilingContext context) : base(context) { }
 
         protected override void PreprocessVertex(Vector3 vertex)
         {

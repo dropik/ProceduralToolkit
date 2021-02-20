@@ -1,22 +1,12 @@
 ﻿using ProceduralToolkit.Models;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class ReturnDiamond : BaseReturnVertex
+    public class ReturnDiamond : BaseDiamondTilingState
     {
-        public ReturnDiamond(DiamondContext context) : base(context) { }
+        public ReturnDiamond(DiamondTilingContext context) : base(context) { }
 
-        protected override Vector3? GetResultVertex(Vector3 vertex)
-        {
-            return vertex + Context.XZShift;
-        }
-
-        protected override void SetCurrentWithVertex(Vector3 vertex)
-        {
-            Context.OriginalVertices[Context.Column] = vertex;
-            Context.Current = vertex + Context.XZShift;
-        }
+        protected override Vector3? GetResultVertex(Vector3 vertex) => vertex + Context.XZShift;
     }
 }

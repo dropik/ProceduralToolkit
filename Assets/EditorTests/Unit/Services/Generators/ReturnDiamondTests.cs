@@ -6,9 +6,9 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class ReturnDiamondTests : BaseReturnVertexTests
+    public class ReturnDiamondTests : BaseDiamondTilingStateTests
     {
-        protected override BaseReturnVertex GetReturnVertex(DiamondContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(DiamondTilingContext context)
         {
             return new ReturnDiamond(context);
         }
