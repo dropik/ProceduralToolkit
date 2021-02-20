@@ -6,11 +6,6 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class ReturnOriginal : BaseReturnVertex
     {
-        public ReturnOriginal(
-            IEnumerator<Vector3> inputVerticesEnumerator,
-            DiamondContext context)
-        : base(inputVerticesEnumerator, context) { }
-
         public ReturnOriginal(DiamondContext context) : base(context) { }
 
         protected override void SetCurrentWithVertex(Vector3 vertex)

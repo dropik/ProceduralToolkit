@@ -9,29 +9,21 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     [Category("Unit")]
     public class ReturnDiamondTests : BaseReturnVertexTests
     {
-        protected override BaseReturnVertex GetReturnVertex(IEnumerator<Vector3> inputVerticesEnumerator, DiamondContext context)
-        {
-            return new ReturnDiamond(inputVerticesEnumerator, context);
-        }
-
-        [Test]
-        public void TestOriginalVertexIsStored()
-        {
-            ReturnVertex.MoveNext();
-            Assert.That(Context.OriginalVertices[0], Is.EqualTo(InputVertices[0]));
-        }
-        
-        [Test]
-        public void TestDiamondCalculatedCorrectly()
-        {
-            var expectedVertex = InputVertices[0] + Context.XZShift;
-            ReturnVertex.MoveNext();
-            Assert.That(Context.Current, Is.EqualTo(expectedVertex));
-        }
-
         protected override BaseReturnVertex GetReturnVertex(DiamondContext context)
         {
-            throw new System.NotImplementedException();
+            return new ReturnDiamond(context);
+        }
+
+        protected override void SetupContext(DiamondContext context)
+        {
+            context.XZShift = new Vector3(0.5f, 0, 0.5f);
+        }
+
+        [Test]
+        public void TestMoveNextReturnsDiamond()
+        {
+            var expectedVertex = InputVertices[0] + Context.XZShift;
+            Assert.That(ReturnVertex.MoveNext(InputVertices[0]), Is.EqualTo(expectedVertex));
         }
     }
 }

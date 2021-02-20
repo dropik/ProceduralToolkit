@@ -6,14 +6,11 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class ReturnDiamond : BaseReturnVertex
     {
-        public ReturnDiamond(
-            IEnumerator<Vector3> inputVerticesEnumerator,
-            DiamondContext context)
-        : base(inputVerticesEnumerator, context) { }
+        public ReturnDiamond(DiamondContext context) : base(context) { }
 
         protected override Vector3? GetResultVertex(Vector3 vertex)
         {
-            throw new System.NotImplementedException();
+            return vertex + Context.XZShift;
         }
 
         protected override void SetCurrentWithVertex(Vector3 vertex)

@@ -1,4 +1,5 @@
 ﻿using ProceduralToolkit.Models;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,12 +11,6 @@ namespace ProceduralToolkit.Services.Generators
         private readonly DiamondContext context;
         protected DiamondContext Context => context;
 
-        public BaseReturnVertex(IEnumerator<Vector3> inputVerticesEnumerator, DiamondContext context)
-        {
-            this.inputVerticesEnumerator = inputVerticesEnumerator;
-            this.context = context;
-        }
-
         public BaseReturnVertex(DiamondContext context)
         {
             this.context = context;
@@ -24,6 +19,7 @@ namespace ProceduralToolkit.Services.Generators
         public IState StateWhenRowContinues { get; set; }
         public IState StateWhenEndedRow { get; set; }
 
+        [Obsolete]
         public void MoveNext()
         {
             inputVerticesEnumerator.MoveNext();
