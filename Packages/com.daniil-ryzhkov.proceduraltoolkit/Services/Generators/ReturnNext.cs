@@ -7,12 +7,12 @@ namespace ProceduralToolkit.Services.Generators
     public class ReturnNext
     {
         private readonly IEnumerator<Vector3> inputVerticesEnumerator;
-        private readonly RowDuplicatorContext context;
+        protected RowDuplicatorContext Context { get; private set; }
 
         public ReturnNext(IEnumerator<Vector3> inputVerticesEnumerator, RowDuplicatorContext context)
         {
             this.inputVerticesEnumerator = inputVerticesEnumerator;
-            this.context = context;
+            this.Context = context;
         }
 
         public IRowDuplicatorState NextState { get; set; }
@@ -24,17 +24,21 @@ namespace ProceduralToolkit.Services.Generators
                 return false;
             }
 
-            context.Current = inputVerticesEnumerator.Current;
+            var vertex = inputVerticesEnumerator.Current;
+            HandleVertex(vertex);
+            Context.Current = vertex;
 
-            context.Column++;
-            if (context.Column >= context.ColumnsInRow)
+            Context.Column++;
+            if (Context.Column >= Context.ColumnsInRow)
             {
-                context.Column = 0;
-                context.Row++;
-                context.State = NextState;
+                Context.Column = 0;
+                Context.Row++;
+                Context.State = NextState;
             }
 
             return true;
         }
+
+        protected virtual void HandleVertex(Vector3 vertex) { }
     }
 }

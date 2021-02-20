@@ -10,83 +10,91 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     [Category("Unit")]
     public class ReturnNextTests
     {
-        private RowDuplicatorContext context;
-        private Mock<IEnumerator<Vector3>> mockEnumerator;
+        protected RowDuplicatorContext Context { get; private set; }
+        protected Mock<IEnumerator<Vector3>> MockEnumerator { get; private set; }
         private Mock<IRowDuplicatorState> mockState;
-        private ReturnNext returnNext;
+        protected ReturnNext ReturnNext { get; private set; }
 
         [SetUp]
         public void Setup()
         {
-            context = new RowDuplicatorContext(2);
-            mockEnumerator = new Mock<IEnumerator<Vector3>>();
+            Context = new RowDuplicatorContext(2);
+            MockEnumerator = new Mock<IEnumerator<Vector3>>();
             mockState = new Mock<IRowDuplicatorState>();
             mockState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
-            returnNext = new ReturnNext(mockEnumerator.Object, context)
+            ReturnNext = CreateReturnNext(MockEnumerator.Object, Context, mockState.Object);
+        }
+
+        protected virtual ReturnNext CreateReturnNext(
+            IEnumerator<Vector3> inputVerticesEnumerator,
+            RowDuplicatorContext context,
+            IRowDuplicatorState nextState)
+        {
+            return new ReturnNext(inputVerticesEnumerator, context)
             {
-                NextState = mockState.Object
+                NextState = nextState
             };
         }
 
         [Test]
         public void TestMoveNextReturnsTrueIfInputEnumeratorHasNext()
         {
-            mockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            Assert.That(returnNext.MoveNext(), Is.True);
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
+            Assert.That(ReturnNext.MoveNext(), Is.True);
         }
 
         [Test]
         public void TestMoveNextReturnsFalseIfInputEnumeratorDoesNotHaveNext()
         {
-            mockEnumerator.Setup(m => m.MoveNext()).Returns(false);
-            Assert.That(returnNext.MoveNext(), Is.False);
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(false);
+            Assert.That(ReturnNext.MoveNext(), Is.False);
         }
 
         [Test]
         public void TestMoveNextSetsContextCurrentToInputCurrent()
         {
             var testVertex = new Vector3(1, 2, 3);
-            mockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            mockEnumerator.Setup(m => m.Current).Returns(testVertex);
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
+            MockEnumerator.Setup(m => m.Current).Returns(testVertex);
 
-            returnNext.MoveNext();
+            ReturnNext.MoveNext();
 
-            Assert.That(context.Current, Is.EqualTo(testVertex));
+            Assert.That(Context.Current, Is.EqualTo(testVertex));
         }
 
         [Test]
         public void TestMoveNextIncrementsColumn()
         {
-            mockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            returnNext.MoveNext();
-            Assert.That(context.Column, Is.EqualTo(1));
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
+            ReturnNext.MoveNext();
+            Assert.That(Context.Column, Is.EqualTo(1));
         }
 
         [Test]
         public void TestMoveNextResetsColumnToZeroIfEndedColumn()
         {
-            mockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            returnNext.MoveNext();
-            returnNext.MoveNext();
-            Assert.That(context.Column, Is.Zero);
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
+            ReturnNext.MoveNext();
+            ReturnNext.MoveNext();
+            Assert.That(Context.Column, Is.Zero);
         }
 
         [Test]
         public void TestMoveNextIncrementsRowIfEndedColumnd()
         {
-            mockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            returnNext.MoveNext();
-            returnNext.MoveNext();
-            Assert.That(context.Row, Is.EqualTo(1));
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
+            ReturnNext.MoveNext();
+            ReturnNext.MoveNext();
+            Assert.That(Context.Row, Is.EqualTo(1));
         }
 
         [Test]
         public void TestMoveNextSetsNextStateIfEndedColumn()
         {
-            mockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            returnNext.MoveNext();
-            returnNext.MoveNext();
-            Assert.That(context.State.Equals("mock"));
+            MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
+            ReturnNext.MoveNext();
+            ReturnNext.MoveNext();
+            Assert.That(Context.State.Equals("mock"));
         }
     }
 }
