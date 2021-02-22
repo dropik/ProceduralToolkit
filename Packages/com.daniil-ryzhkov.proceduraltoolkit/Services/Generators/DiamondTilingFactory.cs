@@ -9,7 +9,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             return new DiamondTiling((vertices, columns) =>
             {
-                var context = new DiamondTilingContext(columns);
+                var context = new FSMContext(columns);
 
                 var storeFirst = new StoreFirst(context);
                 var returnOriginal1 = new ReturnOriginal(context);

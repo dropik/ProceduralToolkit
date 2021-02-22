@@ -10,7 +10,7 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class DiamondTilingTests : BaseDiamondGeneratorTests<DiamondTilingContext>
+    public class DiamondTilingTests : BaseDiamondGeneratorTests<FSMContext>
     {
         private readonly Vector3[] defaultInputVertices = new Vector3[]
         {
@@ -19,11 +19,11 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         };
 
         private Mock<IDiamondTilingState> mockState;
-        private DiamondTilingContext context;
+        private FSMContext context;
 
-        protected override Func<IEnumerable<Vector3>, int, DiamondTilingContext> ContextProvider => (vertices, columns) => context;
+        protected override Func<IEnumerable<Vector3>, int, FSMContext> ContextProvider => (vertices, columns) => context;
 
-        protected override BaseDiamondGenerator<DiamondTilingContext> CreateGenerator()
+        protected override BaseDiamondGenerator<FSMContext> CreateGenerator()
         {
             return new DiamondTiling(ContextProvider);
         }
@@ -32,7 +32,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public override void Setup()
         {
             mockState = new Mock<IDiamondTilingState>();
-            context = new DiamondTilingContext(2)
+            context = new FSMContext(2)
             {
                 State = mockState.Object
             };

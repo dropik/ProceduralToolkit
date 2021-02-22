@@ -7,22 +7,16 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class StoreFirstTests : ReturnOriginalTests
     {
-        protected override FSMContext CreateContext(int columns)
-        {
-            return new DiamondTilingContext(columns);
-        }
-
         protected override BaseDiamondTilingState GetReturnVertex(FSMContext context)
         {
-            return new StoreFirst(context as DiamondTilingContext);
+            return new StoreFirst(context);
         }
 
         [Test]
         public void TestFirstStored()
         {
-            var context = Context as DiamondTilingContext;
             ReturnVertex.MoveNext(InputVertices[0]);
-            Assert.That(context.First, Is.EqualTo(InputVertices[0]));
+            Assert.That(Context.DiamondTilingContext.First, Is.EqualTo(InputVertices[0]));
         }
     }
 }
