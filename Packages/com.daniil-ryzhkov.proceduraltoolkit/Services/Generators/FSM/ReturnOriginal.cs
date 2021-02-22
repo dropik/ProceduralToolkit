@@ -6,7 +6,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class ReturnOriginal : BaseDiamondTilingState
     {
-        public ReturnOriginal(FSMContext context) : base(context) { }
+        public ReturnOriginal(FSMSettings settings) : base(settings) { }
 
         protected override IEnumerable<Vector3> GetResultVertices(Vector3 vertex)
         {

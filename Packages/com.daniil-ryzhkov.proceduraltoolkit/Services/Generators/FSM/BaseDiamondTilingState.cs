@@ -6,15 +6,15 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public abstract class BaseDiamondTilingState : IDiamondTilingState
     {
-        protected FSMContext Context { get; private set; }
+        protected FSMSettings Settings { get; private set; }
 
-        public BaseDiamondTilingState(FSMContext context)
+        public BaseDiamondTilingState(FSMSettings settings)
         {
-            Context = context;
+            Settings = settings;
         }
 
-        public IDiamondTilingState StateWhenRowContinues { get; set; }
-        public IDiamondTilingState StateWhenEndedRow { get; set; }
+        public IDiamondTilingState NextState { get; set; }
+        public IDiamondTilingState StateWhenLimitReached { get; set; }
 
         public IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {
@@ -27,15 +27,19 @@ namespace ProceduralToolkit.Services.Generators.FSM
 
         private void SwitchState()
         {
-            Context.Column++;
-            if (Context.Column >= Context.ColumnsInRow)
+            var context = Settings.FSMContext;
+            context.Column++;
+            if (context.Column >= Settings.ColumnsLimit)
             {
-                Context.Column = 0;
-                Context.State = StateWhenEndedRow;
+                if (Settings.ZeroColumnOnLimitReached)
+                {
+                    context.Column = 0;
+                }
+                context.State = StateWhenLimitReached;
             }
             else
             {
-                Context.State = StateWhenRowContinues;
+                context.State = NextState;
             }
         }
 

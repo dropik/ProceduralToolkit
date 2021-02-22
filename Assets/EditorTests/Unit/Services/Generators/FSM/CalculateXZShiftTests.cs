@@ -8,32 +8,40 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class CalculateXZShiftTests : ReturnDiamondTests
     {
-        protected override BaseDiamondTilingState GetReturnVertex(FSMContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(FSMSettings settings)
         {
-            return new CalculateXZShift(context);
+            return new CalculateXZShift(settings);
+        }
+
+        private void SetupAsForSecondVertex()
+        {
+            var context = Settings.FSMContext;
+            context.Column = 1;
+            context.DiamondTilingContext.First = Vector3.zero;
         }
 
         [Test]
         public void TestShiftCalculated()
         {
-            var tilingContext = Context.DiamondTilingContext;
-            Context.Column = 1;
-            tilingContext.First = Vector3.zero;
-            ReturnVertex.MoveNext(InputVertices[0]);
+            SetupAsForSecondVertex();
             var expectedShift = new Vector3(-1, 0, 0) / 2;
-            Assert.That(tilingContext.XZShift, Is.EqualTo(expectedShift));
+
+            ReturnVertex.MoveNext(InputVertices[0]);
+
+            Assert.That(Settings.FSMContext.DiamondTilingContext.XZShift, Is.EqualTo(expectedShift));
         }
 
         [Test]
         public void TestShiftIsNotCalculatedWhenItIsNotZero()
         {
-            var tilingContext = Context.DiamondTilingContext;
-            Context.Column = 1;
-            tilingContext.First = Vector3.zero;
+            SetupAsForSecondVertex();
+            var context = Settings.FSMContext;
             var expectedShift = new Vector3(4, 4, 4);
-            tilingContext.XZShift = expectedShift;
+            context.DiamondTilingContext.XZShift = expectedShift;
+
             ReturnVertex.MoveNext(InputVertices[1]);
-            Assert.That(tilingContext.XZShift, Is.EqualTo(expectedShift));
+
+            Assert.That(context.DiamondTilingContext.XZShift, Is.EqualTo(expectedShift));
         }
     }
 }

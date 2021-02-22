@@ -5,11 +5,11 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class CalculateXZShift : ReturnDiamond
     {
-        public CalculateXZShift(FSMContext context) : base(context) { }
+        public CalculateXZShift(FSMSettings settings) : base(settings) { }
 
         protected override void PreprocessVertex(Vector3 vertex)
         {
-            var context = Context.DiamondTilingContext;
+            var context = Settings.FSMContext.DiamondTilingContext;
             if (context.XZShift == Vector3.zero)
             {
                 context.XZShift = (context.First - vertex) / 2;

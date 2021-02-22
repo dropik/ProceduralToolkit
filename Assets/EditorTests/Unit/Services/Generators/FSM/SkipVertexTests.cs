@@ -13,9 +13,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             return new FSMContext(columns);
         }
 
-        protected override BaseDiamondTilingState GetReturnVertex(FSMContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(FSMSettings settings)
         {
-            return new SkipVertex(context);
+            return new SkipVertex(settings);
         }
 
         [Test]

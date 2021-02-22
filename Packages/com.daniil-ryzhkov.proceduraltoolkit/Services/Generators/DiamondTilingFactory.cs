@@ -14,39 +14,45 @@ namespace ProceduralToolkit.Services.Generators
                     DiamondTilingContext = new DiamondTilingContext()
                 };
 
-                var storeFirst = new StoreFirst(context);
-                var returnOriginal1 = new ReturnOriginal(context);
-                var returnOriginal2 = new ReturnOriginal(context);
-                var returnDiamond1 = new ReturnDiamond(context);
-                var returnDiamond2 = new ReturnDiamond(context);
-                var skipVertex1 = new SkipVertex(context);
-                var skipVertex2 = new SkipVertex(context);
-                var calculateShift = new CalculateXZShift(context);
+                var settings = new FSMSettings()
+                {
+                    FSMContext = context,
+                    ColumnsLimit = columns
+                };
+
+                var storeFirst = new StoreFirst(settings);
+                var returnOriginal1 = new ReturnOriginal(settings);
+                var returnOriginal2 = new ReturnOriginal(settings);
+                var returnDiamond1 = new ReturnDiamond(settings);
+                var returnDiamond2 = new ReturnDiamond(settings);
+                var skipVertex1 = new SkipVertex(settings);
+                var skipVertex2 = new SkipVertex(settings);
+                var calculateShift = new CalculateXZShift(settings);
 
                 context.State = storeFirst;
 
-                storeFirst.StateWhenRowContinues = returnOriginal1;
+                storeFirst.NextState = returnOriginal1;
 
-                returnOriginal1.StateWhenRowContinues = returnOriginal1;
-                returnOriginal1.StateWhenEndedRow = skipVertex1;
+                returnOriginal1.NextState = returnOriginal1;
+                returnOriginal1.StateWhenLimitReached = skipVertex1;
 
-                skipVertex1.StateWhenRowContinues = calculateShift;
-                skipVertex1.StateWhenEndedRow = returnOriginal2;
+                skipVertex1.NextState = calculateShift;
+                skipVertex1.StateWhenLimitReached = returnOriginal2;
 
-                calculateShift.StateWhenRowContinues = returnDiamond1;
-                calculateShift.StateWhenEndedRow = returnOriginal2;
+                calculateShift.NextState = returnDiamond1;
+                calculateShift.StateWhenLimitReached = returnOriginal2;
 
-                returnDiamond1.StateWhenRowContinues = returnDiamond1;
-                returnDiamond1.StateWhenEndedRow = returnOriginal2;
+                returnDiamond1.NextState = returnDiamond1;
+                returnDiamond1.StateWhenLimitReached = returnOriginal2;
 
-                returnOriginal2.StateWhenRowContinues = returnOriginal2;
-                returnOriginal2.StateWhenEndedRow = skipVertex2;
+                returnOriginal2.NextState = returnOriginal2;
+                returnOriginal2.StateWhenLimitReached = skipVertex2;
 
-                skipVertex2.StateWhenRowContinues = returnDiamond2;
-                skipVertex2.StateWhenEndedRow = returnOriginal2;
+                skipVertex2.NextState = returnDiamond2;
+                skipVertex2.StateWhenLimitReached = returnOriginal2;
 
-                returnDiamond2.StateWhenRowContinues = returnDiamond2;
-                returnDiamond2.StateWhenEndedRow = returnOriginal2;
+                returnDiamond2.NextState = returnDiamond2;
+                returnDiamond2.StateWhenLimitReached = returnOriginal2;
 
                 return context;
             });

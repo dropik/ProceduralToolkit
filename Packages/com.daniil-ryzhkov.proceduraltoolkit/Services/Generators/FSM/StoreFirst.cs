@@ -5,11 +5,11 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class StoreFirst : ReturnOriginal
     {
-        public StoreFirst(FSMContext context) : base(context) { }
+        public StoreFirst(FSMSettings settings) : base(settings) { }
 
         protected override void PreprocessVertex(Vector3 vertex)
         {
-            Context.DiamondTilingContext.First = vertex;
+            Settings.FSMContext.DiamondTilingContext.First = vertex;
         }
     }
 }

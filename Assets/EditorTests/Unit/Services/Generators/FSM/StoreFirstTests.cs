@@ -14,16 +14,16 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             return context;
         }
 
-        protected override BaseDiamondTilingState GetReturnVertex(FSMContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(FSMSettings settings)
         {
-            return new StoreFirst(context);
+            return new StoreFirst(settings);
         }
 
         [Test]
         public void TestFirstStored()
         {
             ReturnVertex.MoveNext(InputVertices[0]);
-            Assert.That(Context.DiamondTilingContext.First, Is.EqualTo(InputVertices[0]));
+            Assert.That(Settings.FSMContext.DiamondTilingContext.First, Is.EqualTo(InputVertices[0]));
         }
     }
 }

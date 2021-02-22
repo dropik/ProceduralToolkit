@@ -13,57 +13,76 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             new Vector3(1, 2, 0),
             new Vector3(2, 0, 0)
         };
-        protected FSMContext Context { get; private set; }
-        private Mock<IDiamondTilingState> mockNextStateWhenRowEnded;
-        private Mock<IDiamondTilingState> mockNextStateWhenRowContinues;
+        protected FSMSettings Settings { get; private set; }
+        private Mock<IDiamondTilingState> mockStateWhenLimitReached;
+        private Mock<IDiamondTilingState> mockNextState;
         protected BaseDiamondTilingState ReturnVertex { get; private set; }
 
         [SetUp]
         public void Setup()
         {
-            Context = CreateContext(columns: 2);
+            Settings = new FSMSettings()
+            {
+                FSMContext = CreateContext(columns: 3),
+                ColumnsLimit = 2
+            };
 
-            mockNextStateWhenRowEnded = new Mock<IDiamondTilingState>();
-            mockNextStateWhenRowContinues = new Mock<IDiamondTilingState>();
-            mockNextStateWhenRowEnded.Setup(m => m.Equals(It.Is<string>(s => s == "ended"))).Returns(true);
-            mockNextStateWhenRowContinues.Setup(m => m.Equals(It.Is<string>(s => s == "continue"))).Returns(true);
+            mockNextState = new Mock<IDiamondTilingState>();
+            mockStateWhenLimitReached = new Mock<IDiamondTilingState>();
+            mockNextState.Setup(m => m.Equals(It.Is<string>(s => s == "continue"))).Returns(true);
+            mockStateWhenLimitReached.Setup(m => m.Equals(It.Is<string>(s => s == "ended"))).Returns(true);
 
-            ReturnVertex = GetReturnVertex(Context);
-            ReturnVertex.StateWhenEndedRow = mockNextStateWhenRowEnded.Object;
-            ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
+            ReturnVertex = GetReturnVertex(Settings);
+            ReturnVertex.NextState = mockNextState.Object;
+            ReturnVertex.StateWhenLimitReached = mockStateWhenLimitReached.Object;
         }
 
         protected abstract FSMContext CreateContext(int columns);
-        protected abstract BaseDiamondTilingState GetReturnVertex(FSMContext context);
+        protected abstract BaseDiamondTilingState GetReturnVertex(FSMSettings settings);
 
         [Test]
         public void TestMoveNextIncrementsColumn()
         {
             ReturnVertex.MoveNext(InputVertices[0]);
-            Assert.That(Context.Column, Is.EqualTo(1));
+            Assert.That(Settings.FSMContext.Column, Is.EqualTo(1));
         }
 
         [Test]
-        public void TestMoveNextSetsAppropriateStateWhenColumnContinues()
+        public void TestMoveNextSetsAppropriateNextState()
         {
             ReturnVertex.MoveNext(InputVertices[0]);
-            Assert.That(Context.State.Equals("continue"));
+            Assert.That(Settings.FSMContext.State.Equals("continue"));
         }
 
         [Test]
-        public void TestMoveNextZeroesColumnIfEndedRow()
+        public void TestMoveNextZeroesColumnIfLimitReachedAndZeroFlagIsSet()
         {
-            Context.Column = 1;
+            var context = Settings.FSMContext;
+            context.Column = 1;
+
             ReturnVertex.MoveNext(InputVertices[1]);
-            Assert.That(Context.Column, Is.Zero);
+
+            Assert.That(context.Column, Is.Zero);
         }
 
         [Test]
-        public void TestMoveNextChangesStateIfEndedRow()
+        public void TestMoveNextDoesNotZeroColumnIfLimitReachedButZeroFlagIsNotSet()
         {
-            Context.Column = 1;
+            var context = Settings.FSMContext;
+            context.Column = 1;
+            Settings.ZeroColumnOnLimitReached = false;
+
             ReturnVertex.MoveNext(InputVertices[1]);
-            Assert.That(Context.State.Equals("ended"));
+
+            Assert.That(context.Column, Is.Not.Zero);
+        }
+
+        [Test]
+        public void TestMoveNextChangesStateIfLimitReached()
+        {
+            Settings.FSMContext.Column = 1;
+            ReturnVertex.MoveNext(InputVertices[1]);
+            Assert.That(Settings.FSMContext.State.Equals("ended"));
         }
     }
 }
