@@ -14,13 +14,43 @@ namespace ProceduralToolkit.Services.Generators
             get
             {
                 var context = ContextProvider.Invoke(InputVertices, ColumnsInRow);
-                foreach (var vertex in InputVertices)
+                return OutputVerticesForContext(context);
+            }
+        }
+
+        private IEnumerable<Vector3> OutputVerticesForContext(FSMContext context)
+        {
+            foreach (var vertex in InputVertices)
+            {
+                foreach (var newVertex in GenerateFromVertex(vertex, context))
                 {
-                    var next = context.State?.MoveNext(vertex);
-                    if (next != null)
-                    {
-                        yield return (Vector3)next;
-                    }
+                    yield return newVertex;
+                }
+            }
+        }
+
+        private IEnumerable<Vector3> GenerateFromVertex(Vector3 vertex, FSMContext context)
+        {
+            var nextVertices = GetNextVertices(vertex, context);
+            return TryEnumerateNextVertices(nextVertices, vertex);
+        }
+
+        private IEnumerable<Vector3> GetNextVertices(Vector3 vertex, FSMContext context)
+        {
+            return context.State?.MoveNext(vertex);
+        }
+
+        private IEnumerable<Vector3> TryEnumerateNextVertices(IEnumerable<Vector3> nextVertices, Vector3 vertex)
+        {
+            if (nextVertices == null)
+            {
+                yield return vertex;
+            }
+            else
+            {
+                foreach (var next in nextVertices)
+                {
+                    yield return next;
                 }
             }
         }

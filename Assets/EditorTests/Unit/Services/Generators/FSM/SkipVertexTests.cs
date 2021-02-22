@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using ProceduralToolkit.Models.FSMContexts;
 using ProceduralToolkit.Services.Generators.FSM;
+using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
@@ -18,9 +19,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         }
 
         [Test]
-        public void TestMoveNextReturnsNull()
+        public void TestMoveNextReturnsEmpty()
         {
-            Assert.That(ReturnVertex.MoveNext(InputVertices[0]), Is.Null);
+            var expectedVertices = new Vector3[0];
+            CollectionAssert.AreEqual(expectedVertices, ReturnVertex.MoveNext(InputVertices[0]));
         }
     }
 }

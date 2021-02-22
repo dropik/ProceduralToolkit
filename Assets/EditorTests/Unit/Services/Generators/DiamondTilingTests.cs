@@ -40,40 +40,30 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         }
 
         [Test]
-        public void TestOutputHasNextIfStateHasNext()
+        public void TestOutputHasNextIfInputIsNotEmpty()
         {
             Generator.InputVertices = defaultInputVertices;
-            mockState.Setup(m => m.MoveNext(It.Is<Vector3>(v => v == defaultInputVertices[0]))).Returns(Vector3.zero);
-
+            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(null as IEnumerable<Vector3>);
             var enumerator = Generator.OutputVertices.GetEnumerator();
             Assert.That(enumerator.MoveNext(), Is.True);
         }
 
         [Test]
-        public void TestOutputHasNotNextIfStateHasNotNext()
-        {
-            Generator.InputVertices = defaultInputVertices;
-            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(null as Vector3?);
-
-            var enumerator = Generator.OutputVertices.GetEnumerator();
-            Assert.That(enumerator.MoveNext(), Is.False);
-        }
-
-        [Test]
-        public void TestOutputHasNotNextIfStateIsNull()
+        public void TestOutputReturnsInputIfStateIsNull()
         {
             Generator.InputVertices = defaultInputVertices;
             context.State = null;
 
             var enumerator = Generator.OutputVertices.GetEnumerator();
-            Assert.That(enumerator.MoveNext(), Is.False);
+            enumerator.MoveNext();
+            Assert.That(enumerator.Current, Is.EqualTo(defaultInputVertices[0]));
         }
 
         [Test]
         public void TestOutputHasNoNextIfInputIsEmpty()
         {
             Generator.InputVertices = new Vector3[0];
-            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(Vector3.zero);
+            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(new Vector3[] { Vector3.zero });
             var enumerator = Generator.OutputVertices.GetEnumerator();
             Assert.That(enumerator.MoveNext(), Is.False);
             mockState.Verify(m => m.MoveNext(It.IsAny<Vector3>()), Times.Never);
@@ -84,7 +74,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             var expectedVertex = new Vector3(1, 2, 3);
             Generator.InputVertices = defaultInputVertices;
-            mockState.Setup(m => m.MoveNext(It.Is<Vector3>(v => v == defaultInputVertices[0]))).Returns(expectedVertex);
+            mockState.Setup(m => m.MoveNext(It.Is<Vector3>(v => v == defaultInputVertices[0]))).Returns(new Vector3[] { expectedVertex });
 
             var enumerator = Generator.OutputVertices.GetEnumerator();
             enumerator.MoveNext();

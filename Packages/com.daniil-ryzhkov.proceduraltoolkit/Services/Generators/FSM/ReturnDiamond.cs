@@ -1,4 +1,5 @@
 ﻿using ProceduralToolkit.Models.FSMContexts;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
@@ -7,9 +8,9 @@ namespace ProceduralToolkit.Services.Generators.FSM
     {
         public ReturnDiamond(FSMContext context) : base(context) { }
 
-        protected override Vector3? GetResultVertex(Vector3 vertex)
+        protected override IEnumerable<Vector3> GetResultVertices(Vector3 vertex)
         {
-            return new Vector3(vertex.x, 0, vertex.z) + Context.DiamondTilingContext.XZShift;
+            yield return new Vector3(vertex.x, 0, vertex.z) + Context.DiamondTilingContext.XZShift;
         }
     }
 }

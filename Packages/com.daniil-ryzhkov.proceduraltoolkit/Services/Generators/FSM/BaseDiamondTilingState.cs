@@ -1,4 +1,5 @@
 ﻿using ProceduralToolkit.Models.FSMContexts;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
@@ -15,11 +16,11 @@ namespace ProceduralToolkit.Services.Generators.FSM
         public IDiamondTilingState StateWhenRowContinues { get; set; }
         public IDiamondTilingState StateWhenEndedRow { get; set; }
 
-        public Vector3? MoveNext(Vector3 vertex)
+        public IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {
             PreprocessVertex(vertex);
             SwitchState();
-            return GetResultVertex(vertex);
+            return GetResultVertices(vertex);
         }
 
         protected virtual void PreprocessVertex(Vector3 vertex) { }
@@ -38,6 +39,6 @@ namespace ProceduralToolkit.Services.Generators.FSM
             }
         }
 
-        protected abstract Vector3? GetResultVertex(Vector3 vertex);
+        protected abstract IEnumerable<Vector3> GetResultVertices(Vector3 vertex);
     }
 }

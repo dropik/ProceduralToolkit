@@ -1,4 +1,5 @@
 using ProceduralToolkit.Models.FSMContexts;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
@@ -7,6 +8,9 @@ namespace ProceduralToolkit.Services.Generators.FSM
     {
         public SkipVertex(FSMContext context) : base(context) { }
 
-        protected override Vector3? GetResultVertex(Vector3 vertex) => null;
+        protected override IEnumerable<Vector3> GetResultVertices(Vector3 vertex)
+        {
+            yield break;
+        }
     }
 }
