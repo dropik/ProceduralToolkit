@@ -8,7 +8,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
     {
         public ResetAndReturnNext(
             IEnumerator<Vector3> inputVerticesEnumerator,
-            RowDuplicatorContext context)
+            FSMContext context)
         : base(inputVerticesEnumerator, context) { }
 
         protected override void PreMoveNext()

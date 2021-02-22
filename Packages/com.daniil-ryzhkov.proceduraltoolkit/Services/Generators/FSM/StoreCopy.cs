@@ -8,14 +8,14 @@ namespace ProceduralToolkit.Services.Generators.FSM
     {
         public StoreCopy(
             IEnumerator<Vector3> inputVerticesEnumerator,
-            RowDuplicatorContext context)
+            FSMContext context)
         : base(inputVerticesEnumerator, context) { }
 
         protected override void HandleVertex(Vector3 vertex)
         {
             if (Context.ColumnsInRow > 0)
             {
-                Context.VerticesCopies[Context.Column] = vertex;
+                Context.RowDuplicatorContext.VerticesCopies[Context.Column] = vertex;
             }
         }
     }

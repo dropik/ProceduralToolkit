@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ProceduralToolkit.Models.FSMContexts;
 using ProceduralToolkit.Services.Generators;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,9 @@ using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
-    public abstract class BaseDiamondGeneratorTests<TContext>
+    public abstract class BaseDiamondGeneratorTests
     {
-        protected BaseDiamondGenerator<TContext> Generator { get; private set; }
+        protected BaseDiamondGenerator Generator { get; private set; }
 
         [SetUp]
         public virtual void Setup()
@@ -16,9 +17,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             Generator = CreateGenerator();
         }
 
-        protected abstract Func<IEnumerable<Vector3>, int, TContext> ContextProvider { get; }
+        protected abstract Func<IEnumerable<Vector3>, int, FSMContext> ContextProvider { get; }
 
-        protected abstract BaseDiamondGenerator<TContext> CreateGenerator();
+        protected abstract BaseDiamondGenerator CreateGenerator();
 
         [Test]
         public void TestOnInputVerticesNotSet()

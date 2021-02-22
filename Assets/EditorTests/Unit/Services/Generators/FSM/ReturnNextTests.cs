@@ -10,7 +10,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class ReturnNextTests
     {
-        protected RowDuplicatorContext Context { get; private set; }
+        protected FSMContext Context { get; private set; }
         protected Mock<IEnumerator<Vector3>> MockEnumerator { get; private set; }
         private Mock<IRowDuplicatorState> mockState;
         protected ReturnNext ReturnNext { get; private set; }
@@ -18,7 +18,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         [SetUp]
         public void Setup()
         {
-            Context = new RowDuplicatorContext(2);
+            Context = new FSMContext(2)
+            {
+                RowDuplicatorContext = new RowDuplicatorContext(2)
+            };
             MockEnumerator = new Mock<IEnumerator<Vector3>>();
             mockState = new Mock<IRowDuplicatorState>();
             mockState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
@@ -27,7 +30,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 
         protected virtual ReturnNext CreateReturnNext(
             IEnumerator<Vector3> inputVerticesEnumerator,
-            RowDuplicatorContext context,
+            FSMContext context,
             IRowDuplicatorState nextState)
         {
             return new ReturnNext(inputVerticesEnumerator, context)
@@ -59,7 +62,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 
             ReturnNext.MoveNext();
 
-            Assert.That(Context.Current, Is.EqualTo(testVertex));
+            Assert.That(Context.RowDuplicatorContext.Current, Is.EqualTo(testVertex));
         }
 
         [Test]
@@ -85,7 +88,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
             ReturnNext.MoveNext();
             ReturnNext.MoveNext();
-            Assert.That(Context.State.Equals("mock"));
+            Assert.That(Context.RowDuplicatorContext.State.Equals("mock"));
         }
     }
 }

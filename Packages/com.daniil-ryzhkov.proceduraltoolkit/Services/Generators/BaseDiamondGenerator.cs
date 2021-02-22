@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using ProceduralToolkit.Models.FSMContexts;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public abstract class BaseDiamondGenerator<TContext>
+    public abstract class BaseDiamondGenerator
     {
-        protected Func<IEnumerable<Vector3>, int, TContext> ContextProvider { get; private set; }
+        protected Func<IEnumerable<Vector3>, int, FSMContext> ContextProvider { get; private set; }
 
-        public BaseDiamondGenerator(Func<IEnumerable<Vector3>, int, TContext> contextProvider)
+        public BaseDiamondGenerator(Func<IEnumerable<Vector3>, int, FSMContext> contextProvider)
         {
             this.ContextProvider = contextProvider;
         }

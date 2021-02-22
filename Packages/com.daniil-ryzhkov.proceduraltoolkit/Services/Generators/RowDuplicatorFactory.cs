@@ -11,10 +11,13 @@ namespace ProceduralToolkit.Services.Generators
         {
             return new RowDuplicator((vertices, columns) =>
             {
-                var context = new RowDuplicatorContext(columns);
+                var context = new FSMContext(columns)
+                {
+                    RowDuplicatorContext = new RowDuplicatorContext(columns)
+                };
 
                 var enumerator = vertices.GetEnumerator();
-                var copiesEnumerator = ((IEnumerable<Vector3>)context.VerticesCopies).GetEnumerator();
+                var copiesEnumerator = ((IEnumerable<Vector3>)context.RowDuplicatorContext.VerticesCopies).GetEnumerator();
 
                 var returnNext = new ReturnNext(enumerator, context);
                 var storeCopies = new StoreCopy(enumerator, context);
@@ -24,7 +27,7 @@ namespace ProceduralToolkit.Services.Generators
                 storeCopies.NextState = resetAndReturnNext;
                 resetAndReturnNext.NextState = storeCopies;
 
-                context.State = returnNext;
+                context.RowDuplicatorContext.State = returnNext;
                 return context;
             });
         }

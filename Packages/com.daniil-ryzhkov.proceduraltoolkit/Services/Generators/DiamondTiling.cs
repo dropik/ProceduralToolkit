@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public partial class DiamondTiling : BaseDiamondGenerator<FSMContext>
+    public partial class DiamondTiling : BaseDiamondGenerator
     {
         public DiamondTiling(Func<IEnumerable<Vector3>, int, FSMContext> contextProvider) : base(contextProvider) { }
 

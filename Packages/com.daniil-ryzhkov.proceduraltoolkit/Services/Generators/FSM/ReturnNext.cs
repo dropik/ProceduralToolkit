@@ -7,12 +7,12 @@ namespace ProceduralToolkit.Services.Generators.FSM
     public class ReturnNext : IRowDuplicatorState
     {
         protected IEnumerator<Vector3> InputVerticesEnumerator { get; private set; }
-        protected RowDuplicatorContext Context { get; private set; }
+        protected FSMContext Context { get; private set; }
 
-        public ReturnNext(IEnumerator<Vector3> inputVerticesEnumerator, RowDuplicatorContext context)
+        public ReturnNext(IEnumerator<Vector3> inputVerticesEnumerator, FSMContext context)
         {
-            this.InputVerticesEnumerator = inputVerticesEnumerator;
-            this.Context = context;
+            InputVerticesEnumerator = inputVerticesEnumerator;
+            Context = context;
         }
 
         public IRowDuplicatorState NextState { get; set; }
@@ -28,13 +28,13 @@ namespace ProceduralToolkit.Services.Generators.FSM
 
             var vertex = InputVerticesEnumerator.Current;
             HandleVertex(vertex);
-            Context.Current = vertex;
+            Context.RowDuplicatorContext.Current = vertex;
 
             Context.Column++;
             if (Context.Column >= Context.ColumnsInRow)
             {
                 Context.Column = 0;
-                Context.State = NextState;
+                Context.RowDuplicatorContext.State = NextState;
             }
 
             return true;

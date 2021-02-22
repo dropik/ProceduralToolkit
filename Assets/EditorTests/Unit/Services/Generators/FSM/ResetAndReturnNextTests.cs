@@ -12,7 +12,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     {
         protected override ReturnNext CreateReturnNext(
             IEnumerator<Vector3> inputVerticesEnumerator,
-            RowDuplicatorContext context,
+            FSMContext context,
             IRowDuplicatorState nextState)
         {
             return new ResetAndReturnNext(inputVerticesEnumerator, context)

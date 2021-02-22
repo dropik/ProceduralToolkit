@@ -5,15 +5,15 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public partial class RowDuplicator : BaseDiamondGenerator<RowDuplicatorContext>
+    public partial class RowDuplicator : BaseDiamondGenerator
     {
-        public RowDuplicator(Func<IEnumerable<Vector3>, int, RowDuplicatorContext> contextProvider) : base(contextProvider) { }
+        public RowDuplicator(Func<IEnumerable<Vector3>, int, FSMContext> contextProvider) : base(contextProvider) { }
 
         public override IEnumerable<Vector3> OutputVertices
         {
             get
             {
-                var context = ContextProvider?.Invoke(InputVertices, ColumnsInRow);
+                var context = ContextProvider?.Invoke(InputVertices, ColumnsInRow).RowDuplicatorContext;
                 while (context.State.MoveNext())
                 {
                     yield return context.Current;

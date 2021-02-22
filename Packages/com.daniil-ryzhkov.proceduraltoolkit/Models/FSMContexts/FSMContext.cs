@@ -13,5 +13,6 @@ namespace ProceduralToolkit.Models.FSMContexts
         public int ColumnsInRow { get; }
         public int Column { get; set; }
         public DiamondTilingContext DiamondTilingContext { get; set; }
+        public RowDuplicatorContext RowDuplicatorContext { get; set; }
     }
 }

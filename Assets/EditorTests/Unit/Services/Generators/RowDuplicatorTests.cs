@@ -10,14 +10,14 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class RowDuplicatorTests : BaseDiamondGeneratorTests<RowDuplicatorContext>
+    public class RowDuplicatorTests : BaseDiamondGeneratorTests
     {
         private Mock<IRowDuplicatorState> mockState;
-        private RowDuplicatorContext context;
+        private FSMContext context;
 
-        protected override Func<IEnumerable<Vector3>, int, RowDuplicatorContext> ContextProvider => (vertices, columns) => context;
+        protected override Func<IEnumerable<Vector3>, int, FSMContext> ContextProvider => (vertices, columns) => context;
 
-        protected override BaseDiamondGenerator<RowDuplicatorContext> CreateGenerator()
+        protected override BaseDiamondGenerator CreateGenerator()
         {
             return new RowDuplicator(ContextProvider);
         }
@@ -26,9 +26,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public override void Setup()
         {
             mockState = new Mock<IRowDuplicatorState>();
-            context = new RowDuplicatorContext(2)
+            context = new FSMContext(2)
             {
-                State = mockState.Object
+                RowDuplicatorContext = new RowDuplicatorContext(2)
+                {
+                    State = mockState.Object
+                }
             };
             base.Setup();
         }
@@ -54,7 +57,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             mockState.Setup(m => m.MoveNext()).Returns(true);
             var testVertex = new Vector3(1, 2, 3);
-            context.Current = testVertex;
+            context.RowDuplicatorContext.Current = testVertex;
             var enumerator = Generator.OutputVertices.GetEnumerator();
 
             enumerator.MoveNext();

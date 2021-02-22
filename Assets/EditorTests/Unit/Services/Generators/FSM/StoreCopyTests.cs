@@ -12,7 +12,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     {
         protected override ReturnNext CreateReturnNext(
             IEnumerator<Vector3> inputVerticesEnumerator,
-            RowDuplicatorContext context,
+            FSMContext context,
             IRowDuplicatorState nextState)
         {
             return new StoreCopy(inputVerticesEnumerator, context)
@@ -30,7 +30,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 
             ReturnNext.MoveNext();
 
-            Assert.That(Context.VerticesCopies[Context.Column - 1], Is.EqualTo(testVertex));
+            Assert.That(Context.RowDuplicatorContext.VerticesCopies[Context.Column - 1], Is.EqualTo(testVertex));
         }
 
         [Test]
@@ -38,7 +38,11 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         {
             var nextState = ReturnNext.NextState;
             MockEnumerator.Setup(m => m.MoveNext()).Returns(true);
-            var storeCopy = CreateReturnNext(MockEnumerator.Object, new RowDuplicatorContext(0), nextState);
+            var newContext = new FSMContext(0)
+            {
+                RowDuplicatorContext = new RowDuplicatorContext(0)
+            };
+            var storeCopy = CreateReturnNext(MockEnumerator.Object, newContext, nextState);
 
             try
             {
