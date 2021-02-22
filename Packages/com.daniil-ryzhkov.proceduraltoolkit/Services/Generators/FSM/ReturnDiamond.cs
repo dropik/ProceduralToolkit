@@ -9,7 +9,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
 
         protected override Vector3? GetResultVertex(Vector3 vertex)
         {
-            return new Vector3(vertex.x, 0, vertex.z) + Context.XZShift;
+            return new Vector3(vertex.x, 0, vertex.z) + (Context as DiamondTilingContext).XZShift;
         }
     }
 }

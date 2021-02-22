@@ -9,7 +9,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
 
         protected override void PreprocessVertex(Vector3 vertex)
         {
-            Context.First = vertex;
+            (Context as DiamondTilingContext).First = vertex;
         }
     }
 }

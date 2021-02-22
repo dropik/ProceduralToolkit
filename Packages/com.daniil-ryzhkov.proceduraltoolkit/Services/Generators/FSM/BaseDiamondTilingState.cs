@@ -5,9 +5,9 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public abstract class BaseDiamondTilingState : IDiamondTilingState
     {
-        protected DiamondTilingContext Context { get; private set; }
+        protected FSMContext Context { get; private set; }
 
-        public BaseDiamondTilingState(DiamondTilingContext context)
+        public BaseDiamondTilingState(FSMContext context)
         {
             Context = context;
         }

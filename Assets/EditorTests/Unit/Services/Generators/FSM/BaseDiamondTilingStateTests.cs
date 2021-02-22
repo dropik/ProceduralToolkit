@@ -13,7 +13,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             new Vector3(1, 2, 0),
             new Vector3(2, 0, 0)
         };
-        protected DiamondTilingContext Context { get; private set; }
+        protected FSMContext Context { get; private set; }
         private Mock<IDiamondTilingState> mockNextStateWhenRowEnded;
         private Mock<IDiamondTilingState> mockNextStateWhenRowContinues;
         protected BaseDiamondTilingState ReturnVertex { get; private set; }
@@ -21,7 +21,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         [SetUp]
         public void Setup()
         {
-            Context = new DiamondTilingContext(2);
+            Context = CreateContext(2);
 
             mockNextStateWhenRowEnded = new Mock<IDiamondTilingState>();
             mockNextStateWhenRowContinues = new Mock<IDiamondTilingState>();
@@ -33,7 +33,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
         }
 
-        protected abstract BaseDiamondTilingState GetReturnVertex(DiamondTilingContext context);
+        protected abstract FSMContext CreateContext(int columns);
+        protected abstract BaseDiamondTilingState GetReturnVertex(FSMContext context);
 
         [Test]
         public void TestMoveNextIncrementsColumn()

@@ -8,30 +8,32 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class CalculateXZShiftTests : ReturnDiamondTests
     {
-        protected override BaseDiamondTilingState GetReturnVertex(DiamondTilingContext context)
+        protected override BaseDiamondTilingState GetReturnVertex(FSMContext context)
         {
-            return new CalculateXZShift(context);
+            return new CalculateXZShift(context as DiamondTilingContext);
         }
 
         [Test]
         public void TestShiftCalculated()
         {
-            Context.Column = 1;
-            Context.First = Vector3.zero;
+            var context = Context as DiamondTilingContext;
+            context.Column = 1;
+            context.First = Vector3.zero;
             ReturnVertex.MoveNext(InputVertices[0]);
             var expectedShift = new Vector3(-1, 0, 0) / 2;
-            Assert.That(Context.XZShift, Is.EqualTo(expectedShift));
+            Assert.That(context.XZShift, Is.EqualTo(expectedShift));
         }
 
         [Test]
         public void TestShiftIsNotCalculatedWhenItIsNotZero()
         {
-            Context.Column = 1;
-            Context.First = Vector3.zero;
+            var context = Context as DiamondTilingContext;
+            context.Column = 1;
+            context.First = Vector3.zero;
             var expectedShift = new Vector3(4, 4, 4);
-            Context.XZShift = expectedShift;
+            context.XZShift = expectedShift;
             ReturnVertex.MoveNext(InputVertices[1]);
-            Assert.That(Context.XZShift, Is.EqualTo(expectedShift));
+            Assert.That(context.XZShift, Is.EqualTo(expectedShift));
         }
     }
 }
