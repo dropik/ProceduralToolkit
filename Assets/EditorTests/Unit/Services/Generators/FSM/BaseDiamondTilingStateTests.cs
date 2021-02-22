@@ -21,7 +21,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         [SetUp]
         public void Setup()
         {
-            Context = new FSMContext(2);
+            Context = CreateContext(columns: 2);
 
             mockNextStateWhenRowEnded = new Mock<IDiamondTilingState>();
             mockNextStateWhenRowContinues = new Mock<IDiamondTilingState>();
@@ -33,6 +33,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             ReturnVertex.StateWhenRowContinues = mockNextStateWhenRowContinues.Object;
         }
 
+        protected abstract FSMContext CreateContext(int columns);
         protected abstract BaseDiamondTilingState GetReturnVertex(FSMContext context);
 
         [Test]

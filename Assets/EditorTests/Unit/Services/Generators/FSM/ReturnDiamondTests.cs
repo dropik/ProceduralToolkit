@@ -8,6 +8,14 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class ReturnDiamondTests : BaseDiamondTilingStateTests
     {
+        protected override FSMContext CreateContext(int columns)
+        {
+            return new FSMContext(columns)
+            {
+                DiamondTilingContext = new DiamondTilingContext()
+            };
+        }
+
         protected override BaseDiamondTilingState GetReturnVertex(FSMContext context)
         {
             return new ReturnDiamond(context);

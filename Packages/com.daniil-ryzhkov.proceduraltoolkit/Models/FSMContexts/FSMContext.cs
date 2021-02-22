@@ -7,12 +7,11 @@ namespace ProceduralToolkit.Models.FSMContexts
         public FSMContext(int columnsInRow)
         {
             ColumnsInRow = columnsInRow;
-            DiamondTilingContext = new DiamondTilingContext();
         }
 
         public IDiamondTilingState State { get; set; }
         public int ColumnsInRow { get; }
         public int Column { get; set; }
-        public DiamondTilingContext DiamondTilingContext { get; private set; }
+        public DiamondTilingContext DiamondTilingContext { get; set; }
     }
 }
