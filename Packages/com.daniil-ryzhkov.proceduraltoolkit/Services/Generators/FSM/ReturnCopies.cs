@@ -8,6 +8,12 @@ namespace ProceduralToolkit.Services.Generators.FSM
     {
         public ReturnCopies(FSMSettings settings) : base(settings) { }
 
+        protected override void PreprocessVertex(Vector3 vertex)
+        {
+            var context = Settings.FSMContext;
+            context.RowDuplicatorContext.VerticesCopies[context.Column] = vertex;
+        }
+
         protected override IEnumerable<Vector3> GetResultVertices(Vector3 vertex)
         {
             yield return vertex;

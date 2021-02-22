@@ -1,5 +1,4 @@
-﻿using ProceduralToolkit.Services.Generators.FSM;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ProceduralToolkit.Models.FSMContexts
 {
@@ -10,8 +9,6 @@ namespace ProceduralToolkit.Models.FSMContexts
             VerticesCopies = new Vector3[columnsInRow];
         }
 
-        public IRowDuplicatorState State { get; set; }
         public Vector3[] VerticesCopies { get; }
-        public Vector3 Current { get; set; }
     }
 }

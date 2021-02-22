@@ -15,7 +15,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 
         protected override BaseState GetReturnVertex(FSMSettings settings)
         {
-            return new NewStoreCopy(settings);
+            return new StoreCopy(settings);
         }
 
         [Test]

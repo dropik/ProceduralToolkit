@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
 using System.Linq;
 using UnityEngine;
@@ -29,7 +28,7 @@ namespace ProceduralToolkit.EditorTests.IT
             };
             var inputVertices = row1.Concat(row2).Concat(row3);
             var expectedVertices = row1.Concat(row2).Concat(row2).Concat(row3).Concat(row3);
-            var duplicator = RowDuplicator.Create();
+            var duplicator = RowDuplicatorFactory.Create();
             duplicator.InputVertices = inputVertices;
             duplicator.ColumnsInRow = 2;
             CollectionAssert.AreEqual(expectedVertices, duplicator.OutputVertices);

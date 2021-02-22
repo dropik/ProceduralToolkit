@@ -23,6 +23,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         }
 
         [Test]
+        public void TestVertexCopyStored()
+        {
+            ReturnVertex.MoveNext(InputVertices[0]);
+            Assert.That(Settings.FSMContext.RowDuplicatorContext.VerticesCopies[0], Is.EqualTo(InputVertices[0]));
+        }
+
+        [Test]
         public void TestReturnedVertices()
         {
             var context = Settings.FSMContext;

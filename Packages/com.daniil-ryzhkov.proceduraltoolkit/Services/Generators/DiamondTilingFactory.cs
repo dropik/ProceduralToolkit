@@ -3,7 +3,7 @@ using ProceduralToolkit.Services.Generators.FSM;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class DiamondTilingFactory
+    public static class DiamondTilingFactory
     {
         public static FSMBasedGenerator Create()
         {

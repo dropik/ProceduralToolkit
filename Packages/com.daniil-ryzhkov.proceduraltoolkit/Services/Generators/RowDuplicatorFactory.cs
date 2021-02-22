@@ -1,33 +1,47 @@
 ﻿using ProceduralToolkit.Models.FSMContexts;
 using ProceduralToolkit.Services.Generators.FSM;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public partial class RowDuplicator
+    public static class RowDuplicatorFactory
     {
-        public static RowDuplicator Create()
+        public static FSMBasedGenerator Create()
         {
-            return new RowDuplicator((vertices, columns) =>
+            return new FSMBasedGenerator((vertices, columns) =>
             {
                 var context = new FSMContext(columns)
                 {
                     RowDuplicatorContext = new RowDuplicatorContext(columns)
                 };
 
-                var enumerator = vertices.GetEnumerator();
-                var copiesEnumerator = ((IEnumerable<Vector3>)context.RowDuplicatorContext.VerticesCopies).GetEnumerator();
+                var settings = new FSMSettings()
+                {
+                    FSMContext = context,
+                    ColumnsLimit = columns
+                };
 
-                var returnNext = new ReturnNext(enumerator, context);
-                var storeCopies = new StoreCopy(enumerator, context);
-                var resetAndReturnNext = new ResetAndReturnNext(copiesEnumerator, context);
+                var storeCopySettings = new FSMSettings()
+                {
+                    FSMContext = context,
+                    ColumnsLimit = columns - 1,
+                    ZeroColumnOnLimitReached = false
+                };
 
-                returnNext.NextState = storeCopies;
-                storeCopies.NextState = resetAndReturnNext;
-                resetAndReturnNext.NextState = storeCopies;
+                var returnOriginal = new ReturnOriginal(settings);
+                var storeCopy = new StoreCopy(storeCopySettings);
+                var returnCopies = new ReturnCopies(settings);
 
-                context.RowDuplicatorContext.State = returnNext;
+                context.State = returnOriginal;
+
+                returnOriginal.NextState = returnOriginal;
+                returnOriginal.StateWhenLimitReached = storeCopy;
+
+                storeCopy.NextState = storeCopy;
+                storeCopy.StateWhenLimitReached = returnCopies;
+
+                returnCopies.NextState = storeCopy;
+                returnCopies.StateWhenLimitReached = storeCopy;
+
                 return context;
             });
         }
