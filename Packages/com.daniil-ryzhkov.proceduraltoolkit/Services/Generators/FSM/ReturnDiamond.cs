@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class ReturnDiamond : BaseDiamondTilingState
+    public class ReturnDiamond : BaseState
     {
         public ReturnDiamond(FSMSettings settings) : base(settings) { }
 

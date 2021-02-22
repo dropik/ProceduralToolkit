@@ -8,7 +8,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class CalculateXZShiftTests : ReturnDiamondTests
     {
-        protected override BaseDiamondTilingState GetReturnVertex(FSMSettings settings)
+        protected override BaseState GetReturnVertex(FSMSettings settings)
         {
             return new CalculateXZShift(settings);
         }

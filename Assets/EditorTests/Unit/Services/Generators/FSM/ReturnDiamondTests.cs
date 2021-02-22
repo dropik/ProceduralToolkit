@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class ReturnDiamondTests : BaseDiamondTilingStateTests
+    public class ReturnDiamondTests : BaseStateTests
     {
         protected override FSMContext CreateContext(int columns)
         {
@@ -16,7 +16,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             };
         }
 
-        protected override BaseDiamondTilingState GetReturnVertex(FSMSettings settings)
+        protected override BaseState GetReturnVertex(FSMSettings settings)
         {
             return new ReturnDiamond(settings);
         }

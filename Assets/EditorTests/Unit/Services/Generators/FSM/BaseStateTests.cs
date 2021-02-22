@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
-    public abstract class BaseDiamondTilingStateTests
+    public abstract class BaseStateTests
     {
         protected Vector3[] InputVertices => new Vector3[]
         {
@@ -14,9 +14,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             new Vector3(2, 0, 0)
         };
         protected FSMSettings Settings { get; private set; }
-        private Mock<IDiamondTilingState> mockStateWhenLimitReached;
-        private Mock<IDiamondTilingState> mockNextState;
-        protected BaseDiamondTilingState ReturnVertex { get; private set; }
+        private Mock<IState> mockStateWhenLimitReached;
+        private Mock<IState> mockNextState;
+        protected BaseState ReturnVertex { get; private set; }
 
         [SetUp]
         public void Setup()
@@ -27,8 +27,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
                 ColumnsLimit = 2
             };
 
-            mockNextState = new Mock<IDiamondTilingState>();
-            mockStateWhenLimitReached = new Mock<IDiamondTilingState>();
+            mockNextState = new Mock<IState>();
+            mockStateWhenLimitReached = new Mock<IState>();
             mockNextState.Setup(m => m.Equals(It.Is<string>(s => s == "continue"))).Returns(true);
             mockStateWhenLimitReached.Setup(m => m.Equals(It.Is<string>(s => s == "ended"))).Returns(true);
 
@@ -38,7 +38,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         }
 
         protected abstract FSMContext CreateContext(int columns);
-        protected abstract BaseDiamondTilingState GetReturnVertex(FSMSettings settings);
+        protected abstract BaseState GetReturnVertex(FSMSettings settings);
 
         [Test]
         public void TestMoveNextIncrementsColumn()

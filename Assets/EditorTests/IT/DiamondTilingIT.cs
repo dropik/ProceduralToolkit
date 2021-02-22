@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
 using System.Linq;
 using UnityEngine;
@@ -37,7 +36,7 @@ namespace ProceduralToolkit.EditorTests.IT
             };
             var expectedVertices = firstRow.Concat(expectedMiddle).Concat(secondRow);
 
-            var tiling = DiamondTiling.Create();
+            var tiling = DiamondTilingFactory.Create();
             tiling.InputVertices = inputVertices;
             tiling.ColumnsInRow = 4;
             CollectionAssert.AreEqual(expectedVertices, tiling.OutputVertices);

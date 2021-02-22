@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public interface IDiamondTilingState
+    public interface IState
     {
         IEnumerable<Vector3> MoveNext(Vector3 vertex);
     }

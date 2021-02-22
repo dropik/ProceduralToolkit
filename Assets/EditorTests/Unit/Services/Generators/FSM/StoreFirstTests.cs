@@ -14,7 +14,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             return context;
         }
 
-        protected override BaseDiamondTilingState GetReturnVertex(FSMSettings settings)
+        protected override BaseState GetReturnVertex(FSMSettings settings)
         {
             return new StoreFirst(settings);
         }

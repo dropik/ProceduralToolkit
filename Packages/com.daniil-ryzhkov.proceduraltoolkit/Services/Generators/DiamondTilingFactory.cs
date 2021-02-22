@@ -3,11 +3,11 @@ using ProceduralToolkit.Services.Generators.FSM;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public partial class DiamondTiling
+    public class DiamondTilingFactory
     {
-        public static DiamondTiling Create()
+        public static FSMBasedGenerator Create()
         {
-            return new DiamondTiling((vertices, columns) =>
+            return new FSMBasedGenerator((vertices, columns) =>
             {
                 var context = new FSMContext(columns)
                 {

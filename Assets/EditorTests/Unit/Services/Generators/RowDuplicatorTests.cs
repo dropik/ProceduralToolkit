@@ -10,14 +10,14 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class RowDuplicatorTests : BaseDiamondGeneratorTests
+    public class RowDuplicatorTests : ColumnsBasedGeneratorTests
     {
         private Mock<IRowDuplicatorState> mockState;
         private FSMContext context;
 
         protected override Func<IEnumerable<Vector3>, int, FSMContext> ContextProvider => (vertices, columns) => context;
 
-        protected override BaseDiamondGenerator CreateGenerator()
+        protected override BaseVerticesGenerator CreateGenerator()
         {
             return new RowDuplicator(ContextProvider);
         }

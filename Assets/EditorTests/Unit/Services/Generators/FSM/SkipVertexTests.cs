@@ -6,14 +6,14 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class SkipVertexTests : BaseDiamondTilingStateTests
+    public class SkipVertexTests : BaseStateTests
     {
         protected override FSMContext CreateContext(int columns)
         {
             return new FSMContext(columns);
         }
 
-        protected override BaseDiamondTilingState GetReturnVertex(FSMSettings settings)
+        protected override BaseState GetReturnVertex(FSMSettings settings)
         {
             return new SkipVertex(settings);
         }

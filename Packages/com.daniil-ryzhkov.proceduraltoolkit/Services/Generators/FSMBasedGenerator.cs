@@ -5,15 +5,20 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public partial class DiamondTiling : BaseDiamondGenerator
+    public class FSMBasedGenerator : ColumnsBasedGenerator
     {
-        public DiamondTiling(Func<IEnumerable<Vector3>, int, FSMContext> contextProvider) : base(contextProvider) { }
+        private readonly Func<IEnumerable<Vector3>, int, FSMContext> contextProvider;
+
+        public FSMBasedGenerator(Func<IEnumerable<Vector3>, int, FSMContext> contextProvider)
+        {
+            this.contextProvider = contextProvider;
+        }
 
         public override IEnumerable<Vector3> OutputVertices
         {
             get
             {
-                var context = ContextProvider.Invoke(InputVertices, ColumnsInRow);
+                var context = contextProvider.Invoke(InputVertices, ColumnsInRow);
                 return OutputVerticesForContext(context);
             }
         }

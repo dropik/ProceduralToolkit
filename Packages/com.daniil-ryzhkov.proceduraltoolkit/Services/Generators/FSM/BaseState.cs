@@ -4,17 +4,17 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public abstract class BaseDiamondTilingState : IDiamondTilingState
+    public abstract class BaseState : IState
     {
         protected FSMSettings Settings { get; private set; }
 
-        public BaseDiamondTilingState(FSMSettings settings)
+        public BaseState(FSMSettings settings)
         {
             Settings = settings;
         }
 
-        public IDiamondTilingState NextState { get; set; }
-        public IDiamondTilingState StateWhenLimitReached { get; set; }
+        public IState NextState { get; set; }
+        public IState StateWhenLimitReached { get; set; }
 
         public IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {

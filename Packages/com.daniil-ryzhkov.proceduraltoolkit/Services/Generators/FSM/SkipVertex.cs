@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class SkipVertex : BaseDiamondTilingState
+    public class SkipVertex : BaseState
     {
         public SkipVertex(FSMSettings settings) : base(settings) { }
 
