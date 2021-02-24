@@ -6,7 +6,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class ReturnDiamond : BaseStateDecorator
     {
-        public ReturnDiamond(IState wrappee, FSMSettings settings) : base(wrappee, settings) { }
+        public ReturnDiamond(IStateBehaviour wrappee, FSMSettings settings) : base(wrappee, settings) { }
 
         public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {

@@ -16,7 +16,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             return context;
         }
 
-        protected override BaseStateDecorator CreateDecorator(IState wrappee, FSMSettings settings)
+        protected override BaseStateDecorator CreateDecorator(IStateBehaviour wrappee, FSMSettings settings)
         {
             return new ReturnCopies(wrappee, settings);
         }

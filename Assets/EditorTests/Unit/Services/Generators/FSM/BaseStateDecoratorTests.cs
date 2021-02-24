@@ -9,14 +9,14 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     public abstract class BaseStateDecoratorTests
     {
-        private Mock<IState> mockState;
+        private Mock<IStateBehaviour> mockState;
         protected FSMSettings Settings { get; private set; }
         protected BaseStateDecorator StateDecorator { get; private set; }
 
         [SetUp]
         public void Setup()
         {
-            mockState = new Mock<IState>();
+            mockState = new Mock<IStateBehaviour>();
             Settings = new FSMSettings()
             {
                 FSMContext = CreateContext(2)
@@ -25,7 +25,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         }
 
         protected virtual FSMContext CreateContext(int columns) => new FSMContext(columns);
-        protected abstract BaseStateDecorator CreateDecorator(IState state, FSMSettings settings);
+        protected abstract BaseStateDecorator CreateDecorator(IStateBehaviour state, FSMSettings settings);
 
         [Test]
         public void TestWrappeeMoveNextCalled()

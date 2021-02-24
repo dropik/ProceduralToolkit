@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public abstract class BaseState : IState
+    public abstract class BaseState : IStateBehaviour
     {
         protected FSMSettings Settings { get; private set; }
 
@@ -13,8 +13,8 @@ namespace ProceduralToolkit.Services.Generators.FSM
             Settings = settings;
         }
 
-        public IState NextState { get; set; }
-        public IState StateWhenLimitReached { get; set; }
+        public IStateBehaviour NextState { get; set; }
+        public IStateBehaviour StateWhenLimitReached { get; set; }
 
         public IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {

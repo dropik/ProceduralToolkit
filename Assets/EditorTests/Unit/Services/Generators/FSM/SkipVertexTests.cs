@@ -8,7 +8,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class SkipVertexTests : BaseStateDecoratorTests
     {
-        protected override BaseStateDecorator CreateDecorator(IState wrappee, FSMSettings settings)
+        protected override BaseStateDecorator CreateDecorator(IStateBehaviour wrappee, FSMSettings settings)
         {
             return new SkipVertex(wrappee, settings);
         }

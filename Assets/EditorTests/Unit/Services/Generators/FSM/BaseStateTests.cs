@@ -14,8 +14,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             new Vector3(2, 0, 0)
         };
         protected FSMSettings Settings { get; private set; }
-        private Mock<IState> mockStateWhenLimitReached;
-        private Mock<IState> mockNextState;
+        private Mock<IStateBehaviour> mockStateWhenLimitReached;
+        private Mock<IStateBehaviour> mockNextState;
         protected BaseState ReturnVertex { get; private set; }
 
         [SetUp]
@@ -27,8 +27,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
                 ColumnsLimit = 2
             };
 
-            mockNextState = new Mock<IState>();
-            mockStateWhenLimitReached = new Mock<IState>();
+            mockNextState = new Mock<IStateBehaviour>();
+            mockStateWhenLimitReached = new Mock<IStateBehaviour>();
             mockNextState.Setup(m => m.Equals(It.Is<string>(s => s == "continue"))).Returns(true);
             mockStateWhenLimitReached.Setup(m => m.Equals(It.Is<string>(s => s == "ended"))).Returns(true);
 

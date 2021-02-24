@@ -6,7 +6,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class CalculateXZShift : BaseStateDecorator
     {
-        public CalculateXZShift(IState wrappee, FSMSettings settings) : base(wrappee, settings) { }
+        public CalculateXZShift(IStateBehaviour wrappee, FSMSettings settings) : base(wrappee, settings) { }
 
         public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {

@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public abstract class BaseStateDecorator : IState
+    public abstract class BaseStateDecorator : IStateBehaviour
     {
-        private readonly IState wrappee;
+        private readonly IStateBehaviour wrappee;
         protected FSMSettings Settings { get; private set; }
 
-        public BaseStateDecorator(IState wrappee, FSMSettings settings)
+        public BaseStateDecorator(IStateBehaviour wrappee, FSMSettings settings)
         {
             this.wrappee = wrappee;
             Settings = settings;
