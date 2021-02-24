@@ -15,7 +15,10 @@ namespace ProceduralToolkit.Services.Generators.FSM
 
         private IState defaultNextState;
 
-        public State(IStateBehaviour stateBehaviour, FSMContext context, IList<Transition> transitions, Func<Transition, ITransitionBuilder> transitionBuilderProvider)
+        public State(IStateBehaviour stateBehaviour,
+                     FSMContext context,
+                     IList<Transition> transitions,
+                     Func<Transition, ITransitionBuilder> transitionBuilderProvider)
         {
             this.stateBehaviour = stateBehaviour;
             this.context = context;
