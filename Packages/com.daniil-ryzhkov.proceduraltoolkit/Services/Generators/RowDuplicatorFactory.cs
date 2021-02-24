@@ -27,20 +27,23 @@ namespace ProceduralToolkit.Services.Generators
                     ZeroColumnOnLimitReached = false
                 };
 
+                var storeCopyBase = new ReturnOriginal(storeCopySettings);
+                var returnCopiesBase = new ReturnOriginal(settings);
+
                 var returnOriginal = new ReturnOriginal(settings);
-                var storeCopy = new StoreCopy(storeCopySettings);
-                var returnCopies = new ReturnCopies(settings);
+                var storeCopy = new StoreCopy(storeCopyBase, storeCopySettings);
+                var returnCopies = new ReturnCopies(new StoreCopy(returnCopiesBase, settings), settings);
 
                 context.State = returnOriginal;
 
                 returnOriginal.NextState = returnOriginal;
                 returnOriginal.StateWhenLimitReached = storeCopy;
 
-                storeCopy.NextState = storeCopy;
-                storeCopy.StateWhenLimitReached = returnCopies;
+                storeCopyBase.NextState = storeCopy;
+                storeCopyBase.StateWhenLimitReached = returnCopies;
 
-                returnCopies.NextState = storeCopy;
-                returnCopies.StateWhenLimitReached = storeCopy;
+                returnCopiesBase.NextState = storeCopy;
+                returnCopiesBase.StateWhenLimitReached = storeCopy;
 
                 return context;
             });

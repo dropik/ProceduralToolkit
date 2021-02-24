@@ -7,26 +7,18 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class ReturnCopiesTests : BaseStateTests
+    public class ReturnCopiesTests : BaseStateDecoratorTests
     {
         protected override FSMContext CreateContext(int columns)
         {
-            return new FSMContext(columns)
-            {
-                RowDuplicatorContext = new RowDuplicatorContext(columns)
-            };
+            var context = base.CreateContext(columns);
+            context.RowDuplicatorContext = new RowDuplicatorContext(columns);
+            return context;
         }
 
-        protected override BaseState GetReturnVertex(FSMSettings settings)
+        protected override BaseStateDecorator CreateDecorator(IState wrappee, FSMSettings settings)
         {
-            return new ReturnCopies(settings);
-        }
-
-        [Test]
-        public void TestVertexCopyStored()
-        {
-            ReturnVertex.MoveNext(InputVertices[0]);
-            Assert.That(Settings.FSMContext.RowDuplicatorContext.VerticesCopies[0], Is.EqualTo(InputVertices[0]));
+            return new ReturnCopies(wrappee, settings);
         }
 
         [Test]
@@ -38,9 +30,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             {
                 context.RowDuplicatorContext.VerticesCopies[i] = new Vector3(0, 0, i);
             }
-            var expectedVertices = new Vector3[] { InputVertices[1] }.Concat(context.RowDuplicatorContext.VerticesCopies);
+            var input = new Vector3(1, 2, 3);
+            var expectedVertices = new Vector3[] { input }.Concat(context.RowDuplicatorContext.VerticesCopies);
 
-            CollectionAssert.AreEqual(expectedVertices, ReturnVertex.MoveNext(InputVertices[1]));
+            CollectionAssert.AreEqual(expectedVertices, StateDecorator.MoveNext(input));
         }
     }
 }

@@ -6,23 +6,18 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class SkipVertexTests : BaseStateTests
+    public class SkipVertexTests : BaseStateDecoratorTests
     {
-        protected override FSMContext CreateContext(int columns)
+        protected override BaseStateDecorator CreateDecorator(IState wrappee, FSMSettings settings)
         {
-            return new FSMContext(columns);
-        }
-
-        protected override BaseState GetReturnVertex(FSMSettings settings)
-        {
-            return new SkipVertex(settings);
+            return new SkipVertex(wrappee, settings);
         }
 
         [Test]
         public void TestMoveNextReturnsEmpty()
         {
             var expectedVertices = new Vector3[0];
-            CollectionAssert.AreEqual(expectedVertices, ReturnVertex.MoveNext(InputVertices[0]));
+            CollectionAssert.AreEqual(expectedVertices, StateDecorator.MoveNext(Vector3.zero));
         }
     }
 }

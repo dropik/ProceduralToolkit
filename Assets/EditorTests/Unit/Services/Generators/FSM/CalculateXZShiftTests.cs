@@ -6,11 +6,18 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class CalculateXZShiftTests : ReturnDiamondTests
+    public class CalculateXZShiftTests : BaseStateDecoratorTests
     {
-        protected override BaseState GetReturnVertex(FSMSettings settings)
+        protected override FSMContext CreateContext(int columns)
         {
-            return new CalculateXZShift(settings);
+            var context = base.CreateContext(columns);
+            context.DiamondTilingContext = new DiamondTilingContext();
+            return context;
+        }
+
+        protected override BaseStateDecorator CreateDecorator(IState wrappee, FSMSettings settings)
+        {
+            return new CalculateXZShift(wrappee, settings);
         }
 
         private void SetupAsForSecondVertex()
@@ -24,9 +31,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         public void TestShiftCalculated()
         {
             SetupAsForSecondVertex();
+            var input = new Vector3(1, 0, 0);
             var expectedShift = new Vector3(-1, 0, 0) / 2;
 
-            ReturnVertex.MoveNext(InputVertices[0]);
+            StateDecorator.MoveNext(input);
 
             Assert.That(Settings.FSMContext.DiamondTilingContext.XZShift, Is.EqualTo(expectedShift));
         }
@@ -39,7 +47,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             var expectedShift = new Vector3(4, 4, 4);
             context.DiamondTilingContext.XZShift = expectedShift;
 
-            ReturnVertex.MoveNext(InputVertices[1]);
+            StateDecorator.MoveNext(Vector3.zero);
 
             Assert.That(context.DiamondTilingContext.XZShift, Is.EqualTo(expectedShift));
         }

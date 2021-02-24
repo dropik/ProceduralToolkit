@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class ReturnDiamond : BaseState
+    public class ReturnDiamond : BaseStateDecorator
     {
-        public ReturnDiamond(FSMSettings settings) : base(settings) { }
+        public ReturnDiamond(IState wrappee, FSMSettings settings) : base(wrappee, settings) { }
 
-        protected override IEnumerable<Vector3> GetResultVertices(Vector3 vertex)
+        public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {
+            base.MoveNext(vertex);
             yield return new Vector3(vertex.x, 0, vertex.z) + Settings.FSMContext.DiamondTilingContext.XZShift;
         }
     }

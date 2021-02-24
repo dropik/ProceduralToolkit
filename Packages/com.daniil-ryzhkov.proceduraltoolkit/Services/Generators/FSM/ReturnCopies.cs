@@ -4,18 +4,13 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class ReturnCopies : BaseState
+    public class ReturnCopies : BaseStateDecorator
     {
-        public ReturnCopies(FSMSettings settings) : base(settings) { }
+        public ReturnCopies(IState wrappee, FSMSettings settings) : base(wrappee, settings) { }
 
-        protected override void PreprocessVertex(Vector3 vertex)
+        public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {
-            var context = Settings.FSMContext;
-            context.RowDuplicatorContext.VerticesCopies[context.Column] = vertex;
-        }
-
-        protected override IEnumerable<Vector3> GetResultVertices(Vector3 vertex)
-        {
+            base.MoveNext(vertex);
             yield return vertex;
             foreach (var copy in Settings.FSMContext.RowDuplicatorContext.VerticesCopies)
             {

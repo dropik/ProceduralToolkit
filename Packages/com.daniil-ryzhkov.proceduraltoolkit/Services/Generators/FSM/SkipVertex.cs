@@ -4,12 +4,13 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class SkipVertex : BaseState
+    public class SkipVertex : BaseStateDecorator
     {
-        public SkipVertex(FSMSettings settings) : base(settings) { }
+        public SkipVertex(IState wrappee, FSMSettings settings) : base(wrappee, settings) { }
 
-        protected override IEnumerable<Vector3> GetResultVertices(Vector3 vertex)
+        public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {
+            base.MoveNext(vertex);
             yield break;
         }
     }

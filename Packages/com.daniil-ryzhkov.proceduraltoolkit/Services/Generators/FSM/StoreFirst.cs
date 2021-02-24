@@ -1,15 +1,17 @@
 ﻿using ProceduralToolkit.Models.FSMContexts;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class StoreFirst : ReturnOriginal
+    public class StoreFirst : BaseStateDecorator
     {
-        public StoreFirst(FSMSettings settings) : base(settings) { }
+        public StoreFirst(IState wrappee,FSMSettings settings) : base(wrappee, settings) { }
 
-        protected override void PreprocessVertex(Vector3 vertex)
+        public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {
             Settings.FSMContext.DiamondTilingContext.First = vertex;
+            return base.MoveNext(vertex);
         }
     }
 }
