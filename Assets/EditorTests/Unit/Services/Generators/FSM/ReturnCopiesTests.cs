@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using ProceduralToolkit.Models.FSMContexts;
+using ProceduralToolkit.Models.FSM;
 using ProceduralToolkit.Services.Generators.FSM;
 using System.Linq;
 using UnityEngine;

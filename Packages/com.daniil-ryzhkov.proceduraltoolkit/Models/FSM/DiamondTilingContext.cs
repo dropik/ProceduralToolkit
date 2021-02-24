@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ProceduralToolkit.Models.FSMContexts
+namespace ProceduralToolkit.Models.FSM
 {
     public sealed class DiamondTilingContext
     {

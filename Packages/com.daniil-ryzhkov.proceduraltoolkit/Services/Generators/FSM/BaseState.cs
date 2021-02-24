@@ -1,4 +1,4 @@
-﻿using ProceduralToolkit.Models.FSMContexts;
+﻿using ProceduralToolkit.Models.FSM;
 using System.Collections.Generic;
 using UnityEngine;
 
