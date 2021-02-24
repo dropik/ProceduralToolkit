@@ -8,36 +8,63 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class State : IState
     {
-        private readonly IStateBehaviour stateBehaviour;
+        private readonly IStateOutput output;
         private readonly FSMContext context;
         private readonly IList<Transition> transitions;
-        private readonly Func<Transition, ITransitionBuilder> transitionBuilderProvider;
+        private readonly Func<IState, Transition, ITransitionBuilder> transitionBuilderProvider;
 
         private IState defaultNextState;
 
-        public State(IStateBehaviour stateBehaviour,
+        public State(IStateOutput output,
                      FSMContext context,
                      IList<Transition> transitions,
-                     Func<Transition, ITransitionBuilder> transitionBuilderProvider)
+                     Func<IState, Transition, ITransitionBuilder> transitionBuilderProvider)
         {
-            this.stateBehaviour = stateBehaviour;
+            this.output = output;
             this.context = context;
             this.transitions = transitions;
             this.transitionBuilderProvider = transitionBuilderProvider;
         }
 
+        public IVertexPreprocessor VertexPreprocessor { get; set; }
+
         public IEnumerable<Vector3> MoveNext(Vector3 vertex)
+        {
+            VertexPreprocessor?.Process(vertex);
+            context.Column++;
+            CheckTransitions();
+            return output.GetOutputFor(vertex);
+        }
+
+        private void CheckTransitions()
         {
             foreach (var transition in WithDefaultTransitions)
             {
                 if (transition.Condition())
                 {
-                    context.State = transition.NextState;
-                    return stateBehaviour.MoveNext(vertex);
+                    HandleConditionHit(transition);
+                    break;
                 }
             }
+        }
 
-            return default;
+        private void HandleConditionHit(Transition transition)
+        {
+            SwitchState(transition);
+            TryResetColumn(transition);
+        }
+
+        private void SwitchState(Transition transition)
+        {
+            context.State = transition.NextState;
+        }
+
+        private void TryResetColumn(Transition transition)
+        {
+            if (transition.ZeroColumn)
+            {
+                context.Column = 0;
+            }
         }
 
         private IEnumerable<Transition> WithDefaultTransitions => transitions.Concat(new Transition[]
@@ -45,7 +72,8 @@ namespace ProceduralToolkit.Services.Generators.FSM
             new Transition()
             {
                 Condition = () => true,
-                NextState = defaultNextState
+                NextState = defaultNextState,
+                ZeroColumn = false
             }
         });
 
@@ -56,12 +84,18 @@ namespace ProceduralToolkit.Services.Generators.FSM
                 Condition = condition
             };
             transitions.Add(newTransition);
-            return transitionBuilderProvider.Invoke(newTransition);
+            return transitionBuilderProvider.Invoke(this, newTransition);
         }
 
         public IState SetDefaultNext(IState next)
         {
             defaultNextState = next;
+            return this;
+        }
+
+        public IState DoNotZeroColumn()
+        {
+            transitions[transitions.Count - 1].ZeroColumn = false;
             return this;
         }
     }

@@ -7,5 +7,6 @@ namespace ProceduralToolkit.Models.FSM
     {
         public Func<bool> Condition { get; set; }
         public IState NextState { get; set; }
+        public bool ZeroColumn { get; set; } = true;
     }
 }

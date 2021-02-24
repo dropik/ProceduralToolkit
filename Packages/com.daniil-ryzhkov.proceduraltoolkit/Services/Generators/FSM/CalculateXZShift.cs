@@ -1,22 +1,24 @@
 using ProceduralToolkit.Models.FSM;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class CalculateXZShift : BaseStateDecorator
+    public class CalculateXZShift : IVertexPreprocessor
     {
-        public CalculateXZShift(IStateBehaviour wrappee, FSMSettings settings) : base(wrappee, settings) { }
+        private readonly DiamondTilingContext context;
 
-        public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
+        public CalculateXZShift(DiamondTilingContext context)
         {
-            var context = Settings.FSMContext.DiamondTilingContext;
+            this.context = context;
+        }
+
+        public void Process(Vector3 vertex)
+        {
             if (context.XZShift == Vector3.zero)
             {
                 context.XZShift = (context.First - vertex) / 2;
                 context.XZShift = new Vector3(context.XZShift.x, 0, context.XZShift.z);
             }
-            return base.MoveNext(vertex);
         }
     }
 }

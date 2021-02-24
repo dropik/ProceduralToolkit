@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public interface IStateBehaviour
+    public interface IStateOutput
     {
-        IEnumerable<Vector3> MoveNext(Vector3 vertex);
+        IEnumerable<Vector3> GetOutputFor(Vector3 vertex);
     }
 }

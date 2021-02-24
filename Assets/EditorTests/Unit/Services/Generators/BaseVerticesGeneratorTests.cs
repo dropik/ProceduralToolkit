@@ -1,8 +1,6 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.Models.FSM;
 using ProceduralToolkit.Services.Generators;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
@@ -16,8 +14,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             Generator = CreateGenerator();
         }
-
-        protected abstract Func<IEnumerable<Vector3>, int, FSMContext> ContextProvider { get; }
 
         protected abstract BaseVerticesGenerator CreateGenerator();
 

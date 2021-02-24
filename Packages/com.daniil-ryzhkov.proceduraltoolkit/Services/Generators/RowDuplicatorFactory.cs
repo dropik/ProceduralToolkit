@@ -7,44 +7,38 @@ namespace ProceduralToolkit.Services.Generators
     {
         public static FSMBasedGenerator Create()
         {
-            return new FSMBasedGenerator((vertices, columns) =>
+            return new FSMBasedGenerator(columns =>
             {
-                var context = new FSMContext(columns)
+                var context = new FSMContext()
                 {
                     RowDuplicatorContext = new RowDuplicatorContext(columns)
                 };
+                var factory = new StateFactory(context);
 
-                var settings = new FSMSettings()
+                var outputOriginal = factory.CreateState();
+                var storeCopy = factory.ConfigureBuilder(builder =>
                 {
-                    FSMContext = context,
-                    ColumnsLimit = columns
-                };
-
-                var storeCopySettings = new FSMSettings()
+                    builder.ConfigurePreprocessor(new StoreCopy(context));
+                }).CreateState();
+                var outputCopies = factory.ConfigureBuilder(builder =>
                 {
-                    FSMContext = context,
-                    ColumnsLimit = columns - 1,
-                    ZeroColumnOnLimitReached = false
-                };
+                    builder.ConfigurePreprocessor(new StoreCopy(context))
+                           .ConfigureOutput(new OutputCopies(context.RowDuplicatorContext));
+                }).CreateState();
 
-                var storeCopyBase = new ReturnOriginal(storeCopySettings);
-                var returnCopiesBase = new ReturnOriginal(settings);
+                bool RowEnd() => context.Column >= columns;
+                bool AlmostRowEnd() => context.Column >= columns - 1;
+                outputOriginal
+                    .SetDefaultNext(outputOriginal)
+                    .On(RowEnd).SetNext(storeCopy);
+                storeCopy
+                    .SetDefaultNext(storeCopy)
+                    .On(AlmostRowEnd).SetNext(outputCopies).DoNotZeroColumn();
+                outputCopies
+                    .SetDefaultNext(outputCopies)
+                    .On(RowEnd).SetNext(storeCopy);
 
-                var returnOriginal = new ReturnOriginal(settings);
-                var storeCopy = new StoreCopy(storeCopyBase, storeCopySettings);
-                var returnCopies = new ReturnCopies(new StoreCopy(returnCopiesBase, settings), settings);
-
-                context.StateBehaviour = returnOriginal;
-
-                returnOriginal.NextState = returnOriginal;
-                returnOriginal.StateWhenLimitReached = storeCopy;
-
-                storeCopyBase.NextState = storeCopy;
-                storeCopyBase.StateWhenLimitReached = returnCopies;
-
-                returnCopiesBase.NextState = storeCopy;
-                returnCopiesBase.StateWhenLimitReached = storeCopy;
-
+                context.State = outputOriginal;
                 return context;
             });
         }

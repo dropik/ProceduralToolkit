@@ -6,26 +6,19 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class StoreCopyTests : BaseStateDecoratorTests
+    public class StoreCopyTests
     {
-        protected override FSMContext CreateContext(int columns)
-        {
-            var context = base.CreateContext(columns);
-            context.RowDuplicatorContext = new RowDuplicatorContext(columns);
-            return context;
-        }
-
-        protected override BaseStateDecorator CreateDecorator(IStateBehaviour wrappee, FSMSettings settings)
-        {
-            return new StoreCopy(wrappee, settings);
-        }
-
         [Test]
         public void TestVertexCopyStored()
         {
+            var context = new FSMContext()
+            {
+                RowDuplicatorContext = new RowDuplicatorContext(2)
+            };
             var expectedVertex = new Vector3(1, 2, 3);
-            StateDecorator.MoveNext(expectedVertex);
-            Assert.That(Settings.FSMContext.RowDuplicatorContext.VerticesCopies[0], Is.EqualTo(expectedVertex));
+            var processor = new StoreCopy(context);
+            processor.Process(expectedVertex);
+            Assert.That(context.RowDuplicatorContext.VerticesCopies[0], Is.EqualTo(expectedVertex));
         }
     }
 }

@@ -1,18 +1,20 @@
 ﻿using ProceduralToolkit.Models.FSM;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class StoreCopy : BaseStateDecorator
+    public class StoreCopy : IVertexPreprocessor
     {
-        public StoreCopy(IStateBehaviour wrappee, FSMSettings settings) : base(wrappee, settings) { }
+        private readonly FSMContext context;
 
-        public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
+        public StoreCopy(FSMContext context)
         {
-            var context = Settings.FSMContext;
+            this.context = context;
+        }
+
+        public void Process(Vector3 vertex)
+        {
             context.RowDuplicatorContext.VerticesCopies[context.Column] = vertex;
-            return base.MoveNext(vertex);
         }
     }
 }

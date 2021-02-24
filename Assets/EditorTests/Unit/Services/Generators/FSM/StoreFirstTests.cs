@@ -6,26 +6,16 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class StoreFirstTests : BaseStateDecoratorTests
+    public class StoreFirstTests
     {
-        protected override FSMContext CreateContext(int columns)
-        {
-            var context = base.CreateContext(columns);
-            context.DiamondTilingContext = new DiamondTilingContext();
-            return context;
-        }
-
-        protected override BaseStateDecorator CreateDecorator(IStateBehaviour wrappee, FSMSettings settings)
-        {
-            return new StoreFirst(wrappee, settings);
-        }
-
         [Test]
         public void TestFirstStored()
         {
+            var context = new DiamondTilingContext();
             var expectedVertex = new Vector3(1, 2, 3);
-            StateDecorator.MoveNext(expectedVertex);
-            Assert.That(Settings.FSMContext.DiamondTilingContext.First, Is.EqualTo(expectedVertex));
+            var processor = new StoreFirst(context);
+            processor.Process(expectedVertex);
+            Assert.That(context.First, Is.EqualTo(expectedVertex));
         }
     }
 }

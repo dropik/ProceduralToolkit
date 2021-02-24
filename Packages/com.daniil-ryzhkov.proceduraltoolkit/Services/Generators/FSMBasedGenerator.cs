@@ -7,9 +7,9 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class FSMBasedGenerator : ColumnsBasedGenerator
     {
-        private readonly Func<IEnumerable<Vector3>, int, FSMContext> contextProvider;
+        private readonly Func<int, FSMContext> contextProvider;
 
-        public FSMBasedGenerator(Func<IEnumerable<Vector3>, int, FSMContext> contextProvider)
+        public FSMBasedGenerator(Func<int, FSMContext> contextProvider)
         {
             this.contextProvider = contextProvider;
         }
@@ -18,7 +18,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             get
             {
-                var context = contextProvider.Invoke(InputVertices, ColumnsInRow);
+                var context = contextProvider.Invoke(ColumnsInRow);
                 return OutputVerticesForContext(context);
             }
         }
@@ -42,7 +42,7 @@ namespace ProceduralToolkit.Services.Generators
 
         private IEnumerable<Vector3> GetNextVertices(Vector3 vertex, FSMContext context)
         {
-            return context.StateBehaviour?.MoveNext(vertex);
+            return context.State?.MoveNext(vertex);
         }
 
         private IEnumerable<Vector3> TryEnumerateNextVertices(IEnumerable<Vector3> nextVertices, Vector3 vertex)

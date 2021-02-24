@@ -6,50 +6,39 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class CalculateXZShiftTests : BaseStateDecoratorTests
+    public class CalculateXZShiftTests
     {
-        protected override FSMContext CreateContext(int columns)
-        {
-            var context = base.CreateContext(columns);
-            context.DiamondTilingContext = new DiamondTilingContext();
-            return context;
-        }
+        private DiamondTilingContext context;
+        private CalculateXZShift processor;
 
-        protected override BaseStateDecorator CreateDecorator(IStateBehaviour wrappee, FSMSettings settings)
+        [SetUp]
+        public void Setup()
         {
-            return new CalculateXZShift(wrappee, settings);
-        }
-
-        private void SetupAsForSecondVertex()
-        {
-            var context = Settings.FSMContext;
-            context.Column = 1;
-            context.DiamondTilingContext.First = Vector3.zero;
+            context = new DiamondTilingContext();
+            processor = new CalculateXZShift(context);
         }
 
         [Test]
         public void TestShiftCalculated()
         {
-            SetupAsForSecondVertex();
+            context.First = Vector3.zero;
             var input = new Vector3(1, 0, 0);
             var expectedShift = new Vector3(-1, 0, 0) / 2;
 
-            StateDecorator.MoveNext(input);
+            processor.Process(input);
 
-            Assert.That(Settings.FSMContext.DiamondTilingContext.XZShift, Is.EqualTo(expectedShift));
+            Assert.That(context.XZShift, Is.EqualTo(expectedShift));
         }
 
         [Test]
         public void TestShiftIsNotCalculatedWhenItIsNotZero()
         {
-            SetupAsForSecondVertex();
-            var context = Settings.FSMContext;
             var expectedShift = new Vector3(4, 4, 4);
-            context.DiamondTilingContext.XZShift = expectedShift;
+            context.XZShift = expectedShift;
 
-            StateDecorator.MoveNext(Vector3.zero);
+            processor.Process(default);
 
-            Assert.That(context.DiamondTilingContext.XZShift, Is.EqualTo(expectedShift));
+            Assert.That(context.XZShift, Is.EqualTo(expectedShift));
         }
     }
 }

@@ -1,17 +1,20 @@
 ﻿using ProceduralToolkit.Models.FSM;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class StoreFirst : BaseStateDecorator
+    public class StoreFirst : IVertexPreprocessor
     {
-        public StoreFirst(IStateBehaviour wrappee,FSMSettings settings) : base(wrappee, settings) { }
+        private readonly DiamondTilingContext context;
 
-        public override IEnumerable<Vector3> MoveNext(Vector3 vertex)
+        public StoreFirst(DiamondTilingContext context)
         {
-            Settings.FSMContext.DiamondTilingContext.First = vertex;
-            return base.MoveNext(vertex);
+            this.context = context;
+        }
+
+        public void Process(Vector3 vertex)
+        {
+            context.First = vertex;
         }
     }
 }

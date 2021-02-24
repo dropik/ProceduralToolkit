@@ -18,10 +18,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             new Vector3(2, 0, 0)
         };
 
-        private Mock<IStateBehaviour> mockState;
+        private Mock<IState> mockState;
         private FSMContext context;
 
-        protected override Func<IEnumerable<Vector3>, int, FSMContext> ContextProvider => (vertices, columns) => context;
+        protected Func<int, FSMContext> ContextProvider => columns => context;
 
         protected override BaseVerticesGenerator CreateGenerator()
         {
@@ -31,10 +31,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [SetUp]
         public override void Setup()
         {
-            mockState = new Mock<IStateBehaviour>();
-            context = new FSMContext(2)
+            mockState = new Mock<IState>();
+            context = new FSMContext()
             {
-                StateBehaviour = mockState.Object
+                State = mockState.Object
             };
             base.Setup();
         }
@@ -52,7 +52,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public void TestOutputReturnsInputIfStateIsNull()
         {
             Generator.InputVertices = defaultInputVertices;
-            context.StateBehaviour = null;
+            context.State = null;
 
             var enumerator = Generator.OutputVertices.GetEnumerator();
             enumerator.MoveNext();

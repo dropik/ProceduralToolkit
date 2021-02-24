@@ -7,60 +7,71 @@ namespace ProceduralToolkit.Services.Generators
     {
         public static FSMBasedGenerator Create()
         {
-            return new FSMBasedGenerator((vertices, columns) =>
+            return new FSMBasedGenerator(columns =>
             {
-                var context = new FSMContext(columns)
+                var context = new FSMContext()
                 {
                     DiamondTilingContext = new DiamondTilingContext()
                 };
+                var factory = new StateFactory(context);
 
-                var settings = new FSMSettings()
+                var storeFirst = factory.ConfigureBuilder(builder =>
                 {
-                    FSMContext = context,
-                    ColumnsLimit = columns
-                };
+                    builder.ConfigurePreprocessor(new StoreFirst(context.DiamondTilingContext));
+                }).CreateState();
 
-                var storeFirstBase = new ReturnOriginal(settings);
-                var returnDiamond1Base = new ReturnOriginal(settings);
-                var returnDiamond2Base = new ReturnOriginal(settings);
-                var skipVertex1Base = new ReturnOriginal(settings);
-                var skipVertex2Base = new ReturnOriginal(settings);
-                var calculateShiftBase = new ReturnOriginal(settings);
+                var outputOriginal1 = factory.CreateState();
+                var outputOriginal2 = factory.CreateState();
 
-                var storeFirst = new StoreFirst(storeFirstBase, settings);
-                var returnOriginal1 = new ReturnOriginal(settings);
-                var returnOriginal2 = new ReturnOriginal(settings);
-                var returnDiamond1 = new ReturnDiamond(returnDiamond1Base, settings);
-                var returnDiamond2 = new ReturnDiamond(returnDiamond2Base, settings);
-                var skipVertex1 = new SkipVertex(skipVertex1Base, settings);
-                var skipVertex2 = new SkipVertex(skipVertex2Base, settings);
-                var calculateShift = new CalculateXZShift(new ReturnDiamond(calculateShiftBase, settings), settings);
+                var outputDiamond1 = factory.ConfigureBuilder(builder =>
+                {
+                    builder.ConfigureOutput(new OutputDiamond(context.DiamondTilingContext));
+                }).CreateState();
+                var outputDiamond2 = factory.ConfigureBuilder(builder =>
+                {
+                    builder.ConfigureOutput(new OutputDiamond(context.DiamondTilingContext));
+                }).CreateState();
 
-                context.StateBehaviour = storeFirst;
+                var outputSkip1 = factory.ConfigureBuilder(builder =>
+                {
+                    builder.ConfigureOutput(new OutputSkip());
+                }).CreateState();
+                var outputSkip2 = factory.ConfigureBuilder(builder =>
+                {
+                    builder.ConfigureOutput(new OutputSkip());
+                }).CreateState();
 
-                storeFirstBase.NextState = returnOriginal1;
+                var calculateShift = factory.ConfigureBuilder(builder =>
+                {
+                    builder.ConfigurePreprocessor(new CalculateXZShift(context.DiamondTilingContext))
+                           .ConfigureOutput(new OutputDiamond(context.DiamondTilingContext));
+                }).CreateState();
 
-                returnOriginal1.NextState = returnOriginal1;
-                returnOriginal1.StateWhenLimitReached = skipVertex1;
+                bool RowEnd() => context.Column >= columns;
+                storeFirst.SetDefaultNext(outputOriginal1);
+                outputOriginal1
+                    .SetDefaultNext(outputOriginal1)
+                    .On(RowEnd).SetNext(outputSkip1);
+                outputSkip1
+                    .SetDefaultNext(calculateShift)
+                    .On(RowEnd).SetNext(outputOriginal2);
+                calculateShift
+                    .SetDefaultNext(outputDiamond1)
+                    .On(RowEnd).SetNext(outputOriginal2);
+                outputDiamond1
+                    .SetDefaultNext(outputDiamond1)
+                    .On(RowEnd).SetNext(outputOriginal2);
+                outputOriginal2
+                    .SetDefaultNext(outputOriginal2)
+                    .On(RowEnd).SetNext(outputSkip2);
+                outputSkip2
+                    .SetDefaultNext(outputDiamond2)
+                    .On(RowEnd).SetNext(outputOriginal2);
+                outputDiamond2
+                    .SetDefaultNext(outputDiamond2)
+                    .On(RowEnd).SetNext(outputOriginal2);
 
-                skipVertex1Base.NextState = calculateShift;
-                skipVertex1Base.StateWhenLimitReached = returnOriginal2;
-
-                calculateShiftBase.NextState = returnDiamond1;
-                calculateShiftBase.StateWhenLimitReached = returnOriginal2;
-
-                returnDiamond1Base.NextState = returnDiamond1;
-                returnDiamond1Base.StateWhenLimitReached = returnOriginal2;
-
-                returnOriginal2.NextState = returnOriginal2;
-                returnOriginal2.StateWhenLimitReached = skipVertex2;
-
-                skipVertex2Base.NextState = returnDiamond2;
-                skipVertex2Base.StateWhenLimitReached = returnOriginal2;
-
-                returnDiamond2Base.NextState = returnDiamond2;
-                returnDiamond2Base.StateWhenLimitReached = returnOriginal2;
-
+                context.State = storeFirst;
                 return context;
             });
         }
