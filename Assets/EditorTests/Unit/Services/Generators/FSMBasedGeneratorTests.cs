@@ -34,7 +34,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             mockState = new Mock<IStateBehaviour>();
             context = new FSMContext(2)
             {
-                State = mockState.Object
+                StateBehaviour = mockState.Object
             };
             base.Setup();
         }
@@ -52,7 +52,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public void TestOutputReturnsInputIfStateIsNull()
         {
             Generator.InputVertices = defaultInputVertices;
-            context.State = null;
+            context.StateBehaviour = null;
 
             var enumerator = Generator.OutputVertices.GetEnumerator();
             enumerator.MoveNext();

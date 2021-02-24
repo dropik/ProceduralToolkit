@@ -35,11 +35,11 @@ namespace ProceduralToolkit.Services.Generators.FSM
                 {
                     context.Column = 0;
                 }
-                context.State = StateWhenLimitReached;
+                context.StateBehaviour = StateWhenLimitReached;
             }
             else
             {
-                context.State = NextState;
+                context.StateBehaviour = NextState;
             }
         }
 

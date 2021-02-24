@@ -51,7 +51,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         public void TestMoveNextSetsAppropriateNextState()
         {
             ReturnVertex.MoveNext(InputVertices[0]);
-            Assert.That(Settings.FSMContext.State.Equals("continue"));
+            Assert.That(Settings.FSMContext.StateBehaviour.Equals("continue"));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         {
             Settings.FSMContext.Column = 1;
             ReturnVertex.MoveNext(InputVertices[1]);
-            Assert.That(Settings.FSMContext.State.Equals("ended"));
+            Assert.That(Settings.FSMContext.StateBehaviour.Equals("ended"));
         }
     }
 }

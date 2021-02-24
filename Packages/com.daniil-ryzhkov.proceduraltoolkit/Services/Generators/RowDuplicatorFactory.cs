@@ -34,7 +34,7 @@ namespace ProceduralToolkit.Services.Generators
                 var storeCopy = new StoreCopy(storeCopyBase, storeCopySettings);
                 var returnCopies = new ReturnCopies(new StoreCopy(returnCopiesBase, settings), settings);
 
-                context.State = returnOriginal;
+                context.StateBehaviour = returnOriginal;
 
                 returnOriginal.NextState = returnOriginal;
                 returnOriginal.StateWhenLimitReached = storeCopy;

@@ -36,7 +36,7 @@ namespace ProceduralToolkit.Services.Generators
                 var skipVertex2 = new SkipVertex(skipVertex2Base, settings);
                 var calculateShift = new CalculateXZShift(new ReturnDiamond(calculateShiftBase, settings), settings);
 
-                context.State = storeFirst;
+                context.StateBehaviour = storeFirst;
 
                 storeFirstBase.NextState = returnOriginal1;
 

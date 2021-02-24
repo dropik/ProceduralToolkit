@@ -42,7 +42,7 @@ namespace ProceduralToolkit.Services.Generators
 
         private IEnumerable<Vector3> GetNextVertices(Vector3 vertex, FSMContext context)
         {
-            return context.State?.MoveNext(vertex);
+            return context.StateBehaviour?.MoveNext(vertex);
         }
 
         private IEnumerable<Vector3> TryEnumerateNextVertices(IEnumerable<Vector3> nextVertices, Vector3 vertex)

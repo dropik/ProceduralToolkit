@@ -9,7 +9,8 @@ namespace ProceduralToolkit.Models.FSM
             ColumnsInRow = columnsInRow;
         }
 
-        public IStateBehaviour State { get; set; }
+        public IStateBehaviour StateBehaviour { get; set; }
+        public IState State { get; set; }
         public int ColumnsInRow { get; }
         public int Column { get; set; }
         public DiamondTilingContext DiamondTilingContext { get; set; }
