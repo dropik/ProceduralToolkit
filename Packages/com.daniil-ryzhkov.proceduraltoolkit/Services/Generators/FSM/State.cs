@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class State
+    public class State : IState
     {
         private readonly IStateOutput output;
         private readonly ITransitionBehaviour transitionBehaviour;

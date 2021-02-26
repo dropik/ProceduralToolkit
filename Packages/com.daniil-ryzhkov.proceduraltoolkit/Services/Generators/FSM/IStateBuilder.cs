@@ -5,5 +5,6 @@
         IStateBuilder ConfigureOutput<TOutput>(TOutput output) where TOutput : IStateOutput;
         IStateBuilder ConfigurePreprocessor<TPreprocessor>(TPreprocessor preprocessor) where TPreprocessor : IVertexPreprocessor;
         ITransitionBehaviour Build();
+        IState BuildState();
     }
 }

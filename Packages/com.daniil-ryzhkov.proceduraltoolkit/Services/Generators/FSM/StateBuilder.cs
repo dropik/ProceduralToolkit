@@ -35,5 +35,10 @@ namespace ProceduralToolkit.Services.Generators.FSM
                 VertexPreprocessor = preprocessor
             };
         }
+
+        public IState BuildState()
+        {
+            return default;
+        }
     }
 }
