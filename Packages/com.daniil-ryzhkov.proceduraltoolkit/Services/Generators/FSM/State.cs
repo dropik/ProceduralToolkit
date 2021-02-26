@@ -19,8 +19,9 @@ namespace ProceduralToolkit.Services.Generators.FSM
         public IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {
             VertexPreprocessor?.Process(vertex);
+            var result = output.GetOutputFor(vertex);
             transitionBehaviour.Execute();
-            return output.GetOutputFor(vertex);
+            return result;
         }
     }
 }
