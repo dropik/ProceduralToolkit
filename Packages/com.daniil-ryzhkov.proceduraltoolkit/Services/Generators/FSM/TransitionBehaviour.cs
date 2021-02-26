@@ -12,6 +12,8 @@ namespace ProceduralToolkit.Services.Generators.FSM
         private readonly FSMContext context;
         private readonly IList<Transition> transitions;
         private readonly Func<ITransitionBehaviour, Transition, ITransitionBuilder> transitionBuilderProvider;
+        private readonly IEnumerable<Transition> transitionsEnumerable;
+        private readonly IMachine machine;
 
         private ITransitionBehaviour defaultNextState;
 
@@ -26,7 +28,28 @@ namespace ProceduralToolkit.Services.Generators.FSM
             this.transitionBuilderProvider = transitionBuilderProvider;
         }
 
+        public TransitionBehaviour(FSMContext context, IEnumerable<Transition> transitions, IMachine machine)
+        {
+            this.context = context;
+            this.transitionsEnumerable = transitions;
+            this.machine = machine;
+        }
+
         public IVertexPreprocessor VertexPreprocessor { get; set; }
+
+        public void Execute()
+        {
+            context.Column++;
+            foreach (var transition in transitionsEnumerable)
+            {
+                if (transition.Condition())
+                {
+                    machine.SetState(transition.NextStateName);
+                    TryResetColumn(transition);
+                    break;
+                }
+            }
+        }
 
         public IEnumerable<Vector3> MoveNext(Vector3 vertex)
         {

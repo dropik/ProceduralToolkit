@@ -7,6 +7,7 @@ namespace ProceduralToolkit.Models.FSM
     {
         public Func<bool> Condition { get; set; }
         public ITransitionBehaviour NextState { get; set; }
+        public string NextStateName { get; set; }
         public bool ZeroColumn { get; set; } = true;
     }
 }
