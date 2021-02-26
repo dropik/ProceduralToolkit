@@ -44,7 +44,7 @@ namespace ProceduralToolkit.EditorTests.IT
                 new Vector3(2, 0, 4),
                 new Vector3(3, 0, 4)
             };
-            var input = row1.Concat(row2).Concat(row3).Concat(row4).Concat(row5).Concat(new Vector3[3]);
+            var input = row1.Concat(row2).Concat(row3).Concat(row4).Concat(row5);
             var expectedOuptut = row1.Concat(row3).Concat(row2).Concat(row5).Concat(row4);
 
             var invertor = InvertorFactory.Create();

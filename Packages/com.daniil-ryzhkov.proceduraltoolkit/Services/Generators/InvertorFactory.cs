@@ -6,7 +6,7 @@ namespace ProceduralToolkit.Services.Generators
 {
     public static class InvertorFactory
     {
-        public static FSMBasedGenerator Create() => new FSMBasedGenerator(columns =>
+        public static FSMBasedGenerator Create() => new Invertor(columns =>
         {
             var context = new InvertorContext(columns);
             var machine = new Machine(new Dictionary<string, IState>(), () => new StateBuilder(context));

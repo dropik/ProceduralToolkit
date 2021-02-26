@@ -5,7 +5,7 @@ namespace ProceduralToolkit.Services.Generators
 {
     public abstract class BaseVerticesGenerator
     {
-        public IEnumerable<Vector3> InputVertices
+        public virtual IEnumerable<Vector3> InputVertices
         {
             get => inputVertices ?? (new Vector3[0]);
             set => inputVertices = value;
