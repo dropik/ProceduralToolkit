@@ -8,31 +8,32 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class TransitionBuilderTests
     {
-        private Mock<ITransitionBehaviour> mockState;
+        private Mock<IStateBuilder> mockBuilder;
 
         [SetUp]
         public void Setup()
         {
-            mockState = new Mock<ITransitionBehaviour>();
-            mockState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
+            mockBuilder = new Mock<IStateBuilder>();
+            mockBuilder.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
         }
 
         [Test]
-        public void TestNextSetIsSet()
+        public void TestNextStateIsSet()
         {
+            const string name = "state";
             var transition = new Transition();
-            var builder = new TransitionBuilder(null, transition);
+            var builder = new TransitionBuilder(null as IStateBuilder, transition);
 
-            builder.SetNext(mockState.Object);
+            builder.SetNext(name);
 
-            Assert.That(transition.NextState.Equals("mock"));
+            Assert.That(transition.NextStateName, Is.EqualTo(name));
         }
 
         [Test]
-        public void TestGivenStateReturned()
+        public void TestGivenBuilderReturned()
         {
-            var builder = new TransitionBuilder(mockState.Object, new Transition());
-            var result = builder.SetNext(null);
+            var builder = new TransitionBuilder(mockBuilder.Object, new Transition());
+            var result = builder.SetNext("");
             Assert.That(result.Equals("mock"));
         }
     }

@@ -23,7 +23,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 
             mockStateBuilder = new Mock<IStateBuilder>();
             mockStateBuilder.Setup(m => m.Equals("builder")).Returns(true);
-            mockStateBuilder.Setup(m => m.BuildState()).Returns(() => mockState.Object);
+            mockStateBuilder.Setup(m => m.BuildState(It.Is<IMachine>(machine => machine.Equals(machine)))).Returns(() => mockState.Object);
 
             mockDictionary = new Mock<IDictionary<string, IState>>();
 
@@ -52,7 +52,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         public void TestOnAddStateBuiltUsingBuilder()
         {
             machine.AddState(default, default);
-            mockStateBuilder.Verify(m => m.BuildState(), Times.Once);
+            mockStateBuilder.Verify(m => m.BuildState(It.IsAny<IMachine>()), Times.Once);
         }
 
         [Test]

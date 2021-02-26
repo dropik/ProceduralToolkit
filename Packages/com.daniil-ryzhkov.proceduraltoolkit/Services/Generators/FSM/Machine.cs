@@ -21,7 +21,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
         {
             var stateBuilder = stateBuilderProvider.Invoke();
             build?.Invoke(stateBuilder);
-            states.Add(name, stateBuilder.BuildState());
+            states.Add(name, stateBuilder.BuildState(this));
         }
 
         public void SetState(string name)

@@ -17,17 +17,6 @@ namespace ProceduralToolkit.Services.Generators.FSM
 
         private ITransitionBehaviour defaultNextState;
 
-        public TransitionBehaviour(IStateOutput output,
-                     FSMContext context,
-                     IList<Transition> transitions,
-                     Func<ITransitionBehaviour, Transition, ITransitionBuilder> transitionBuilderProvider)
-        {
-            this.output = output;
-            this.context = context;
-            this.transitions = transitions;
-            this.transitionBuilderProvider = transitionBuilderProvider;
-        }
-
         public TransitionBehaviour(FSMContext context, IEnumerable<Transition> transitions, IMachine machine)
         {
             this.context = context;

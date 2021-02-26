@@ -4,7 +4,7 @@ using ProceduralToolkit.Models.FSM;
 using ProceduralToolkit.Services.Generators;
 using ProceduralToolkit.Services.Generators.FSM;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
@@ -18,55 +18,39 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             new Vector3(2, 0, 0)
         };
 
-        private Mock<ITransitionBehaviour> mockState;
         private FSMContext context;
+        private Mock<IMachine> mockMachine;
 
-        protected Func<int, FSMContext> ContextProvider => columns => context;
+        private Func<int, IMachine> MachineProvider => columns => mockMachine.Object;
 
         protected override BaseVerticesGenerator CreateGenerator()
         {
-            return new FSMBasedGenerator(ContextProvider);
+            return new FSMBasedGenerator(MachineProvider);
         }
 
         [SetUp]
         public override void Setup()
         {
-            mockState = new Mock<ITransitionBehaviour>();
-            context = new FSMContext()
-            {
-                State = mockState.Object
-            };
+            context = new FSMContext();
+            mockMachine = new Mock<IMachine>();
             base.Setup();
         }
 
         [Test]
-        public void TestOutputHasNextIfInputIsNotEmpty()
+        public void TestMachineMoveNextCalledIfHasInput()
         {
             Generator.InputVertices = defaultInputVertices;
-            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(null as IEnumerable<Vector3>);
-            var enumerator = Generator.OutputVertices.GetEnumerator();
-            Assert.That(enumerator.MoveNext(), Is.True);
-        }
-
-        [Test]
-        public void TestOutputReturnsInputIfStateIsNull()
-        {
-            Generator.InputVertices = defaultInputVertices;
-            context.State = null;
-
-            var enumerator = Generator.OutputVertices.GetEnumerator();
-            enumerator.MoveNext();
-            Assert.That(enumerator.Current, Is.EqualTo(defaultInputVertices[0]));
+            Generator.OutputVertices.Count();
+            mockMachine.Verify(m => m.MoveNext(It.IsAny<Vector3>()), Times.Exactly(defaultInputVertices.Length));
         }
 
         [Test]
         public void TestOutputHasNoNextIfInputIsEmpty()
         {
             Generator.InputVertices = new Vector3[0];
-            mockState.Setup(m => m.MoveNext(It.IsAny<Vector3>())).Returns(new Vector3[] { Vector3.zero });
             var enumerator = Generator.OutputVertices.GetEnumerator();
             Assert.That(enumerator.MoveNext(), Is.False);
-            mockState.Verify(m => m.MoveNext(It.IsAny<Vector3>()), Times.Never);
+            mockMachine.Verify(m => m.MoveNext(It.IsAny<Vector3>()), Times.Never);
         }
 
         [Test]
@@ -74,7 +58,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             var expectedVertex = new Vector3(1, 2, 3);
             Generator.InputVertices = defaultInputVertices;
-            mockState.Setup(m => m.MoveNext(It.Is<Vector3>(v => v == defaultInputVertices[0]))).Returns(new Vector3[] { expectedVertex });
+            mockMachine.Setup(m => m.MoveNext(It.Is<Vector3>(v => v == defaultInputVertices[0]))).Returns(new Vector3[] { expectedVertex });
 
             var enumerator = Generator.OutputVertices.GetEnumerator();
             enumerator.MoveNext();
