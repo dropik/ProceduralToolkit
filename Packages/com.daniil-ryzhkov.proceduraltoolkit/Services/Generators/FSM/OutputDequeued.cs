@@ -4,18 +4,18 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class OutputCopy : IStateOutput
+    public class OutputDequeued : IStateOutput
     {
-        private readonly RowDuplicatorContext context;
+        private readonly InvertorContext context;
 
-        public OutputCopy(RowDuplicatorContext context)
+        public OutputDequeued(InvertorContext context)
         {
             this.context = context;
         }
 
         public IEnumerable<Vector3> GetOutputFor(Vector3 vertex)
         {
-            yield return context.VerticesCopies[context.Column];
+            yield return context.Queue.Dequeue();
         }
     }
 }
