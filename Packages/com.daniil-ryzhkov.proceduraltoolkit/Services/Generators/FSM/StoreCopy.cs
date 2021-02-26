@@ -5,16 +5,16 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class StoreCopy : IVertexPreprocessor
     {
-        private readonly FSMContext context;
+        private readonly RowDuplicatorContext context;
 
-        public StoreCopy(FSMContext context)
+        public StoreCopy(RowDuplicatorContext context)
         {
             this.context = context;
         }
 
         public void Process(Vector3 vertex)
         {
-            context.RowDuplicatorContext.VerticesCopies[context.Column] = vertex;
+            context.VerticesCopies[context.Column] = vertex;
         }
     }
 }

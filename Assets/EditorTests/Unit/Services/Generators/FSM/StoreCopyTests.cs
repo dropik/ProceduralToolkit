@@ -11,14 +11,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         [Test]
         public void TestVertexCopyStored()
         {
-            var context = new FSMContext()
-            {
-                RowDuplicatorContext = new RowDuplicatorContext(2)
-            };
+            var context = new RowDuplicatorContext(2);
             var expectedVertex = new Vector3(1, 2, 3);
             var processor = new StoreCopy(context);
+
             processor.Process(expectedVertex);
-            Assert.That(context.RowDuplicatorContext.VerticesCopies[0], Is.EqualTo(expectedVertex));
+
+            Assert.That(context.VerticesCopies[0], Is.EqualTo(expectedVertex));
         }
     }
 }

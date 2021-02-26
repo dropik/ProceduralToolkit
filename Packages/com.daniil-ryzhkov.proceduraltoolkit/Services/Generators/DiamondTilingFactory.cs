@@ -10,10 +10,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             return new FSMBasedGenerator(columns =>
             {
-                var context = new FSMContext()
-                {
-                    DiamondTilingContext = new DiamondTilingContext()
-                };
+                var context = new DiamondTilingContext();
 
                 bool RowEnd() => context.Column >= columns;
 
@@ -21,7 +18,7 @@ namespace ProceduralToolkit.Services.Generators
 
                 machine.AddState("StoreFirst", builder =>
                 {
-                    builder.ConfigurePreprocessor(new StoreFirst(context.DiamondTilingContext))
+                    builder.ConfigurePreprocessor(new StoreFirst(context))
                            .SetDefaultState("OutputOriginal1");
                 });
 
@@ -40,15 +37,15 @@ namespace ProceduralToolkit.Services.Generators
 
                 machine.AddState("CalculateShift", builder =>
                 {
-                    builder.ConfigureOutput(new OutputDiamond(context.DiamondTilingContext))
-                           .ConfigurePreprocessor(new CalculateXZShift(context.DiamondTilingContext))
+                    builder.ConfigureOutput(new OutputDiamond(context))
+                           .ConfigurePreprocessor(new CalculateXZShift(context))
                            .SetDefaultState("OutputDiamond1")
                            .On(RowEnd).SetNext("OutputOriginal2");
                 });
 
                 machine.AddState("OutputDiamond1", builder =>
                 {
-                    builder.ConfigureOutput(new OutputDiamond(context.DiamondTilingContext))
+                    builder.ConfigureOutput(new OutputDiamond(context))
                            .SetDefaultState("OutputDiamond1")
                            .On(RowEnd).SetNext("OutputOriginal2");
                 });
@@ -68,7 +65,7 @@ namespace ProceduralToolkit.Services.Generators
 
                 machine.AddState("OutputDiamond2", builder =>
                 {
-                    builder.ConfigureOutput(new OutputDiamond(context.DiamondTilingContext))
+                    builder.ConfigureOutput(new OutputDiamond(context))
                            .SetDefaultState("OutputDiamond2")
                            .On(RowEnd).SetNext("OutputOriginal2");
                 });

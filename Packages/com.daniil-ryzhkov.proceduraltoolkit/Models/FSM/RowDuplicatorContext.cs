@@ -2,7 +2,7 @@
 
 namespace ProceduralToolkit.Models.FSM
 {
-    public sealed class RowDuplicatorContext
+    public class RowDuplicatorContext : FSMContext
     {
         public RowDuplicatorContext(int columnsInRow)
         {

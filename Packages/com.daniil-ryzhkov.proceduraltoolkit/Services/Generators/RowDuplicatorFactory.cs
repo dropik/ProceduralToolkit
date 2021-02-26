@@ -10,10 +10,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             return new FSMBasedGenerator(columns =>
             {
-                var context = new FSMContext()
-                {
-                    RowDuplicatorContext = new RowDuplicatorContext(columns)
-                };
+                var context = new RowDuplicatorContext(columns);
 
                 bool RowEnd() => context.Column >= columns;
                 bool AlmostRowEnd() => context.Column >= columns - 1;
@@ -35,7 +32,7 @@ namespace ProceduralToolkit.Services.Generators
 
                 machine.AddState("OutputCopies", builder =>
                 {
-                    builder.ConfigureOutput(new OutputCopies(context.RowDuplicatorContext))
+                    builder.ConfigureOutput(new OutputCopies(context))
                            .ConfigurePreprocessor(new StoreCopy(context))
                            .SetDefaultState("OutputCopes")
                            .On(RowEnd).SetNext("StoreCopy");
