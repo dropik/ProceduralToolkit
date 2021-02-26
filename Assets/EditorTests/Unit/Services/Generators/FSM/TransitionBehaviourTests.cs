@@ -29,7 +29,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
                 new Transition()
                 {
                     Condition = () => false,
-                    NextStateName = name
+                    NextState = name
                 }
             };
             var transitionBehaviour = new TransitionBehaviour(context, transitions, mockMachine.Object);
@@ -47,7 +47,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
                 new Transition()
                 {
                     Condition = () => true,
-                    NextStateName = name
+                    NextState = name
                 }
             };
             var transitionBehaviour = new TransitionBehaviour(context, transitions, mockMachine.Object);
@@ -66,12 +66,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
                 new Transition()
                 {
                     Condition = () => true,
-                    NextStateName = name1
+                    NextState = name1
                 },
                 new Transition()
                 {
                     Condition = () => false,
-                    NextStateName = name2
+                    NextState = name2
                 }
             };
             var transitionBehaviour = new TransitionBehaviour(context, transitions, mockMachine.Object);
@@ -91,12 +91,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
                 new Transition()
                 {
                     Condition = () => false,
-                    NextStateName = name1
+                    NextState = name1
                 },
                 new Transition()
                 {
                     Condition = () => true,
-                    NextStateName = name2
+                    NextState = name2
                 }
             };
             var transitionBehaviour = new TransitionBehaviour(context, transitions, mockMachine.Object);
@@ -117,12 +117,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
                 new Transition()
                 {
                     Condition = () => context.Column >= 2,
-                    NextStateName = name1
+                    NextState = name1
                 },
                 new Transition()
                 {
                     Condition = () => true,
-                    NextStateName = name2
+                    NextState = name2
                 }
             };
             var transitionBehaviour = new TransitionBehaviour(context, transitions, mockMachine.Object);

@@ -1,6 +1,7 @@
 ﻿using ProceduralToolkit.Models.FSM;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
@@ -9,15 +10,17 @@ namespace ProceduralToolkit.Services.Generators.FSM
         private readonly FSMContext context;
         private readonly List<Transition> transitions;
 
+        private IVertexPreprocessor preprocessor;
+        private IStateOutput output;
+        private bool hasDefault;
+        private string defaultStateName;
+
         public StateBuilder(FSMContext context)
         {
             this.context = context;
             output = new OutputOriginal();
             transitions = new List<Transition>();
         }
-
-        private IVertexPreprocessor preprocessor;
-        private IStateOutput output;
 
         public IStateBuilder ConfigureOutput<TOutput>(TOutput output) where TOutput : IStateOutput
         {
@@ -31,11 +34,6 @@ namespace ProceduralToolkit.Services.Generators.FSM
             return this;
         }
 
-        public ITransitionBehaviour Build()
-        {
-            return default;
-        }
-
         public ITransitionBuilder On(Func<bool> condition)
         {
             var transition = new Transition()
@@ -46,13 +44,36 @@ namespace ProceduralToolkit.Services.Generators.FSM
             return new TransitionBuilder(this, transition);
         }
 
+        public IStateBuilder DoNotZeroColumn()
+        {
+            transitions[transitions.Count - 1].ZeroColumn = false;
+            return this;
+        }
+
+        public IStateBuilder SetDefaultState(string name)
+        {
+            defaultStateName = name;
+            hasDefault = true;
+            return this;
+        }
+
         public IState BuildState(IMachine machine)
         {
-            var transitionBehaviour = new TransitionBehaviour(context, transitions, machine);
+            var transitionBehaviour = new TransitionBehaviour(context, WithDefaultTransitions, machine);
             return new State(output, transitionBehaviour)
             {
                 VertexPreprocessor = preprocessor
             };
         }
+
+        private IEnumerable<Transition> WithDefaultTransitions => hasDefault ? transitions.Concat(new Transition[]
+        {
+            new Transition()
+            {
+                Condition = () => true,
+                NextState = defaultStateName,
+                ZeroColumn = false
+            }
+        }) : transitions;
     }
 }

@@ -1,4 +1,3 @@
-using ProceduralToolkit.Models.FSM;
 using ProceduralToolkit.Services.Generators.FSM;
 using System;
 using System.Collections.Generic;
@@ -8,13 +7,8 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class FSMBasedGenerator : ColumnsBasedGenerator
     {
-        private readonly Func<int, FSMContext> contextProvider;
         private readonly Func<int, IMachine> machineProvider;
 
-        public FSMBasedGenerator(Func<int, FSMContext> contextProvider)
-        {
-            this.contextProvider = contextProvider;
-        }
 
         public FSMBasedGenerator(Func<int, IMachine> machineProvider)
         {

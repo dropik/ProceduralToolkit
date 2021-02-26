@@ -1,4 +1,5 @@
-﻿using ProceduralToolkit.Models.FSM;
+﻿using System.Collections.Generic;
+using ProceduralToolkit.Models.FSM;
 using ProceduralToolkit.Services.Generators.FSM;
 
 namespace ProceduralToolkit.Services.Generators
@@ -13,33 +14,35 @@ namespace ProceduralToolkit.Services.Generators
                 {
                     RowDuplicatorContext = new RowDuplicatorContext(columns)
                 };
-                var factory = new StateFactory(context);
-
-                var outputOriginal = factory.CreateState();
-                var storeCopy = factory.ConfigureBuilder(builder =>
-                {
-                    builder.ConfigurePreprocessor(new StoreCopy(context));
-                }).CreateState();
-                var outputCopies = factory.ConfigureBuilder(builder =>
-                {
-                    builder.ConfigurePreprocessor(new StoreCopy(context))
-                           .ConfigureOutput(new OutputCopies(context.RowDuplicatorContext));
-                }).CreateState();
 
                 bool RowEnd() => context.Column >= columns;
                 bool AlmostRowEnd() => context.Column >= columns - 1;
-                outputOriginal
-                    .SetDefaultNext(outputOriginal)
-                    .On(RowEnd).SetNext(storeCopy);
-                storeCopy
-                    .SetDefaultNext(storeCopy)
-                    .On(AlmostRowEnd).SetNext(outputCopies).DoNotZeroColumn();
-                outputCopies
-                    .SetDefaultNext(outputCopies)
-                    .On(RowEnd).SetNext(storeCopy);
 
-                context.State = outputOriginal;
-                return context;
+                var machine = new Machine(new Dictionary<string, IState>(), () => new StateBuilder(context));
+
+                machine.AddState("OutputOriginal", builder =>
+                {
+                    builder.SetDefaultState("OutputOriginal")
+                           .On(RowEnd).SetNext("StoreCopy");
+                });
+
+                machine.AddState("StoreCopy", builder =>
+                {
+                    builder.ConfigurePreprocessor(new StoreCopy(context))
+                           .SetDefaultState("StoreCopy")
+                           .On(AlmostRowEnd).SetNext("OutputCopies").DoNotZeroColumn();
+                });
+
+                machine.AddState("OutputCopies", builder =>
+                {
+                    builder.ConfigureOutput(new OutputCopies(context.RowDuplicatorContext))
+                           .ConfigurePreprocessor(new StoreCopy(context))
+                           .SetDefaultState("OutputCopes")
+                           .On(RowEnd).SetNext("StoreCopy");
+                });
+
+                machine.SetState("OutputOriginal");
+                return machine;
             });
         }
     }

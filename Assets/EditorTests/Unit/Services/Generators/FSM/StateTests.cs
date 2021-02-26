@@ -64,7 +64,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         public void TestTransitionBehaviourExecuted()
         {
             state.MoveNext(default);
-            mockTransitionBehaviour.Verify(m => m.MoveNext(It.IsAny<Vector3>()), Times.Once);
+            mockTransitionBehaviour.Verify(m => m.Execute(), Times.Once);
         }
     }
 }

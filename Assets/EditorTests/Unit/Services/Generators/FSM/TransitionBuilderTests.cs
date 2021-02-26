@@ -26,7 +26,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 
             builder.SetNext(name);
 
-            Assert.That(transition.NextStateName, Is.EqualTo(name));
+            Assert.That(transition.NextState, Is.EqualTo(name));
         }
 
         [Test]
