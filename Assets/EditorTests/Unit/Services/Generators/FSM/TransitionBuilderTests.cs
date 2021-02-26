@@ -8,12 +8,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class TransitionBuilderTests
     {
-        private Mock<IState> mockState;
+        private Mock<ITransitionBehaviour> mockState;
 
         [SetUp]
         public void Setup()
         {
-            mockState = new Mock<IState>();
+            mockState = new Mock<ITransitionBehaviour>();
             mockState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
         }
 

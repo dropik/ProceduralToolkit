@@ -20,7 +20,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
             return this;
         }
 
-        public IState CreateState()
+        public ITransitionBehaviour CreateState()
         {
             var builder = new StateBuilder(context);
             builder.ConfigureOutput(new OutputOriginal());

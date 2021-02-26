@@ -6,19 +6,19 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public class State : IState
+    public class TransitionBehaviour : ITransitionBehaviour
     {
         private readonly IStateOutput output;
         private readonly FSMContext context;
         private readonly IList<Transition> transitions;
-        private readonly Func<IState, Transition, ITransitionBuilder> transitionBuilderProvider;
+        private readonly Func<ITransitionBehaviour, Transition, ITransitionBuilder> transitionBuilderProvider;
 
-        private IState defaultNextState;
+        private ITransitionBehaviour defaultNextState;
 
-        public State(IStateOutput output,
+        public TransitionBehaviour(IStateOutput output,
                      FSMContext context,
                      IList<Transition> transitions,
-                     Func<IState, Transition, ITransitionBuilder> transitionBuilderProvider)
+                     Func<ITransitionBehaviour, Transition, ITransitionBuilder> transitionBuilderProvider)
         {
             this.output = output;
             this.context = context;
@@ -87,13 +87,13 @@ namespace ProceduralToolkit.Services.Generators.FSM
             return transitionBuilderProvider.Invoke(this, newTransition);
         }
 
-        public IState SetDefaultNext(IState next)
+        public ITransitionBehaviour SetDefaultNext(ITransitionBehaviour next)
         {
             defaultNextState = next;
             return this;
         }
 
-        public IState DoNotZeroColumn()
+        public ITransitionBehaviour DoNotZeroColumn()
         {
             transitions[transitions.Count - 1].ZeroColumn = false;
             return this;

@@ -9,7 +9,7 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class StateTests
+    public class TransitionBehaviourTests
     {
         private Mock<IVertexPreprocessor> mockPreprocessor;
         private Mock<IStateOutput> mockOutput;
@@ -17,8 +17,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         private Mock<IList<Transition>> mockList;
         private Mock<ITransitionBuilder> mockTransitionBuilder;
         private Mock<Func<bool>> mockCondition;
-        private Mock<IState> mockState;
-        private State state;
+        private Mock<ITransitionBehaviour> mockState;
+        private TransitionBehaviour transitionBehaviour;
 
         [SetUp]
         public void Setup()
@@ -36,18 +36,18 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             mockCondition = new Mock<Func<bool>>();
             mockCondition.Setup(m => m.Invoke()).Returns(true);
 
-            mockState = new Mock<IState>();
+            mockState = new Mock<ITransitionBehaviour>();
             mockState.Setup(m => m.Equals(It.Is<string>(s => s == "mock"))).Returns(true);
 
-            state = new State(mockOutput.Object, context, mockList.Object, (state, transition) => mockTransitionBuilder.Object);
+            transitionBehaviour = new TransitionBehaviour(mockOutput.Object, context, mockList.Object, (state, transition) => mockTransitionBuilder.Object);
         }
 
         [Test]
         public void TestPreprocessorCalled()
         {
             var input = new Vector3(1, 2, 3);
-            state.VertexPreprocessor = mockPreprocessor.Object;
-            state.MoveNext(input);
+            transitionBehaviour.VertexPreprocessor = mockPreprocessor.Object;
+            transitionBehaviour.MoveNext(input);
             mockPreprocessor.Verify(m => m.Process(It.Is<Vector3>(v => v == input)), Times.Once);
         }
 
@@ -63,7 +63,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             mockOutput.Setup(m => m.GetOutputFor(It.IsAny<Vector3>())).Returns(expectedResult);
             var input = new Vector3(1, 2, 3);
 
-            var result = state.MoveNext(input);
+            var result = transitionBehaviour.MoveNext(input);
 
             CollectionAssert.AreEqual(expectedResult, result);
             mockOutput.Verify(m => m.GetOutputFor(It.Is<Vector3>(v => v == input)), Times.Once);
@@ -72,8 +72,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         [Test]
         public void TestDefaultStateSetIfNoTransitionsCreated()
         {
-            state.SetDefaultNext(mockState.Object);
-            state.MoveNext(default);
+            transitionBehaviour.SetDefaultNext(mockState.Object);
+            transitionBehaviour.MoveNext(default);
             Assert.That(context.State.Equals("mock"));
         }
 
@@ -81,7 +81,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         public void TestStateSetFromTransition()
         {
             SetupList();
-            state.MoveNext(default);
+            transitionBehaviour.MoveNext(default);
             Assert.That(context.State.Equals("mock"));
         }
 
@@ -102,11 +102,11 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         public void TestStateSetFromTransitionWhenDefaultIsSet()
         {
             SetupList();
-            var mockDefault = new Mock<IState>();
+            var mockDefault = new Mock<ITransitionBehaviour>();
             mockDefault.Setup(m => m.Equals(It.Is<string>(s => s == "default"))).Returns(true);
-            state.SetDefaultNext(mockDefault.Object);
+            transitionBehaviour.SetDefaultNext(mockDefault.Object);
 
-            state.MoveNext(default);
+            transitionBehaviour.MoveNext(default);
 
             Assert.That(context.State.Equals("mock"));
         }
@@ -114,7 +114,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         [Test]
         public void TestColumnIncrementedOnMoveNext()
         {
-            state.MoveNext(default);
+            transitionBehaviour.MoveNext(default);
             Assert.That(context.Column, Is.EqualTo(1));
         }
 
@@ -122,41 +122,41 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         public void TestColumnZeroed()
         {
             SetupList();
-            state.MoveNext(default);
+            transitionBehaviour.MoveNext(default);
             Assert.That(context.Column, Is.Zero);
         }
 
         [Test]
         public void TestColumnNotZeroedOnDefaultState()
         {
-            state.SetDefaultNext(mockState.Object);
+            transitionBehaviour.SetDefaultNext(mockState.Object);
             context.Column = 1;
-            state.MoveNext(default);
+            transitionBehaviour.MoveNext(default);
             Assert.That(context.Column, Is.Not.Zero);
         }
 
         [Test]
         public void TestCorrectTransitionBuilderCreated()
         {
-            var result = state.On(null);
+            var result = transitionBehaviour.On(null);
             Assert.That(result.Equals("builder"));
         }
 
         [Test]
         public void TestCorrectTransitionGivenToProvider()
         {
-            var mockProvier = new Mock<Func<IState, Transition, ITransitionBuilder>>();
-            state = new State(mockOutput.Object, context, mockList.Object, mockProvier.Object);
+            var mockProvier = new Mock<Func<ITransitionBehaviour, Transition, ITransitionBuilder>>();
+            transitionBehaviour = new TransitionBehaviour(mockOutput.Object, context, mockList.Object, mockProvier.Object);
 
-            state.On(mockCondition.Object);
+            transitionBehaviour.On(mockCondition.Object);
 
-            mockProvier.Verify(m => m.Invoke(It.Is<IState>(s => s.Equals(state)), It.Is<Transition>(t => t.Condition())), Times.Once);
+            mockProvier.Verify(m => m.Invoke(It.Is<ITransitionBehaviour>(s => s.Equals(transitionBehaviour)), It.Is<Transition>(t => t.Condition())), Times.Once);
         }
 
         [Test]
         public void TestCorrectTransitionAddedToList()
         {
-            state.On(mockCondition.Object);
+            transitionBehaviour.On(mockCondition.Object);
             mockList.Verify(m => m.Add(It.Is<Transition>(t => t.Condition())), Times.Once);
         }
 
@@ -167,7 +167,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
             mockList.Setup(m => m.Count).Returns(3);
             mockList.Setup(m => m[2]).Returns(transition);
 
-            state.DoNotZeroColumn();
+            transitionBehaviour.DoNotZeroColumn();
 
             Assert.That(transition.ZeroColumn, Is.False);
         }

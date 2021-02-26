@@ -28,9 +28,9 @@ namespace ProceduralToolkit.Services.Generators.FSM
             return this;
         }
 
-        public IState Build()
+        public ITransitionBehaviour Build()
         {
-            return new State(output, context, new List<Transition>(), (state, transition) => new TransitionBuilder(state, transition))
+            return new TransitionBehaviour(output, context, new List<Transition>(), (state, transition) => new TransitionBuilder(state, transition))
             {
                 VertexPreprocessor = preprocessor
             };

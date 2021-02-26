@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.FSM
 {
-    public interface IState
+    public interface ITransitionBehaviour
     {
         IEnumerable<Vector3> MoveNext(Vector3 vertex);
-        IState SetDefaultNext(IState next);
+        ITransitionBehaviour SetDefaultNext(ITransitionBehaviour next);
         ITransitionBuilder On(Func<bool> condition);
-        IState DoNotZeroColumn();
+        ITransitionBehaviour DoNotZeroColumn();
     }
 }

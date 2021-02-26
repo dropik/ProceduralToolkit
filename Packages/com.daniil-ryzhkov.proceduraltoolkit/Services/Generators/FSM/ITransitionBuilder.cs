@@ -2,6 +2,6 @@
 {
     public interface ITransitionBuilder
     {
-        IState SetNext(IState next);
+        ITransitionBehaviour SetNext(ITransitionBehaviour next);
     }
 }

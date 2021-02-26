@@ -6,7 +6,7 @@ namespace ProceduralToolkit.Models.FSM
     public sealed class Transition
     {
         public Func<bool> Condition { get; set; }
-        public IState NextState { get; set; }
+        public ITransitionBehaviour NextState { get; set; }
         public bool ZeroColumn { get; set; } = true;
     }
 }

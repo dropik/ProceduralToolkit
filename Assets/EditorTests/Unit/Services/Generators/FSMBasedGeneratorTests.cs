@@ -18,7 +18,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             new Vector3(2, 0, 0)
         };
 
-        private Mock<IState> mockState;
+        private Mock<ITransitionBehaviour> mockState;
         private FSMContext context;
 
         protected Func<int, FSMContext> ContextProvider => columns => context;
@@ -31,7 +31,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [SetUp]
         public override void Setup()
         {
-            mockState = new Mock<IState>();
+            mockState = new Mock<ITransitionBehaviour>();
             context = new FSMContext()
             {
                 State = mockState.Object
