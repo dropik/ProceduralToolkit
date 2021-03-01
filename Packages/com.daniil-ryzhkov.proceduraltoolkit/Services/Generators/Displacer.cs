@@ -6,28 +6,26 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class Displacer
     {
-        private readonly IEnumerable<Vector3> inputVertices;
-        private readonly DSASettings settings;
-        private readonly int iteration;
-
         private IEnumerator<Vector3> verticesEnumerator;
         private IEnumerator<bool> maskEnumerator;
 
-        public Displacer(IEnumerable<Vector3> vertices, DSASettings settings, int iteration)
+        public Displacer()
         {
-            inputVertices = vertices;
-            this.settings = settings;
-            this.iteration = iteration;
+            InputVertices = new Vector3[0];
+            Settings = new DSASettings();
             Mask = new bool[0];
         }
 
+        public IEnumerable<Vector3> InputVertices { get; set; }
+        public DSASettings Settings { get; set; }
+        public int Iteration { get; set; }
         public IEnumerable<bool> Mask { get; set; }
 
-        public IEnumerable<Vector3> Vertices
+        public IEnumerable<Vector3> OutputVertices
         {
             get
             {
-                Random.InitState(settings.Seed);
+                Random.InitState(Settings.Seed);
                 UpdateEnumerators();
                 while (verticesEnumerator.MoveNext())
                 {
@@ -38,7 +36,7 @@ namespace ProceduralToolkit.Services.Generators
 
         private void UpdateEnumerators()
         {
-            verticesEnumerator = inputVertices.GetEnumerator();
+            verticesEnumerator = InputVertices.GetEnumerator();
             maskEnumerator = Mask.GetEnumerator();
         }
 
@@ -65,7 +63,7 @@ namespace ProceduralToolkit.Services.Generators
 
         private void ApplyDisplacementTo(ref Vector3 vertex)
         {
-            var magnitude = Mathf.Pow(2, -1 * iteration * settings.Hardness);
+            var magnitude = Mathf.Pow(2, -1 * Iteration * Settings.Hardness) * Settings.Magnitude;
             vertex.y += Random.Range(-magnitude, magnitude);
         }
     }

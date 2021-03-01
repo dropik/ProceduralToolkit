@@ -8,17 +8,19 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     [Category("Unit")]
     public class DisplacerTests
     {
-        private Vector3[] vertices = new Vector3[]
+        private readonly Vector3[] vertices = new Vector3[]
         {
             new Vector3(0, 1, 0),
             new Vector3(1, 1, 0),
             new Vector3(0, 1, 1)
         };
+        private float GetDisplacement(float magnitude) => Random.Range(-magnitude, magnitude);
+
         private DSASettings settings;
-        private System.Func<float, float> elevator = (magnitude) => Random.Range(-magnitude, magnitude);
+        private Displacer displacer;
 
         private const int TEST_SEED = 0;
-        private const float TEST_MAGNITUDE = 1;
+        private const float TEST_MAGNITUDE = 2;
 
 
         [SetUp]
@@ -30,6 +32,11 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 Magnitude = TEST_MAGNITUDE
             };
             Random.InitState(TEST_SEED);
+            displacer = new Displacer()
+            {
+                InputVertices = vertices,
+                Settings = settings
+            };
         }
 
         [Test]
@@ -37,12 +44,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             var expectedVertices = new Vector3[]
             {
-                new Vector3(0, 1 + elevator.Invoke(TEST_MAGNITUDE), 0),
-                new Vector3(1, 1 + elevator.Invoke(TEST_MAGNITUDE), 0),
-                new Vector3(0, 1 + elevator.Invoke(TEST_MAGNITUDE), 1)
+                new Vector3(0, 1 + GetDisplacement(TEST_MAGNITUDE), 0),
+                new Vector3(1, 1 + GetDisplacement(TEST_MAGNITUDE), 0),
+                new Vector3(0, 1 + GetDisplacement(TEST_MAGNITUDE), 1)
             };
-            var displacer = new Displacer(vertices, settings, 0);
-            CollectionAssert.AreEqual(expectedVertices, displacer.Vertices);
+            displacer.Iteration = 0;
+
+            CollectionAssert.AreEqual(expectedVertices, displacer.OutputVertices);
         }
 
         [Test]
@@ -52,12 +60,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             var magnitude = TEST_MAGNITUDE * 0.5f;
             var expectedVertices = new Vector3[]
             {
-                new Vector3(0, 1 + elevator.Invoke(magnitude), 0),
-                new Vector3(1, 1 + elevator.Invoke(magnitude), 0),
-                new Vector3(0, 1 + elevator.Invoke(magnitude), 1)
+                new Vector3(0, 1 + GetDisplacement(magnitude), 0),
+                new Vector3(1, 1 + GetDisplacement(magnitude), 0),
+                new Vector3(0, 1 + GetDisplacement(magnitude), 1)
             };
-            var displacer = new Displacer(vertices, settings, 2);
-            CollectionAssert.AreEqual(expectedVertices, displacer.Vertices);
+            displacer.Iteration = 2;
+
+            CollectionAssert.AreEqual(expectedVertices, displacer.OutputVertices);
         }
 
         [Test]
@@ -65,15 +74,34 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             var expectedVertices = new Vector3[]
             {
-                new Vector3(0, 1 + elevator.Invoke(TEST_MAGNITUDE), 0),
+                new Vector3(0, 1 + GetDisplacement(TEST_MAGNITUDE), 0),
                 new Vector3(1, 1, 0),
-                new Vector3(0, 1 + elevator.Invoke(TEST_MAGNITUDE), 1)
+                new Vector3(0, 1 + GetDisplacement(TEST_MAGNITUDE), 1)
             };
-            var displacer = new Displacer(vertices, settings, 0)
+            displacer.Iteration = 0;
+            displacer.Mask = new bool[] { true, false, true };
+
+            CollectionAssert.AreEqual(expectedVertices, displacer.OutputVertices);
+        }
+
+        [Test]
+        public void TestOnNoInutProvided()
+        {
+            displacer = new Displacer()
             {
-                Mask = new bool[] { true, false, true }
+                Settings = new DSASettings()
             };
-            CollectionAssert.AreEqual(expectedVertices, displacer.Vertices);
+            CollectionAssert.AreEqual(new Vector3[0], displacer.OutputVertices);
+        }
+
+        [Test]
+        public void TestOnNoSettingsProvided()
+        {
+            displacer = new Displacer()
+            {
+                InputVertices = new Vector3[14]
+            };
+            _ = displacer.OutputVertices;
         }
     }
 }
