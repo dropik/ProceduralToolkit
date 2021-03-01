@@ -6,11 +6,11 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class InvertorTests : WithInputSuffixGeneratorTests
+    public class BackInvertorTests : WithInputSuffixGeneratorTests
     {
         protected override BaseVerticesGenerator CreateGenerator()
         {
-            return new Invertor(MachineProvider);
+            return new BackInvertor(MachineProvider);
         }
 
         [Test]
@@ -18,7 +18,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             var originalInput = new Vector3[15];
             var columnsInRow = 4;
-            var suffixLength = columnsInRow - 1;
+            var suffixLength = columnsInRow;
             var invertor = Generator as ColumnsBasedGenerator;
             invertor.InputVertices = originalInput;
             invertor.ColumnsInRow = columnsInRow;
