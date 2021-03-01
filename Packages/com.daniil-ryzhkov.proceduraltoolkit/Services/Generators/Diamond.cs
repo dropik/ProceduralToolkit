@@ -1,3 +1,4 @@
+using ProceduralToolkit.Models;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -5,136 +6,72 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class Diamond
     {
-        private readonly IEnumerable<Vector3> inputVertices;
-        private readonly int iteration;
-
-        public Diamond(IEnumerable<Vector3> inputVertices, int iteration)
+        public Diamond()
         {
-            this.inputVertices = inputVertices;
-            this.iteration = iteration;
+            InputVertices = new Vector3[0];
+            Settings = new DSASettings();
         }
 
-        public IEnumerable<Vector3> Vertices
+        public IEnumerable<Vector3> InputVertices { get; set; }
+        public int Iteration { get; set; }
+        public DSASettings Settings { get; set; }
+
+        public IEnumerable<Vector3> OutputVertices
         {
             get
             {
-                var rowCounter = 0;
-                var columnCounter = 0;
-                var verticesInRow = (int)Mathf.Pow(2, iteration) + 1;
-                var currentOriginalVertices = new Vector3[verticesInRow];
-                var currentDiamondVertices = new Vector3[verticesInRow - 1];
-                var nextDiamondVertices = new Vector3[verticesInRow - 1];
-                var first = Vector3.zero;
-                var x = Vector3.zero;
-                var z = Vector3.zero;
-                var d = Vector3.zero;
-
-                foreach (var vertex in inputVertices)
+                var iterationToLength = new IterationToLength()
                 {
-                    if (rowCounter == 0)
-                    {
-                        yield return vertex;
+                    Iteration = Iteration
+                };
+                var length = iterationToLength.Length;
 
-                        if (columnCounter == 0)
-                        {
-                            first = vertex;
-                        }
-                        else if (columnCounter == 1)
-                        {
-                            x = vertex - first;
-                        }
-                    }
+                var duplicator = RowDuplicatorFactory.Create();
+                duplicator.InputVertices = InputVertices;
+                duplicator.ColumnsInRow = length;
 
-                    if ((rowCounter == 1) && (columnCounter == 0))
-                    {
-                        z = vertex - first;
-                        d = x + z;
-                    }
+                var tiling = DiamondTilingFactory.Create();
+                tiling.InputVertices = duplicator.OutputVertices;
+                tiling.ColumnsInRow = length;
 
-                    if (rowCounter > 0)
-                    {
-                        currentOriginalVertices[columnCounter] = vertex;
+                var upLeftAdder = UpLeftAdderFactory.Create();
+                upLeftAdder.InputVertices = tiling.OutputVertices;
+                upLeftAdder.ColumnsInRow = length;
 
-                        if (columnCounter > 0)
-                        {
-                            currentDiamondVertices[columnCounter - 1].y += vertex.y;
-                            currentDiamondVertices[columnCounter - 1].y /= 4;
+                var upRightAdder = UpRightAdderFactory.Create();
+                upRightAdder.InputVertices = upLeftAdder.OutputVertices;
+                upRightAdder.ColumnsInRow = length;
 
-                            var xz = vertex - d/2;
-                            currentDiamondVertices[columnCounter - 1].x = xz.x;
-                            currentDiamondVertices[columnCounter - 1].z = xz.z;
+                var invertor = InvertorFactory.Create();
+                invertor.InputVertices = upRightAdder.OutputVertices;
+                invertor.ColumnsInRow = length;
 
-                            yield return currentDiamondVertices[columnCounter - 1];
-                        }
+                var downLeftAdder = DownLeftAdderFactory.Create();
+                downLeftAdder.InputVertices = invertor.OutputVertices;
+                downLeftAdder.ColumnsInRow = length;
 
-                        if (columnCounter < verticesInRow - 1)
-                        {
-                            currentDiamondVertices[columnCounter].y += vertex.y;
-                        }
-                    }
+                var downRightAdder = DownRightAdderFactory.Create();
+                downRightAdder.InputVertices = downLeftAdder.OutputVertices;
+                downRightAdder.ColumnsInRow = length;
 
-                    if (rowCounter < verticesInRow - 1)
-                    {
-                        if (columnCounter > 0)
-                        {
-                            nextDiamondVertices[columnCounter - 1].y += vertex.y;
-                        }
+                var backInvertor = BackInvertorFactory.Create();
+                backInvertor.InputVertices = downRightAdder.OutputVertices;
+                backInvertor.ColumnsInRow = length;
 
-                        if (columnCounter < verticesInRow - 1)
-                        {
-                            nextDiamondVertices[columnCounter] = new Vector3(0, vertex.y, 0);
-                        }
-                    }
-
-                    columnCounter++;
-                    if (columnCounter >= verticesInRow)
-                    {
-                        if (rowCounter > 0)
-                        {
-                            foreach (var original in currentOriginalVertices)
-                            {
-                                yield return original;
-                            }
-                        }
-
-                        currentDiamondVertices = nextDiamondVertices;
-                        nextDiamondVertices = new Vector3[verticesInRow - 1];
-
-                        columnCounter = 0;
-                        rowCounter++;
-                    }
-                }
-            }
-        }
-
-        public IEnumerable<bool> NewVertices
-        {
-            get
-            {
-                var rowCounter = 0;
-                var columnCounter = 0;
-                var oldVerticesInRow = Mathf.Pow(2, iteration) + 1;
-                var newVerticesInRow = oldVerticesInRow - 1;
-                var totalVerticesInRow = oldVerticesInRow + newVerticesInRow;
-
-                while (rowCounter < oldVerticesInRow)
+                var mask = new DiamondsMask()
                 {
-                    if (columnCounter < oldVerticesInRow)
-                    {
-                        yield return false;
-                    }
-                    else if (rowCounter < oldVerticesInRow - 1)
-                    {
-                        yield return true;
-                    }
+                    Length = length
+                };
 
-                    columnCounter++;
-                    if (columnCounter >= totalVerticesInRow)
-                    {
-                        columnCounter = 0;
-                        rowCounter++;
-                    }
-                }
+                var displacer = new Displacer()
+                {
+                    InputVertices = backInvertor.OutputVertices,
+                    Settings = Settings,
+                    Mask = mask.Mask,
+                    Iteration = Iteration
+                };
+
+                return displacer.OutputVertices;
             }
         }
     }

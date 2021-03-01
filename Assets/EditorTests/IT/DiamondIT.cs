@@ -4,7 +4,7 @@ using ProceduralToolkit.Services.Generators;
 using System.Linq;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
+namespace ProceduralToolkit.EditorTests.IT
 {
     [Category("IT")]
     public class DiamondIT
@@ -97,17 +97,19 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                            .Concat(expectedDiamond4)
                            .Concat(row5);
 
-            //var diamond = DiamondFactory.Create();
-            //diamond.Settings = new DSASettings()
-            //{
-            //    Seed = 0,
-            //    Hardness = 0,
-            //    Magnitude = 1
-            //};
-            //diamond.InputVertices = input;
-            //diamond.Iteration = 2;
+            var diamond = new Diamond()
+            {
+                Settings = new DSASettings()
+                {
+                    Seed = 0,
+                    Hardness = 0,
+                    Magnitude = 1
+                },
+                InputVertices = input,
+                Iteration = 2
+            };
 
-            //CollectionAssert.AreEqual(expected, diamond.OutputVertices);
+            CollectionAssert.AreEqual(expected, diamond.OutputVertices);
         }
     }
 }
