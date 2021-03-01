@@ -14,7 +14,7 @@ namespace ProceduralToolkit.Services.Generators.FSM
 
         public void Process(Vector3 vertex)
         {
-            context.Heights[context.Column] = vertex.y;
+            context.Heights.Enqueue(vertex.y);
         }
     }
 }

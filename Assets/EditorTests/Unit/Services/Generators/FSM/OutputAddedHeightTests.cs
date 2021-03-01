@@ -7,20 +7,17 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
 {
     [Category("Unit")]
-    public class OutputAddedLeftmostHeightTests
+    public class OutputAddedHeightTests
     {
         [Test]
         public void TestHeightAddedToOutput()
         {
             var input = new Vector3(1, 2, 3);
             var height = 10;
-            var context = new AdderContext(3)
-            {
-                Column = 2
-            };
-            context.Heights[2] = height;
+            var context = new AdderContext(3);
+            context.Heights.Enqueue(height);
             var expectedVertex = new Vector3(input.x, input.y + height, input.z);
-            var output = new OutputAddedLeftmostHeight(context);
+            var output = new OutputAddedHeight(context);
 
             var result = output.GetOutputFor(input).First();
 

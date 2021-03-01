@@ -13,15 +13,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         {
             var expectedHeight = 10f;
             var input = new Vector3(1, expectedHeight, 3);
-            var context = new AdderContext(3)
-            {
-                Column = 2
-            };
+            var context = new AdderContext(3);
             var storeHeight = new StoreHeight(context);
 
             storeHeight.Process(input);
 
-            Assert.That(context.Heights[context.Column], Is.EqualTo(expectedHeight));
+            Assert.That(context.Heights.Dequeue(), Is.EqualTo(expectedHeight));
         }
     }
 }
