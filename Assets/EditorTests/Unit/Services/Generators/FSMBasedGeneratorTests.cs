@@ -1,6 +1,5 @@
 using Moq;
 using NUnit.Framework;
-using ProceduralToolkit.Models.FSM;
 using ProceduralToolkit.Services.Generators;
 using ProceduralToolkit.Services.Generators.FSM;
 using System;
@@ -18,10 +17,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             new Vector3(2, 0, 0)
         };
 
-        private FSMContext context;
         private Mock<IMachine> mockMachine;
 
-        private Func<int, IMachine> MachineProvider => columns => mockMachine.Object;
+        protected Func<int, IMachine> MachineProvider => columns => mockMachine.Object;
 
         protected override BaseVerticesGenerator CreateGenerator()
         {
@@ -31,7 +29,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [SetUp]
         public override void Setup()
         {
-            context = new FSMContext();
             mockMachine = new Mock<IMachine>();
             base.Setup();
         }

@@ -6,19 +6,23 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class InvertorTests
+    public class InvertorTests : WithInputSuffixGeneratorTests
     {
+        protected override BaseVerticesGenerator CreateGenerator()
+        {
+            return new Invertor(MachineProvider);
+        }
+
         [Test]
-        public void TestVerticesAddedToInput()
+        public override void TestSuffixAddedToInput()
         {
             var originalInput = new Vector3[15];
             var columnsInRow = 4;
-            var invertor = new Invertor(default)
-            {
-                InputVertices = originalInput,
-                ColumnsInRow = columnsInRow
-            };
-            Assert.That(invertor.InputVertices.Count(), Is.EqualTo(originalInput.Length + columnsInRow - 1));
+            var suffixLength = columnsInRow - 1;
+            var invertor = Generator as Invertor;
+            invertor.InputVertices = originalInput;
+            invertor.ColumnsInRow = columnsInRow;
+            Assert.That(invertor.InputVertices.Count(), Is.EqualTo(originalInput.Length + suffixLength));
         }
     }
 }
