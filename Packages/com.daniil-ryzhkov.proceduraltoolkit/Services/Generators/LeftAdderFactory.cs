@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using ProceduralToolkit.Models.FSM;
+using ProceduralToolkit.Services.Generators.FSM;
 
-namespace ProceduralToolkit.Services.Generators.FSM
+namespace ProceduralToolkit.Services.Generators
 {
     public static class LeftAdderFactory
     {

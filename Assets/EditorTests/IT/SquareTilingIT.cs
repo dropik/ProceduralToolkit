@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using ProceduralToolkit.Services.Generators.FSM;
+using ProceduralToolkit.Services.Generators;
 using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.IT
