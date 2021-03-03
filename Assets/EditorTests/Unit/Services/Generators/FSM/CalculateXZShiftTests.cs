@@ -8,13 +8,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
     [Category("Unit")]
     public class CalculateXZShiftTests
     {
-        private DiamondTilingContext context;
+        private TilingContext context;
         private CalculateXZShift processor;
 
         [SetUp]
         public void Setup()
         {
-            context = new DiamondTilingContext();
+            context = new TilingContext();
             processor = new CalculateXZShift(context);
         }
 

@@ -10,7 +10,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             return new FSMBasedGenerator(columns =>
             {
-                var context = new DiamondTilingContext();
+                var context = new TilingContext();
 
                 bool RowEnd() => context.Column >= columns;
 

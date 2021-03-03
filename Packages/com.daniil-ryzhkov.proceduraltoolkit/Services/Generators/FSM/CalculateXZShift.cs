@@ -5,9 +5,9 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class CalculateXZShift : IVertexPreprocessor
     {
-        private readonly DiamondTilingContext context;
+        private readonly TilingContext context;
 
-        public CalculateXZShift(DiamondTilingContext context)
+        public CalculateXZShift(TilingContext context)
         {
             this.context = context;
         }

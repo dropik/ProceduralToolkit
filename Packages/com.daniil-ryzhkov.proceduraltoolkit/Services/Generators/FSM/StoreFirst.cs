@@ -5,9 +5,9 @@ namespace ProceduralToolkit.Services.Generators.FSM
 {
     public class StoreFirst : IVertexPreprocessor
     {
-        private readonly DiamondTilingContext context;
+        private readonly TilingContext context;
 
-        public StoreFirst(DiamondTilingContext context)
+        public StoreFirst(TilingContext context)
         {
             this.context = context;
         }

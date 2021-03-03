@@ -11,7 +11,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.FSM
         [Test]
         public void TestMoveNextReturnsDiamond()
         {
-            var context = new DiamondTilingContext();
+            var context = new TilingContext();
             var output = new OutputDiamond(context);
             context.XZShift = new Vector3(0.5f, 0, 0.5f);
             var input = new Vector3(1, 0, 0);
