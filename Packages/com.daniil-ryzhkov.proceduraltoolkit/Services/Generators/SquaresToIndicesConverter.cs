@@ -1,13 +1,12 @@
-﻿using ProceduralToolkit.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ProceduralToolkit.Services.Generators
 {
     public class SquaresToIndicesConverter
     {
-        private readonly IEnumerable<Square> squares;
+        private readonly IEnumerable<Models.Square> squares;
 
-        public SquaresToIndicesConverter(IEnumerable<Square> squares)
+        public SquaresToIndicesConverter(IEnumerable<Models.Square> squares)
         {
             this.squares = squares;
         }

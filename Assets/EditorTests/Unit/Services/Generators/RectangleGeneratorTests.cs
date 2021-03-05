@@ -36,9 +36,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestForCorrectSquares()
         {
-            var expectedSquares = new Square[]
+            var expectedSquares = new Models.Square[]
             {
-                new Square(0, 1, 3, 2)
+                new Models.Square(0, 1, 3, 2)
             };
             CollectionAssert.AreEqual(expectedSquares, rect.Squares);
         }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
@@ -11,9 +10,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestConvertingOneSquare()
         {
-            var squares = new Square[]
+            var squares = new Models.Square[]
             {
-                new Square(0, 1, 3, 2)
+                new Models.Square(0, 1, 3, 2)
             };
             var expectedIndices = new int[]
             {
@@ -26,12 +25,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestConvertingMultipleSquares()
         {
-            var squares = new Square[]
+            var squares = new Models.Square[]
             {
-                new Square(0, 1, 4, 3),
-                new Square(1, 2, 5, 4),
-                new Square(3, 4, 7, 6),
-                new Square(4, 5, 8, 7)
+                new Models.Square(0, 1, 4, 3),
+                new Models.Square(1, 2, 5, 4),
+                new Models.Square(3, 4, 7, 6),
+                new Models.Square(4, 5, 8, 7)
             };
             var expectedIndices = new int[]
             {
@@ -47,7 +46,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             TestConverter(squares, expectedIndices);
         }
 
-        private void TestConverter(IEnumerable<Square> squares, IEnumerable<int> expectedIndices)
+        private void TestConverter(IEnumerable<Models.Square> squares, IEnumerable<int> expectedIndices)
         {
             var converter = new SquaresToIndicesConverter(squares);
             CollectionAssert.AreEqual(expectedIndices, converter.Indices);

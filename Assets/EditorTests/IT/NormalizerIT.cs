@@ -76,11 +76,11 @@ namespace ProceduralToolkit.EditorTests.IT
                 new Vector3(2, 5, 0)
             };
 
-            var adder = NormalizerFactory.Create();
-            adder.InputVertices = input;
-            adder.ColumnsInRow = 5;
+            var normalizer = NormalizerFactory.Create();
+            normalizer.InputVertices = input;
+            normalizer.ColumnsInRow = 5;
 
-            CollectionAssert.AreEqual(expected, adder.OutputVertices);
+            CollectionAssert.AreEqual(expected, normalizer.OutputVertices);
         }
     }
 }

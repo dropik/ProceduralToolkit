@@ -26,9 +26,9 @@ namespace ProceduralToolkit.Services.Generators
             }
         }
 
-        public IEnumerable<Square> Squares => new Square[]
+        public IEnumerable<Models.Square> Squares => new Models.Square[]
         {
-            new Square(0, 1, 3, 2)
+            new Models.Square(0, 1, 3, 2)
         };
     }
 }
