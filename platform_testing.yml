@@ -22,27 +22,10 @@ stages:
             testResultsFiles: 'TestResults/results.xml'
             failTaskOnFailedTests: true
           displayName: Publish test results
-          
-    - job: UITest
-      displayName: ProceduralToolkit UI Test
-      dependsOn: UnitTest
-      steps:
-        - task: PowerShell@2
-          inputs:
-            filePath: 'testrun.ps1'
-            arguments: '-testType UI -batchMode -settings "mono.json"'
-          displayName: Execute tests
-              
-        - task: PublishTestResults@2
-          inputs:
-            testResultsFormat: 'NUnit'
-            testResultsFiles: 'TestResults/results.xml'
-            failTaskOnFailedTests: true
-          displayName: Publish test results
 
     - job: IT
       displayName: ProceduralToolkit Integration Test
-      dependsOn: UITest
+      dependsOn: UnitTest
       steps:
         - task: PowerShell@2
           inputs:
@@ -102,27 +85,10 @@ stages:
               testResultsFiles: 'TestResults/results.xml'
               failTaskOnFailedTests: true
             displayName: Publish test results
-          
-      - job: UITest
-        displayName: ProceduralToolkit UI Test
-        dependsOn: UnitTest
-        steps:
-          - task: PowerShell@2
-            inputs:
-              filePath: 'testrun.ps1'
-              arguments: '-testType UI -batchMode -settings "il2cpp.json"'
-            displayName: Execute tests
-                
-          - task: PublishTestResults@2
-            inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: 'TestResults/results.xml'
-              failTaskOnFailedTests: true
-            displayName: Publish test results
 
       - job: IT
         displayName: ProceduralToolkit Integration Test
-        dependsOn: UITest
+        dependsOn: UnitTest
         steps:
           - task: PowerShell@2
             inputs:
