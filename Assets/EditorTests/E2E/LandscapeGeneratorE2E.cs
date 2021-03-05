@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using NUnit.Framework;
-using ProceduralToolkit.Components.Startups;
+using ProceduralToolkit.Components.Generators;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +15,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         private Scene testScene;
 
         private const string TEST_SCENE = "Assets/EditorTests/E2E/Scenes/LandscapeGeneratorE2E.unity";
-        private const float TEST_LENGTH = 2f;
 
         private GameObject Root => GameObject.Find("LandscapeGenerator");
         private GameObject View => Root.transform.Find("view").gameObject;
@@ -36,24 +35,41 @@ namespace ProceduralToolkit.EditorTests.E2E
         private IEnumerator ComposeGenerator()
         {
             MenuEntries.NewLandscapeGenerator();
+            yield return TweakSettings();
+            yield return SkipFrames();
+        }
+
+        private IEnumerator TweakSettings()
+        {
+            var plane = Root.GetComponent<Rectangle>();
+            plane.width = 100;
+            plane.length = 100;
+
+            var ds = Root.GetComponent<DiamondSquare>();
+            ds.seed = 1024;
+            ds.magnitude = 15;
+            ds.OnValidate();
             yield return SkipFrames();
         }
 
         [TearDown]
         public void TearDown()
         {
-            if (Root != null)
-            {
-                Object.DestroyImmediate(Root);
-                EditorSceneManager.SaveScene(testScene);
-            }
+            Object.DestroyImmediate(Root);
+            EditorSceneManager.SaveScene(testScene);
         }
 
         [UnityTest]
         public IEnumerator TestNewLandscapeGeneratorSavedOnSceneReload()
         {
+            var vertices = GetCurrentVertices();
             yield return ReloadScene();
-            AssertGeneration();
+            AssertGeneration(vertices);
+        }
+
+        private Vector3[] GetCurrentVertices()
+        {
+            return View.GetComponent<MeshFilter>().sharedMesh.vertices;
         }
 
         private IEnumerator ReloadScene()
@@ -62,10 +78,10 @@ namespace ProceduralToolkit.EditorTests.E2E
             yield return OpenScene();
         }
 
-        private void AssertGeneration()
+        private void AssertGeneration(Vector3[] vertices)
         {
             AssertViewCreated();
-            AssertMeshCreated();
+            AssertMeshCreated(vertices);
             AssertMaterialAssigned();
         }
 
@@ -74,11 +90,11 @@ namespace ProceduralToolkit.EditorTests.E2E
             Assert.That(View, Is.Not.Null);
         }
 
-        private void AssertMeshCreated()
+        private void AssertMeshCreated(Vector3[] vertices)
         {
             var generatedMesh = View.GetComponent<MeshFilter>().sharedMesh;
             Assert.That(generatedMesh, Is.Not.Null);
-            Assert.That(generatedMesh.vertexCount, Is.GreaterThan(0));
+            CollectionAssert.AreEqual(vertices, generatedMesh.vertices);
         }
 
         private void AssertMaterialAssigned()

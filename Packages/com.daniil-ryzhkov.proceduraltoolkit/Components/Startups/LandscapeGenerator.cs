@@ -5,13 +5,12 @@ using ProceduralToolkit.Services.Generators;
 using ProceduralToolkit.Services.DI;
 using ProceduralToolkit.Components.Generators;
 using System.Collections.Generic;
-using ProceduralToolkit.Models;
 using System;
-using System.Linq;
 
 namespace ProceduralToolkit.Components.Startups
 {
     [RequireComponent(typeof(Rectangle))]
+    [RequireComponent(typeof(Generators.DiamondSquare))]
     [RequireComponent(typeof(MeshAssemblerComponent))]
     public class LandscapeGenerator : Startup
     {
@@ -62,8 +61,13 @@ namespace ProceduralToolkit.Components.Startups
             services.AddSingleton<Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)>>(() =>
             {
                 var rect = new RectangleGenerator(GetComponent<Rectangle>().Settings);
-                var converter = new SquaresToIndicesConverter(rect.Squares);
-                return (rect.Vertices, converter.Indices);
+
+                var dsaSettings = GetComponent<Generators.DiamondSquare>().Settings;
+                var ds = new Services.Generators.DiamondSquare { Settings = dsaSettings, InputVertices = rect.Vertices };
+                var dsSquares = new DSSquares { Iterations = dsaSettings.Iterations };
+
+                var converter = new SquaresToIndicesConverter(dsSquares.Squares);
+                return (ds.OutputVertices, converter.Indices);
             });
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();
