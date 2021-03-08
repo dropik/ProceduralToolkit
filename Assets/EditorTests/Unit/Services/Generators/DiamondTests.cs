@@ -12,18 +12,18 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             var inputVertices = new Vector3[]
             {
-                new Vector3(0, 1, 1),
-                new Vector3(1, 1, 1),
-                new Vector3(0, 1, 0),
-                new Vector3(1, 1, 0)
+                new Vector3(0, 7, 1),
+                new Vector3(1, 4, 1),
+                new Vector3(0, 52, 0),
+                new Vector3(1, 9, 0)
             };
             var expectedVertices = new Vector3[]
             {
-                new Vector3(0, 1, 1),
-                new Vector3(1, 1, 1),
-                new Vector3(0.5f, 1, 0.5f),
-                new Vector3(0, 1, 0),
-                new Vector3(1, 1, 0)
+                new Vector3(0, 7, 1),
+                new Vector3(1, 4, 1),
+                new Vector3(0.5f, 18, 0.5f),
+                new Vector3(0, 52, 0),
+                new Vector3(1, 9, 0)
             };
             var diamond = new Diamond(inputVertices, 0);
             CollectionAssert.AreEqual(expectedVertices, diamond.Vertices);

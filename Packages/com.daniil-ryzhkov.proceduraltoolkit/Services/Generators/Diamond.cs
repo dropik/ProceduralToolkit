@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -7,103 +8,208 @@ namespace ProceduralToolkit.Services.Generators
     {
         private readonly IEnumerable<Vector3> inputVertices;
         private readonly int iteration;
+        private readonly int verticesInRow;
+
+        private Vector3[] originals;
+        private Vector3[] upperDiamonds;
+        private Vector3[] lowerDiamonds;
+        private Vector3 first = Vector3.zero;
+        private Vector3 xzShift = Vector3.zero;
 
         public Diamond(IEnumerable<Vector3> inputVertices, int iteration)
         {
             this.inputVertices = inputVertices;
             this.iteration = iteration;
+            verticesInRow = (int)Mathf.Pow(2, iteration) + 1;
         }
 
         public IEnumerable<Vector3> Vertices
         {
             get
             {
-                var rowCounter = 0;
-                var columnCounter = 0;
-                var verticesInRow = (int)Mathf.Pow(2, iteration) + 1;
-                var currentOriginalVertices = new Vector3[verticesInRow];
-                var currentDiamondVertices = new Vector3[verticesInRow - 1];
-                var nextDiamondVertices = new Vector3[verticesInRow - 1];
-                var first = Vector3.zero;
-                var x = Vector3.zero;
-                var z = Vector3.zero;
-                var d = Vector3.zero;
+                originals = new Vector3[verticesInRow];
+                upperDiamonds = new Vector3[verticesInRow - 1];
+                lowerDiamonds = new Vector3[verticesInRow - 1];
 
-                foreach (var vertex in inputVertices)
+                return inputVertices.SelectMany((vertex, index) => GenerateVerticesFor(vertex, index));
+            }
+        }
+
+        private IEnumerable<Vector3> GenerateVerticesFor(Vector3 vertex, int index)
+        {
+            var row = index / verticesInRow;
+            var column = index % verticesInRow;
+
+            if (row == 0)
+            {
+                return HandleFirstRow(vertex, column);
+            }
+            else
+            {
+                TryCalculateShift(vertex, row, column);
+
+                if (row < verticesInRow - 1)
                 {
-                    if (rowCounter == 0)
-                    {
-                        yield return vertex;
-
-                        if (columnCounter == 0)
-                        {
-                            first = vertex;
-                        }
-                        else if (columnCounter == 1)
-                        {
-                            x = vertex - first;
-                        }
-                    }
-
-                    if ((rowCounter == 1) && (columnCounter == 0))
-                    {
-                        z = vertex - first;
-                        d = x + z;
-                    }
-
-                    if (rowCounter > 0)
-                    {
-                        currentOriginalVertices[columnCounter] = vertex;
-
-                        if (columnCounter > 0)
-                        {
-                            currentDiamondVertices[columnCounter - 1].y += vertex.y;
-                            currentDiamondVertices[columnCounter - 1].y /= 4;
-
-                            var xz = vertex - d/2;
-                            currentDiamondVertices[columnCounter - 1].x = xz.x;
-                            currentDiamondVertices[columnCounter - 1].z = xz.z;
-
-                            yield return currentDiamondVertices[columnCounter - 1];
-                        }
-
-                        if (columnCounter < verticesInRow - 1)
-                        {
-                            currentDiamondVertices[columnCounter].y += vertex.y;
-                        }
-                    }
-
-                    if (rowCounter < verticesInRow - 1)
-                    {
-                        if (columnCounter > 0)
-                        {
-                            nextDiamondVertices[columnCounter - 1].y += vertex.y;
-                        }
-
-                        if (columnCounter < verticesInRow - 1)
-                        {
-                            nextDiamondVertices[columnCounter] = new Vector3(0, vertex.y, 0);
-                        }
-                    }
-
-                    columnCounter++;
-                    if (columnCounter >= verticesInRow)
-                    {
-                        if (rowCounter > 0)
-                        {
-                            foreach (var original in currentOriginalVertices)
-                            {
-                                yield return original;
-                            }
-                        }
-
-                        currentDiamondVertices = nextDiamondVertices;
-                        nextDiamondVertices = new Vector3[verticesInRow - 1];
-
-                        columnCounter = 0;
-                        rowCounter++;
-                    }
+                    return HandleRow(vertex, column);
                 }
+                else
+                {
+                    return HandleLastRow(vertex, column);
+                }
+            }
+        }
+
+        private IEnumerable<Vector3> HandleFirstRow(Vector3 vertex, int column)
+        {
+            if (column == 0)
+            {
+                return HandleFirstVertex(vertex);
+            }
+            else if (column < verticesInRow - 1)
+            {
+                return HandleVertexInFirstRow(vertex, column);
+            }
+            else
+            {
+                return HandleLastVertexInFirstRow(vertex);
+            }
+        }
+
+        private IEnumerable<Vector3> HandleRow(Vector3 vertex, int column)
+        {
+            if (column == 0)
+            {
+                return HandleFirstVertexInRow(vertex);
+            }
+            else if (column < verticesInRow - 1)
+            {
+                return HandleVertexInRow(vertex, column);
+            }
+            else
+            {
+                return HandleLastVertexInRow(vertex);
+            }
+        }
+
+        private IEnumerable<Vector3> HandleLastRow(Vector3 vertex, int column)
+        {
+            if (column == 0)
+            {
+                return HandleFirstVertexInLastRow(vertex);
+            }
+            else if (column < verticesInRow - 1)
+            {
+                return HandleVertexInLastRow(vertex, column);
+            }
+            else
+            {
+                return HandleLastVertexInLastRow(vertex);
+            }
+        }
+
+        private void TryCalculateShift(Vector3 vertex, int row, int column)
+        {
+            if ((row == 1) && (column == 1))
+            {
+                xzShift = (vertex - first) / 2f;
+                xzShift.y = 0;
+            }
+        }
+
+        private IEnumerable<Vector3> HandleFirstVertex(Vector3 vertex)
+        {
+            yield return vertex;
+            first = vertex;
+            lowerDiamonds[0] = vertex;
+        }
+
+        private IEnumerable<Vector3> HandleVertexInFirstRow(Vector3 vertex, int index)
+        {
+            yield return vertex;
+            lowerDiamonds[index - 1].y += vertex.y;
+            lowerDiamonds[index] = vertex;
+        }
+
+        private IEnumerable<Vector3> HandleLastVertexInFirstRow(Vector3 vertex)
+        {
+            yield return vertex;
+            lowerDiamonds[verticesInRow - 2].y += vertex.y;
+            upperDiamonds = lowerDiamonds;
+            lowerDiamonds = new Vector3[verticesInRow - 1];
+        }
+
+        private IEnumerable<Vector3> HandleFirstVertexInRow(Vector3 vertex)
+        {
+            originals[0] = vertex;
+            upperDiamonds[0].y += vertex.y;
+            lowerDiamonds[0] = vertex;
+            yield break;
+        }
+
+        private IEnumerable<Vector3> HandleVertexInRow(Vector3 vertex, int column)
+        {
+            originals[column] = vertex;
+
+            upperDiamonds[column - 1].y += vertex.y;
+            upperDiamonds[column - 1].y /= 4;
+            upperDiamonds[column - 1] += xzShift;
+            yield return upperDiamonds[column - 1];
+
+            upperDiamonds[column].y += vertex.y;
+            lowerDiamonds[column - 1].y += vertex.y;
+            lowerDiamonds[column] = vertex;
+        }
+
+        private IEnumerable<Vector3> HandleLastVertexInRow(Vector3 vertex)
+        {
+            originals[verticesInRow - 1] = vertex;
+
+            upperDiamonds[verticesInRow - 2].y += vertex.y;
+            upperDiamonds[verticesInRow - 2].y /= 4;
+            upperDiamonds[verticesInRow - 2] += xzShift;
+            yield return upperDiamonds[verticesInRow - 2];
+
+            lowerDiamonds[verticesInRow - 2].y += vertex.y;
+
+            foreach (var original in originals)
+            {
+                yield return original;
+            }
+            upperDiamonds = lowerDiamonds;
+            lowerDiamonds = new Vector3[verticesInRow - 1];
+        }
+
+        private IEnumerable<Vector3> HandleFirstVertexInLastRow(Vector3 vertex)
+        {
+            originals[0] = vertex;
+            upperDiamonds[0].y += vertex.y;
+            yield break;
+        }
+
+        private IEnumerable<Vector3> HandleVertexInLastRow(Vector3 vertex, int column)
+        {
+            originals[column] = vertex;
+
+            upperDiamonds[column - 1].y += vertex.y;
+            upperDiamonds[column - 1].y /= 4;
+            upperDiamonds[column - 1] += xzShift;
+            yield return upperDiamonds[column - 1];
+
+            upperDiamonds[column].y += vertex.y;
+        }
+
+        private IEnumerable<Vector3> HandleLastVertexInLastRow(Vector3 vertex)
+        {
+            originals[verticesInRow - 1] = vertex;
+
+            upperDiamonds[verticesInRow - 2].y += vertex.y;
+            upperDiamonds[verticesInRow - 2].y /= 4;
+            upperDiamonds[verticesInRow - 2] += xzShift;
+            yield return upperDiamonds[verticesInRow - 2];
+
+            foreach (var original in originals)
+            {
+                yield return original;
             }
         }
 
