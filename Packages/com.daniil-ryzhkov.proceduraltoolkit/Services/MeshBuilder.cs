@@ -27,6 +27,7 @@ namespace ProceduralToolkit.Services
             mesh.SetVertices(vertices.ToArray());
             mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0);
             mesh.RecalculateNormals();
+            mesh.MarkDynamic();
         }
     }
 }

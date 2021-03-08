@@ -19,7 +19,8 @@ namespace ProceduralToolkit.Services.Generators
         {
             get
             {
-                var input = InputVertices;
+                var displacer = new Displacer() { Settings = Settings, InputVertices = InputVertices, Iteration = 0 };
+                var input = displacer.OutputVertices;
                 for (int i = 0; i < Settings.Iterations; i++)
                 {
                     var ds = new DiamondSquareIteration { Settings = Settings, InputVertices = input, Iteration = i };

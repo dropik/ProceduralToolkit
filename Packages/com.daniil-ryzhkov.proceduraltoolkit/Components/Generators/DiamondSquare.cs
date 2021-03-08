@@ -8,10 +8,11 @@ namespace ProceduralToolkit.Components.Generators
     {
         [Min(0)]
         public int seed;
-        [Range(0, 6)]
+        [Range(0, 7)]
         public int iterations;
+        [Min(0)]
         public float magnitude;
-        [Range(0, 1)]
+        [Range(0, 2)]
         public float hardness;
 
         public DSASettings Settings =>
