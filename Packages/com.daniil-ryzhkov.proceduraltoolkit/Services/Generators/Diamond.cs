@@ -77,13 +77,13 @@ namespace ProceduralToolkit.Services.Generators
         private void HandleRow(Vector3 vertex,
                                                int row,
                                                int column,
-                                               Action<Vector3, int> firstVertexHandler,
+                                               Action<Vector3, int, int> firstVertexHandler,
                                                Action<Vector3, int, int> middleVertexHandler,
-                                               Action<Vector3, int> lastVertexHandler)
+                                               Action<Vector3, int, int> lastVertexHandler)
         {
             if (column == 0)
             {
-                firstVertexHandler(vertex, row);
+                firstVertexHandler(vertex, row, column);
                 return;
             }
             if (column < verticesInRow - 1)
@@ -92,77 +92,81 @@ namespace ProceduralToolkit.Services.Generators
                 return;
             }
 
-            lastVertexHandler(vertex, row);
+            lastVertexHandler(vertex, row, column);
         }
 
-        private void HandleFirstVertexInFirstRow(Vector3 vertex, int row)
+        private void HandleFirstVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            output[0] = vertex;
-            output[lowerDiamondShift] = vertex;
+            output[Original(row) + column] = vertex;
+            output[LowerDiamond(row) + column] = vertex;
         }
 
         private void HandleMiddleVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            output[column] = vertex;
-            output[lowerDiamondShift + column - 1].y += vertex.y;
-            output[lowerDiamondShift + column] = vertex;
+            output[Original(row) + column] = vertex;
+            output[LowerDiamond(row) + column - 1].y += vertex.y;
+            output[LowerDiamond(row) + column] = vertex;
         }
 
-        private void HandleLastVertexInFirstRow(Vector3 vertex, int row)
+        private void HandleLastVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            output[verticesInRow - 1] = vertex;
-            output[lowerDiamondShift + verticesInRow - 2].y += vertex.y;
+            output[Original(row) + column] = vertex;
+            output[LowerDiamond(row) + column - 1].y += vertex.y;
         }
 
-        private void HandleFirstVertexInMiddleRow(Vector3 vertex, int row)
+        private void HandleFirstVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            output[row * rowStep] = vertex;
-            output[row * rowStep + upperDiamondShift].y += vertex.y;
-            output[row * rowStep + lowerDiamondShift] = vertex;
+            output[Original(row) + column] = vertex;
+            output[UpperDiamond(row) + column].y += vertex.y;
+            output[LowerDiamond(row) + column] = vertex;
         }
 
         private void HandleMiddleVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            output[row * rowStep + column] = vertex;
+            output[Original(row) + column] = vertex;
 
             CalculateUpperLeftDiamond(vertex, row, column);
 
-            output[row * rowStep + upperDiamondShift + column].y += vertex.y;
-            output[row * rowStep + lowerDiamondShift + column - 1].y += vertex.y;
-            output[row * rowStep + lowerDiamondShift + column] = vertex;
+            output[UpperDiamond(row) + column].y += vertex.y;
+            output[LowerDiamond(row) + column - 1].y += vertex.y;
+            output[LowerDiamond(row) + column] = vertex;
         }
 
-        private void HandleLastVertexInMiddleRow(Vector3 vertex, int row)
+        private void HandleLastVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            output[row * rowStep + verticesInRow - 1] = vertex;
-            CalculateUpperLeftDiamond(vertex, row, verticesInRow - 1);
-            output[row * rowStep + lowerDiamondShift + verticesInRow - 2].y += vertex.y;
+            output[Original(row) + column] = vertex;
+            CalculateUpperLeftDiamond(vertex, row, column);
+            output[LowerDiamond(row) + column - 1].y += vertex.y;
         }
 
-        private void HandleFirstVertexInLastRow(Vector3 vertex, int row)
+        private void HandleFirstVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            output[row * rowStep] = vertex;
-            output[row * rowStep + upperDiamondShift].y += vertex.y;
+            output[Original(row) + column] = vertex;
+            output[UpperDiamond(row) + column].y += vertex.y;
         }
 
         private void HandleMiddleVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            output[row * rowStep + column] = vertex;
+            output[Original(row) + column] = vertex;
             CalculateUpperLeftDiamond(vertex, row, column);
-            output[row * rowStep + upperDiamondShift + column].y += vertex.y;
+            output[UpperDiamond(row) + column].y += vertex.y;
         }
 
-        private void HandleLastVertexInLastRow(Vector3 vertex, int row)
+        private void HandleLastVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            output[row * rowStep + verticesInRow - 1] = vertex;
-            CalculateUpperLeftDiamond(vertex, row, verticesInRow - 1);
+            output[Original(row) + column] = vertex;
+            CalculateUpperLeftDiamond(vertex, row, column);
         }
 
         private void CalculateUpperLeftDiamond(Vector3 vertex, int row, int column)
         {
-            output[row * rowStep + upperDiamondShift + column - 1].y += vertex.y;
-            output[row * rowStep + upperDiamondShift + column - 1].y /= 4;
-            output[row * rowStep + upperDiamondShift + column - 1] += xzShift;
+            output[UpperDiamond(row) + column - 1].y += vertex.y;
+            output[UpperDiamond(row) + column - 1].y /= 4;
+            output[UpperDiamond(row) + column - 1] += xzShift;
         }
+
+        private int Original(int row) => row * rowStep;
+        private int UpperDiamond(int row) => row * rowStep + upperDiamondShift;
+        private int LowerDiamond(int row) => row * rowStep + lowerDiamondShift;
     }
 }
