@@ -45,6 +45,22 @@ namespace ProceduralToolkit.Services.Generators
             var row = index / verticesInRow;
             var column = index % verticesInRow;
 
+            HandleOriginal(vertex, row, column);
+
+            Action<Vector3, int, int> diamondHandler = HandleLowerRight;
+
+            if (row == verticesInRow - 1)
+            {
+                diamondHandler -= HandleLowerRight;
+            }
+
+            if (column == verticesInRow - 1)
+            {
+                diamondHandler -= HandleLowerRight;
+            }
+
+            diamondHandler?.Invoke(vertex, row, column);
+
             if (row == 0)
             {
                 HandleFirstRow(vertex, column);
@@ -97,62 +113,49 @@ namespace ProceduralToolkit.Services.Generators
 
         private void HandleFirstVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
-            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleMiddleVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleLowerLeft(vertex, row, column);
-            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleLastVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleFirstVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleUpperRight(vertex, row, column);
-            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleMiddleVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleUpperLeft(vertex, row, column);
             HandleUpperRight(vertex, row, column);
             HandleLowerLeft(vertex, row, column);
-            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleLastVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleUpperLeft(vertex, row, column);
             HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleFirstVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleUpperRight(vertex, row, column);
         }
 
         private void HandleMiddleVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleUpperLeft(vertex, row, column);
             HandleUpperRight(vertex, row, column);
         }
 
         private void HandleLastVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            HandleOriginal(vertex, row, column);
             HandleUpperLeft(vertex, row, column);
         }
 
