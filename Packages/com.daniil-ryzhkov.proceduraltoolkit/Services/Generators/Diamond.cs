@@ -9,6 +9,8 @@ namespace ProceduralToolkit.Services.Generators
         private readonly Vector3[] inputVertices;
         private readonly int verticesInRow;
         private readonly int rowStep;
+        private readonly int upperDiamondShift;
+        private readonly int lowerDiamondShift;
         private readonly Vector3 xzShift;
         private readonly Vector3[] output;
 
@@ -17,6 +19,8 @@ namespace ProceduralToolkit.Services.Generators
             this.inputVertices = inputVertices;
             verticesInRow = (int)Mathf.Pow(2, iteration) + 1;
             rowStep = 2 * verticesInRow - 1;
+            upperDiamondShift = -verticesInRow + 1;
+            lowerDiamondShift = verticesInRow;
             output = new Vector3[2 * verticesInRow * (verticesInRow - 1) + 1];
             xzShift = (inputVertices[verticesInRow + 1] - inputVertices[0]) / 2f;
             xzShift.y = 0;
@@ -94,27 +98,27 @@ namespace ProceduralToolkit.Services.Generators
         private void HandleFirstVertexInFirstRow(Vector3 vertex, int row)
         {
             output[0] = vertex;
-            output[verticesInRow] = vertex;
+            output[lowerDiamondShift] = vertex;
         }
 
         private void HandleMiddleVertexInFirstRow(Vector3 vertex, int row, int column)
         {
             output[column] = vertex;
-            output[verticesInRow + column - 1].y += vertex.y;
-            output[verticesInRow + column] = vertex;
+            output[lowerDiamondShift + column - 1].y += vertex.y;
+            output[lowerDiamondShift + column] = vertex;
         }
 
         private void HandleLastVertexInFirstRow(Vector3 vertex, int row)
         {
             output[verticesInRow - 1] = vertex;
-            output[2 * (verticesInRow - 1)].y += vertex.y;
+            output[lowerDiamondShift + verticesInRow - 2].y += vertex.y;
         }
 
         private void HandleFirstVertexInMiddleRow(Vector3 vertex, int row)
         {
             output[row * rowStep] = vertex;
-            output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
-            output[row * rowStep + verticesInRow] = vertex;
+            output[row * rowStep + upperDiamondShift].y += vertex.y;
+            output[row * rowStep + lowerDiamondShift] = vertex;
         }
 
         private void HandleMiddleVertexInMiddleRow(Vector3 vertex, int row, int column)
@@ -123,29 +127,29 @@ namespace ProceduralToolkit.Services.Generators
 
             CalculateUpperLeftDiamond(vertex, row, column);
 
-            output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
-            output[row * rowStep + verticesInRow + column - 1].y += vertex.y;
-            output[row * rowStep + verticesInRow + column] = vertex;
+            output[row * rowStep + upperDiamondShift + column].y += vertex.y;
+            output[row * rowStep + lowerDiamondShift + column - 1].y += vertex.y;
+            output[row * rowStep + lowerDiamondShift + column] = vertex;
         }
 
         private void HandleLastVertexInMiddleRow(Vector3 vertex, int row)
         {
             output[row * rowStep + verticesInRow - 1] = vertex;
             CalculateUpperLeftDiamond(vertex, row, verticesInRow - 1);
-            output[row * rowStep + 2 * (verticesInRow - 1)].y += vertex.y;
+            output[row * rowStep + lowerDiamondShift + verticesInRow - 2].y += vertex.y;
         }
 
         private void HandleFirstVertexInLastRow(Vector3 vertex, int row)
         {
             output[row * rowStep] = vertex;
-            output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
+            output[row * rowStep + upperDiamondShift].y += vertex.y;
         }
 
         private void HandleMiddleVertexInLastRow(Vector3 vertex, int row, int column)
         {
             output[row * rowStep + column] = vertex;
             CalculateUpperLeftDiamond(vertex, row, column);
-            output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
+            output[row * rowStep + upperDiamondShift + column].y += vertex.y;
         }
 
         private void HandleLastVertexInLastRow(Vector3 vertex, int row)
@@ -156,9 +160,9 @@ namespace ProceduralToolkit.Services.Generators
 
         private void CalculateUpperLeftDiamond(Vector3 vertex, int row, int column)
         {
-            output[(row - 1) * rowStep + verticesInRow + column - 1].y += vertex.y;
-            output[(row - 1) * rowStep + verticesInRow + column - 1].y /= 4;
-            output[(row - 1) * rowStep + verticesInRow + column - 1] += xzShift;
+            output[row * rowStep + upperDiamondShift + column - 1].y += vertex.y;
+            output[row * rowStep + upperDiamondShift + column - 1].y /= 4;
+            output[row * rowStep + upperDiamondShift + column - 1] += xzShift;
         }
     }
 }
