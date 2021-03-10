@@ -97,68 +97,86 @@ namespace ProceduralToolkit.Services.Generators
 
         private void HandleFirstVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            output[LowerDiamond(row) + column] = vertex;
+            HandleOriginal(vertex, row, column);
+            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleMiddleVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            output[LowerDiamond(row) + column - 1].y += vertex.y;
-            output[LowerDiamond(row) + column] = vertex;
+            HandleOriginal(vertex, row, column);
+            HandleLowerLeft(vertex, row, column);
+            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleLastVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            output[LowerDiamond(row) + column - 1].y += vertex.y;
+            HandleOriginal(vertex, row, column);
+            HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleFirstVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            output[UpperDiamond(row) + column].y += vertex.y;
-            output[LowerDiamond(row) + column] = vertex;
+            HandleOriginal(vertex, row, column);
+            HandleUpperRight(vertex, row, column);
+            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleMiddleVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-
-            CalculateUpperLeftDiamond(vertex, row, column);
-
-            output[UpperDiamond(row) + column].y += vertex.y;
-            output[LowerDiamond(row) + column - 1].y += vertex.y;
-            output[LowerDiamond(row) + column] = vertex;
+            HandleOriginal(vertex, row, column);
+            HandleUpperLeft(vertex, row, column);
+            HandleUpperRight(vertex, row, column);
+            HandleLowerLeft(vertex, row, column);
+            HandleLowerRight(vertex, row, column);
         }
 
         private void HandleLastVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            CalculateUpperLeftDiamond(vertex, row, column);
-            output[LowerDiamond(row) + column - 1].y += vertex.y;
+            HandleOriginal(vertex, row, column);
+            HandleUpperLeft(vertex, row, column);
+            HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleFirstVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            output[UpperDiamond(row) + column].y += vertex.y;
+            HandleOriginal(vertex, row, column);
+            HandleUpperRight(vertex, row, column);
         }
 
         private void HandleMiddleVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            CalculateUpperLeftDiamond(vertex, row, column);
-            output[UpperDiamond(row) + column].y += vertex.y;
+            HandleOriginal(vertex, row, column);
+            HandleUpperLeft(vertex, row, column);
+            HandleUpperRight(vertex, row, column);
         }
 
         private void HandleLastVertexInLastRow(Vector3 vertex, int row, int column)
         {
-            output[Original(row) + column] = vertex;
-            CalculateUpperLeftDiamond(vertex, row, column);
+            HandleOriginal(vertex, row, column);
+            HandleUpperLeft(vertex, row, column);
         }
 
-        private void CalculateUpperLeftDiamond(Vector3 vertex, int row, int column)
+        private void HandleOriginal(Vector3 vertex, int row, int column)
+        {
+            output[Original(row) + column] = vertex;
+        }
+
+        private void HandleLowerRight(Vector3 vertex, int row, int column)
+        {
+            output[LowerDiamond(row) + column] = vertex;
+        }
+
+        private void HandleLowerLeft(Vector3 vertex, int row, int column)
+        {
+            output[LowerDiamond(row) + column - 1].y += vertex.y;
+        }
+
+        private void HandleUpperRight(Vector3 vertex, int row, int column)
+        {
+            output[UpperDiamond(row) + column].y += vertex.y;
+        }
+
+        private void HandleUpperLeft(Vector3 vertex, int row, int column)
         {
             output[UpperDiamond(row) + column - 1].y += vertex.y;
             output[UpperDiamond(row) + column - 1].y /= 4;
