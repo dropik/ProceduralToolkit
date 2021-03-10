@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -23,57 +22,97 @@ namespace ProceduralToolkit.Services.Generators
             xzShift.y = 0;
         }
 
-        public IEnumerable<Vector3> Vertices
+        public Vector3[] Output
         {
             get
             {
                 var index = 0;
                 foreach (var vertex in inputVertices)
                 {
-                    GenerateVerticesFor(vertex, index);
+                    HandleVertexFromInput(vertex, index);
                     index++;
                 }
                 return output;
             }
         }
 
-        private void GenerateVerticesFor(Vector3 vertex, int index)
+        private void HandleVertexFromInput(Vector3 vertex, int index)
         {
-            var row = index / verticesInRow;
-            var column = index % verticesInRow;
-
+            var (row, column) = IndexToRowColumn(index);
             HandleOriginal(vertex, row, column);
+            HandleDiamond(vertex, row, column);
+        }
 
+        private (int row, int column) IndexToRowColumn(int index)
+        {
+            return (index / verticesInRow, index % verticesInRow);
+        }
+
+        private void HandleDiamond(Vector3 vertex, int row, int column)
+        {
+            Action<Vector3, int, int> diamondHandler = InitDiamondHandlerDelegate();
+            diamondHandler = FilterDiamondHandler(diamondHandler, row, column);
+            diamondHandler(vertex, row, column);
+        }
+
+        private Action<Vector3, int, int> InitDiamondHandlerDelegate()
+        {
             Action<Vector3, int, int> diamondHandler = HandleUpperLeft;
             diamondHandler += HandleUpperRight;
             diamondHandler += HandleLowerLeft;
             diamondHandler += HandleLowerRight;
+            return diamondHandler;
+        }
 
-            if (row == 0)
-            {
-                diamondHandler -= HandleUpperLeft;
-                diamondHandler -= HandleUpperRight;
-            }
+        private Action<Vector3, int, int> FilterDiamondHandler(Action<Vector3, int, int> diamondHandler, int row, int column)
+        {
+            diamondHandler = FilterByRow(diamondHandler, row);
+            diamondHandler = FilterByColumn(diamondHandler, column);
+            return diamondHandler;
+        }
 
-            if (row == verticesInRow - 1)
-            {
-                diamondHandler -= HandleLowerLeft;
-                diamondHandler -= HandleLowerRight;
-            }
+        private Action<Vector3, int, int> FilterByRow(Action<Vector3, int, int> diamondHandler, int row)
+        {
+            if (row == 0)                   return ExcludeUpperDiamonds(diamondHandler);
+            if (row == verticesInRow - 1)   return ExcludeLowerDiamonds(diamondHandler);
 
-            if (column == 0)
-            {
-                diamondHandler -= HandleUpperLeft;
-                diamondHandler -= HandleLowerLeft;
-            }
+            return diamondHandler;
+        }
 
-            if (column == verticesInRow - 1)
-            {
-                diamondHandler -= HandleUpperRight;
-                diamondHandler -= HandleLowerRight;
-            }
+        private Action<Vector3, int, int> FilterByColumn(Action<Vector3, int, int> diamondHandler, int column)
+        {
+            if (column == 0)                    return ExcludeLeftDiamonds(diamondHandler);
+            if (column == verticesInRow - 1)    return ExcludeRightDiamonds(diamondHandler);
 
-            diamondHandler(vertex, row, column);
+            return diamondHandler;
+        }
+
+        private Action<Vector3, int, int> ExcludeUpperDiamonds(Action<Vector3, int, int> diamondHandler)
+        {
+            diamondHandler -= HandleUpperLeft;
+            diamondHandler -= HandleUpperRight;
+            return diamondHandler;
+        }
+
+        private Action<Vector3, int, int> ExcludeLowerDiamonds(Action<Vector3, int, int> diamondHandler)
+        {
+            diamondHandler -= HandleLowerLeft;
+            diamondHandler -= HandleLowerRight;
+            return diamondHandler;
+        }
+
+        private Action<Vector3, int, int> ExcludeLeftDiamonds(Action<Vector3, int, int> diamondHandler)
+        {
+            diamondHandler -= HandleUpperLeft;
+            diamondHandler -= HandleLowerLeft;
+            return diamondHandler;
+        }
+
+        private Action<Vector3, int, int> ExcludeRightDiamonds(Action<Vector3, int, int> diamondHandler)
+        {
+            diamondHandler -= HandleUpperRight;
+            diamondHandler -= HandleLowerRight;
+            return diamondHandler;
         }
 
         private void HandleOriginal(Vector3 vertex, int row, int column)
@@ -104,7 +143,7 @@ namespace ProceduralToolkit.Services.Generators
         }
 
         private int Original(int row) => row * (2 * verticesInRow - 1);
-        private int UpperDiamond(int row) => Original(row) + - verticesInRow + 1;
+        private int UpperDiamond(int row) => Original(row) - verticesInRow + 1;
         private int LowerDiamond(int row) => Original(row) + verticesInRow;
     }
 }

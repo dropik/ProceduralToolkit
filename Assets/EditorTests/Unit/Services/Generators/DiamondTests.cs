@@ -26,7 +26,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(1, 9, 0)
             };
             var diamond = new Diamond(inputVertices, 0);
-            CollectionAssert.AreEqual(expectedVertices, diamond.Vertices);
+            CollectionAssert.AreEqual(expectedVertices, diamond.Output);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 
             var diamond = new Diamond(inputVertices, 2);
 
-            CollectionAssert.AreEqual(expectedVertices, diamond.Vertices);
+            CollectionAssert.AreEqual(expectedVertices, diamond.Output);
         }
     }
 }
