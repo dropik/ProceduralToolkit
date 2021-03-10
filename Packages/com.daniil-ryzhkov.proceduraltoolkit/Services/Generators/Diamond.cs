@@ -28,7 +28,12 @@ namespace ProceduralToolkit.Services.Generators
             get
             {
                 output = new Vector3[2 * verticesInRow * (verticesInRow - 1) + 1];
-                output = inputVertices.SelectMany((vertex, index) => GenerateVerticesFor(vertex, index)).ToArray();
+                var index = 0;
+                foreach (var vertex in inputVertices)
+                {
+                    GenerateVerticesFor(vertex, index).Count();
+                    index++;
+                }
                 return output;
             }
         }
