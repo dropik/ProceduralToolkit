@@ -44,67 +44,40 @@ namespace ProceduralToolkit.Services.Generators
             {
                 return HandleFirstRow(vertex, column);
             }
-            else
-            {
-                TryCalculateShift(vertex, row, column);
 
-                if (row < verticesInRow - 1)
-                {
-                    return HandleRow(vertex, column);
-                }
-                else
-                {
-                    return HandleLastRow(vertex, column);
-                }
-            }
+            return HandleNonFirstRow(vertex, row, column);
+        }
+
+        private IEnumerable<Vector3> HandleNonFirstRow(Vector3 vertex, int row, int column)
+        {
+            TryCalculateShift(vertex, row, column);
+            if (row < verticesInRow - 1) return HandleRow(vertex, column);
+
+            return HandleLastRow(vertex, column);
         }
 
         private IEnumerable<Vector3> HandleFirstRow(Vector3 vertex, int column)
         {
-            if (column == 0)
-            {
-                return HandleFirstVertex(vertex);
-            }
-            else if (column < verticesInRow - 1)
-            {
-                return HandleVertexInFirstRow(vertex, column);
-            }
-            else
-            {
-                return HandleLastVertexInFirstRow(vertex);
-            }
+            if (column == 0)                return HandleFirstVertex(vertex);
+            if (column < verticesInRow - 1) return HandleVertexInFirstRow(vertex, column);
+
+            return HandleLastVertexInFirstRow(vertex);
         }
 
         private IEnumerable<Vector3> HandleRow(Vector3 vertex, int column)
         {
-            if (column == 0)
-            {
-                return HandleFirstVertexInRow(vertex);
-            }
-            else if (column < verticesInRow - 1)
-            {
-                return HandleVertexInRow(vertex, column);
-            }
-            else
-            {
-                return HandleLastVertexInRow(vertex);
-            }
+            if (column == 0)                return HandleFirstVertexInRow(vertex);
+            if (column < verticesInRow - 1) return HandleVertexInRow(vertex, column);
+
+            return HandleLastVertexInRow(vertex);
         }
 
         private IEnumerable<Vector3> HandleLastRow(Vector3 vertex, int column)
         {
-            if (column == 0)
-            {
-                return HandleFirstVertexInLastRow(vertex);
-            }
-            else if (column < verticesInRow - 1)
-            {
-                return HandleVertexInLastRow(vertex, column);
-            }
-            else
-            {
-                return HandleLastVertexInLastRow(vertex);
-            }
+            if (column == 0)                return HandleFirstVertexInLastRow(vertex);
+            if (column < verticesInRow - 1) return HandleVertexInLastRow(vertex, column);
+
+            return HandleLastVertexInLastRow(vertex);
         }
 
         private void TryCalculateShift(Vector3 vertex, int row, int column)
