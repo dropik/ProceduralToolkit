@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -51,33 +52,30 @@ namespace ProceduralToolkit.Services.Generators
         private IEnumerable<Vector3> HandleNonFirstRow(Vector3 vertex, int row, int column)
         {
             TryCalculateShift(vertex, row, column);
-            if (row < verticesInRow - 1) return HandleRow(vertex, column);
+            if (row < verticesInRow - 1) return HandleMiddleRow(vertex, column);
 
             return HandleLastRow(vertex, column);
         }
 
-        private IEnumerable<Vector3> HandleFirstRow(Vector3 vertex, int column)
+        private IEnumerable<Vector3> HandleFirstRow(Vector3 vertex, int column) =>
+            HandleRow(vertex, column, HandleFirstVertexInFirstRow, HandleMiddleVertexInFirstRow, HandleLastVertexInFirstRow);
+
+        private IEnumerable<Vector3> HandleMiddleRow(Vector3 vertex, int column) =>
+            HandleRow(vertex, column, HandleFirstVertexInMiddleRow, HandleMiddleVertexInMiddleRow, HandleLastVertexInMiddleRow);
+
+        private IEnumerable<Vector3> HandleLastRow(Vector3 vertex, int column) =>
+            HandleRow(vertex, column, HandleFirstVertexInLastRow, HandleMiddleVertexInLastRow, HandleLastVertexInLastRow);
+
+        private IEnumerable<Vector3> HandleRow(Vector3 vertex,
+                                               int column,
+                                               Func<Vector3, IEnumerable<Vector3>> firstVertexHandler,
+                                               Func<Vector3, int, IEnumerable<Vector3>> middleVertexHandler,
+                                               Func<Vector3, IEnumerable<Vector3>> lastVertexHandler)
         {
-            if (column == 0)                return HandleFirstVertex(vertex);
-            if (column < verticesInRow - 1) return HandleVertexInFirstRow(vertex, column);
+            if (column == 0)                return firstVertexHandler(vertex);
+            if (column < verticesInRow - 1) return middleVertexHandler(vertex, column);
 
-            return HandleLastVertexInFirstRow(vertex);
-        }
-
-        private IEnumerable<Vector3> HandleRow(Vector3 vertex, int column)
-        {
-            if (column == 0)                return HandleFirstVertexInRow(vertex);
-            if (column < verticesInRow - 1) return HandleVertexInRow(vertex, column);
-
-            return HandleLastVertexInRow(vertex);
-        }
-
-        private IEnumerable<Vector3> HandleLastRow(Vector3 vertex, int column)
-        {
-            if (column == 0)                return HandleFirstVertexInLastRow(vertex);
-            if (column < verticesInRow - 1) return HandleVertexInLastRow(vertex, column);
-
-            return HandleLastVertexInLastRow(vertex);
+            return lastVertexHandler(vertex);
         }
 
         private void TryCalculateShift(Vector3 vertex, int row, int column)
@@ -89,14 +87,14 @@ namespace ProceduralToolkit.Services.Generators
             }
         }
 
-        private IEnumerable<Vector3> HandleFirstVertex(Vector3 vertex)
+        private IEnumerable<Vector3> HandleFirstVertexInFirstRow(Vector3 vertex)
         {
             yield return vertex;
             first = vertex;
             lowerDiamonds[0] = vertex;
         }
 
-        private IEnumerable<Vector3> HandleVertexInFirstRow(Vector3 vertex, int index)
+        private IEnumerable<Vector3> HandleMiddleVertexInFirstRow(Vector3 vertex, int index)
         {
             yield return vertex;
             lowerDiamonds[index - 1].y += vertex.y;
@@ -111,7 +109,7 @@ namespace ProceduralToolkit.Services.Generators
             lowerDiamonds = new Vector3[verticesInRow - 1];
         }
 
-        private IEnumerable<Vector3> HandleFirstVertexInRow(Vector3 vertex)
+        private IEnumerable<Vector3> HandleFirstVertexInMiddleRow(Vector3 vertex)
         {
             originals[0] = vertex;
             upperDiamonds[0].y += vertex.y;
@@ -119,7 +117,7 @@ namespace ProceduralToolkit.Services.Generators
             yield break;
         }
 
-        private IEnumerable<Vector3> HandleVertexInRow(Vector3 vertex, int column)
+        private IEnumerable<Vector3> HandleMiddleVertexInMiddleRow(Vector3 vertex, int column)
         {
             originals[column] = vertex;
 
@@ -133,7 +131,7 @@ namespace ProceduralToolkit.Services.Generators
             lowerDiamonds[column] = vertex;
         }
 
-        private IEnumerable<Vector3> HandleLastVertexInRow(Vector3 vertex)
+        private IEnumerable<Vector3> HandleLastVertexInMiddleRow(Vector3 vertex)
         {
             originals[verticesInRow - 1] = vertex;
 
@@ -159,7 +157,7 @@ namespace ProceduralToolkit.Services.Generators
             yield break;
         }
 
-        private IEnumerable<Vector3> HandleVertexInLastRow(Vector3 vertex, int column)
+        private IEnumerable<Vector3> HandleMiddleVertexInLastRow(Vector3 vertex, int column)
         {
             originals[column] = vertex;
 
