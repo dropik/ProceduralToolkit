@@ -48,10 +48,17 @@ namespace ProceduralToolkit.Services.Generators
             HandleOriginal(vertex, row, column);
 
             Action<Vector3, int, int> diamondHandler = HandleLowerRight;
+            diamondHandler += HandleLowerLeft;
 
             if (row == verticesInRow - 1)
             {
+                diamondHandler -= HandleLowerLeft;
                 diamondHandler -= HandleLowerRight;
+            }
+
+            if (column == 0)
+            {
+                diamondHandler -= HandleLowerLeft;
             }
 
             if (column == verticesInRow - 1)
@@ -117,12 +124,10 @@ namespace ProceduralToolkit.Services.Generators
 
         private void HandleMiddleVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleLastVertexInFirstRow(Vector3 vertex, int row, int column)
         {
-            HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleFirstVertexInMiddleRow(Vector3 vertex, int row, int column)
@@ -134,13 +139,11 @@ namespace ProceduralToolkit.Services.Generators
         {
             HandleUpperLeft(vertex, row, column);
             HandleUpperRight(vertex, row, column);
-            HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleLastVertexInMiddleRow(Vector3 vertex, int row, int column)
         {
             HandleUpperLeft(vertex, row, column);
-            HandleLowerLeft(vertex, row, column);
         }
 
         private void HandleFirstVertexInLastRow(Vector3 vertex, int row, int column)
