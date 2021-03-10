@@ -124,30 +124,5 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 
             CollectionAssert.AreEqual(expectedVertices, diamond.Vertices);
         }
-
-        [Test]
-        public void TestNewVertices()
-        {
-            var expectedVertices = new bool[]
-            {
-                false, false, false, false, false,
-                true, true, true, true,
-
-                false, false, false, false, false,
-                true, true, true, true,
-
-                false, false, false, false, false,
-                true, true, true, true,
-
-                false, false, false, false, false,
-                true, true, true, true,
-
-                false, false, false, false, false
-            };
-
-            var diamond = new Diamond(new Vector3[0], 2);
-
-            CollectionAssert.AreEqual(expectedVertices, diamond.NewVertices);
-        }
     }
 }

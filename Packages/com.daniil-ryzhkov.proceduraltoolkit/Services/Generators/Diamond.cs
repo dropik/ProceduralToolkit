@@ -6,27 +6,26 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class Diamond
     {
-        private readonly IEnumerable<Vector3> inputVertices;
-        private readonly int iteration;
+        private readonly Vector3[] inputVertices;
         private readonly int verticesInRow;
         private readonly int rowStep;
+        private readonly Vector3 xzShift;
+        private readonly Vector3[] output;
 
-        private Vector3[] output;
-        private Vector3 xzShift = Vector3.zero;
-
-        public Diamond(IEnumerable<Vector3> inputVertices, int iteration)
+        public Diamond(Vector3[] inputVertices, int iteration)
         {
             this.inputVertices = inputVertices;
-            this.iteration = iteration;
             verticesInRow = (int)Mathf.Pow(2, iteration) + 1;
             rowStep = 2 * verticesInRow - 1;
+            output = new Vector3[2 * verticesInRow * (verticesInRow - 1) + 1];
+            xzShift = (inputVertices[verticesInRow + 1] - inputVertices[0]) / 2f;
+            xzShift.y = 0;
         }
 
         public IEnumerable<Vector3> Vertices
         {
             get
             {
-                output = new Vector3[2 * verticesInRow * (verticesInRow - 1) + 1];
                 var index = 0;
                 foreach (var vertex in inputVertices)
                 {
@@ -53,7 +52,6 @@ namespace ProceduralToolkit.Services.Generators
 
         private void HandleNonFirstRow(Vector3 vertex, int row, int column)
         {
-            TryCalculateShift(vertex, row, column);
             if (row < verticesInRow - 1)
             {
                 HandleMiddleRow(vertex, row, column);
@@ -91,15 +89,6 @@ namespace ProceduralToolkit.Services.Generators
             }
 
             lastVertexHandler(vertex, row);
-        }
-
-        private void TryCalculateShift(Vector3 vertex, int row, int column)
-        {
-            if ((row == 1) && (column == 1))
-            {
-                xzShift = (vertex - output[0]) / 2f;
-                xzShift.y = 0;
-            }
         }
 
         private void HandleFirstVertexInFirstRow(Vector3 vertex, int row)
@@ -170,37 +159,6 @@ namespace ProceduralToolkit.Services.Generators
             output[(row - 1) * rowStep + verticesInRow + column - 1].y += vertex.y;
             output[(row - 1) * rowStep + verticesInRow + column - 1].y /= 4;
             output[(row - 1) * rowStep + verticesInRow + column - 1] += xzShift;
-        }
-
-        public IEnumerable<bool> NewVertices
-        {
-            get
-            {
-                var rowCounter = 0;
-                var columnCounter = 0;
-                var oldVerticesInRow = Mathf.Pow(2, iteration) + 1;
-                var newVerticesInRow = oldVerticesInRow - 1;
-                var totalVerticesInRow = oldVerticesInRow + newVerticesInRow;
-
-                while (rowCounter < oldVerticesInRow)
-                {
-                    if (columnCounter < oldVerticesInRow)
-                    {
-                        yield return false;
-                    }
-                    else if (rowCounter < oldVerticesInRow - 1)
-                    {
-                        yield return true;
-                    }
-
-                    columnCounter++;
-                    if (columnCounter >= totalVerticesInRow)
-                    {
-                        columnCounter = 0;
-                        rowCounter++;
-                    }
-                }
-            }
         }
     }
 }
