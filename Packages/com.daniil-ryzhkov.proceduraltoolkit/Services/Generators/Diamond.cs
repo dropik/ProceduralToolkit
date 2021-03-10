@@ -120,7 +120,7 @@ namespace ProceduralToolkit.Services.Generators
             output[row * rowStep] = vertex;
             if (row == 1)
             {
-                output[verticesInRow].y += vertex.y;
+                output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
             }
             else
             {
@@ -138,7 +138,7 @@ namespace ProceduralToolkit.Services.Generators
 
             if (row == 1)
             {
-                output[verticesInRow + column].y += vertex.y;
+                output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
             }
             else
             {
@@ -169,7 +169,7 @@ namespace ProceduralToolkit.Services.Generators
             output[row * rowStep] = vertex;
             if (row == 1)
             {
-                output[verticesInRow].y += vertex.y;
+                output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
             }
             else
             {
@@ -184,7 +184,7 @@ namespace ProceduralToolkit.Services.Generators
             yield return CalculateUpperLeftDiamond(vertex, row, column);
             if (row == 1)
             {
-                output[verticesInRow + column].y += vertex.y;
+                output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
             }
             else
             {
@@ -217,10 +217,10 @@ namespace ProceduralToolkit.Services.Generators
         {
             if (row == 1)
             {
-                output[verticesInRow + column - 1].y += vertex.y;
-                output[verticesInRow + column - 1].y /= 4;
-                output[verticesInRow + column - 1] += xzShift;
-                return output[verticesInRow + column - 1];
+                output[(row - 1) * rowStep + verticesInRow + column - 1].y += vertex.y;
+                output[(row - 1) * rowStep + verticesInRow + column - 1].y /= 4;
+                output[(row - 1) * rowStep + verticesInRow + column - 1] += xzShift;
+                return output[(row - 1) * rowStep + verticesInRow + column - 1];
             }
 
             upperDiamonds[column - 1].y += vertex.y;
