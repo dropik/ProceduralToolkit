@@ -13,8 +13,6 @@ namespace ProceduralToolkit.Services.Generators
         private readonly int rowStep;
 
         private Vector3[] output;
-        private Vector3[] upperDiamonds;
-        private Vector3[] lowerDiamonds;
         private Vector3 xzShift = Vector3.zero;
 
         public Diamond(IEnumerable<Vector3> inputVertices, int iteration)
@@ -30,9 +28,6 @@ namespace ProceduralToolkit.Services.Generators
             get
             {
                 output = new Vector3[2 * verticesInRow * (verticesInRow - 1) + 1];
-                upperDiamonds = new Vector3[verticesInRow - 1];
-                lowerDiamonds = new Vector3[verticesInRow - 1];
-
                 output = inputVertices.SelectMany((vertex, index) => GenerateVerticesFor(vertex, index)).ToArray();
                 return output;
             }
@@ -118,15 +113,8 @@ namespace ProceduralToolkit.Services.Generators
         private IEnumerable<Vector3> HandleFirstVertexInMiddleRow(Vector3 vertex, int row)
         {
             output[row * rowStep] = vertex;
-            if (row == 1)
-            {
-                output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
-            }
-            else
-            {
-                upperDiamonds[0].y += vertex.y;
-            }
-            lowerDiamonds[0] = vertex;
+            output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
+            output[row * rowStep + verticesInRow] = vertex;
             yield break;
         }
 
@@ -136,16 +124,9 @@ namespace ProceduralToolkit.Services.Generators
 
             yield return CalculateUpperLeftDiamond(vertex, row, column);
 
-            if (row == 1)
-            {
-                output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
-            }
-            else
-            {
-                upperDiamonds[column].y += vertex.y;
-            }
-            lowerDiamonds[column - 1].y += vertex.y;
-            lowerDiamonds[column] = vertex;
+            output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
+            output[row * rowStep + verticesInRow + column - 1].y += vertex.y;
+            output[row * rowStep + verticesInRow + column] = vertex;
         }
 
         private IEnumerable<Vector3> HandleLastVertexInMiddleRow(Vector3 vertex, int row)
@@ -154,27 +135,18 @@ namespace ProceduralToolkit.Services.Generators
 
             yield return CalculateUpperLeftDiamond(vertex, row, verticesInRow - 1);
 
-            lowerDiamonds[verticesInRow - 2].y += vertex.y;
+            output[row * rowStep + 2 * (verticesInRow - 1)].y += vertex.y;
 
             foreach (var original in GetOriginals(row))
             {
                 yield return original;
             }
-            upperDiamonds = lowerDiamonds;
-            lowerDiamonds = new Vector3[verticesInRow - 1];
         }
 
         private IEnumerable<Vector3> HandleFirstVertexInLastRow(Vector3 vertex, int row)
         {
             output[row * rowStep] = vertex;
-            if (row == 1)
-            {
-                output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
-            }
-            else
-            {
-                upperDiamonds[0].y += vertex.y;
-            }
+            output[(row - 1) * rowStep + verticesInRow].y += vertex.y;
             yield break;
         }
 
@@ -182,14 +154,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             output[row * rowStep + column] = vertex;
             yield return CalculateUpperLeftDiamond(vertex, row, column);
-            if (row == 1)
-            {
-                output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
-            }
-            else
-            {
-                upperDiamonds[column].y += vertex.y;
-            }
+            output[(row - 1) * rowStep + verticesInRow + column].y += vertex.y;
         }
 
         private IEnumerable<Vector3> HandleLastVertexInLastRow(Vector3 vertex, int row)
@@ -215,18 +180,10 @@ namespace ProceduralToolkit.Services.Generators
 
         private Vector3 CalculateUpperLeftDiamond(Vector3 vertex, int row, int column)
         {
-            if (row == 1)
-            {
-                output[(row - 1) * rowStep + verticesInRow + column - 1].y += vertex.y;
-                output[(row - 1) * rowStep + verticesInRow + column - 1].y /= 4;
-                output[(row - 1) * rowStep + verticesInRow + column - 1] += xzShift;
-                return output[(row - 1) * rowStep + verticesInRow + column - 1];
-            }
-
-            upperDiamonds[column - 1].y += vertex.y;
-            upperDiamonds[column - 1].y /= 4;
-            upperDiamonds[column - 1] += xzShift;
-            return upperDiamonds[column - 1];
+            output[(row - 1) * rowStep + verticesInRow + column - 1].y += vertex.y;
+            output[(row - 1) * rowStep + verticesInRow + column - 1].y /= 4;
+            output[(row - 1) * rowStep + verticesInRow + column - 1] += xzShift;
+            return output[(row - 1) * rowStep + verticesInRow + column - 1];
         }
 
         public IEnumerable<bool> NewVertices
