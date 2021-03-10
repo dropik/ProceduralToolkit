@@ -105,9 +105,6 @@ namespace ProceduralToolkit.Services.Generators
             output[column] = vertex;
             output[verticesInRow + column - 1].y += vertex.y;
             output[verticesInRow + column] = vertex;
-
-            lowerDiamonds[column - 1].y += vertex.y;
-            lowerDiamonds[column] = vertex;
         }
 
         private IEnumerable<Vector3> HandleLastVertexInFirstRow(Vector3 vertex, int row)
@@ -116,10 +113,6 @@ namespace ProceduralToolkit.Services.Generators
 
             output[verticesInRow - 1] = vertex;
             output[2 * (verticesInRow - 1)].y += vertex.y;
-
-            lowerDiamonds[verticesInRow - 2].y += vertex.y;
-            upperDiamonds = lowerDiamonds;
-            lowerDiamonds = new Vector3[verticesInRow - 1];
         }
 
         private IEnumerable<Vector3> HandleFirstVertexInMiddleRow(Vector3 vertex, int row)
@@ -143,7 +136,14 @@ namespace ProceduralToolkit.Services.Generators
 
             yield return CalculateUpperLeftDiamond(vertex, row, column);
 
-            upperDiamonds[column].y += vertex.y;
+            if (row == 1)
+            {
+                output[verticesInRow + column].y += vertex.y;
+            }
+            else
+            {
+                upperDiamonds[column].y += vertex.y;
+            }
             lowerDiamonds[column - 1].y += vertex.y;
             lowerDiamonds[column] = vertex;
         }
@@ -182,7 +182,14 @@ namespace ProceduralToolkit.Services.Generators
         {
             originals[column] = vertex;
             yield return CalculateUpperLeftDiamond(vertex, row, column);
-            upperDiamonds[column].y += vertex.y;
+            if (row == 1)
+            {
+                output[verticesInRow + column].y += vertex.y;
+            }
+            else
+            {
+                upperDiamonds[column].y += vertex.y;
+            }
         }
 
         private IEnumerable<Vector3> HandleLastVertexInLastRow(Vector3 vertex, int row)
@@ -199,12 +206,12 @@ namespace ProceduralToolkit.Services.Generators
 
         private Vector3 CalculateUpperLeftDiamond(Vector3 vertex, int row, int column)
         {
-            if ((row == 1) && (column == 1))
+            if (row == 1)
             {
-                output[verticesInRow].y += vertex.y;
-                output[verticesInRow].y /= 4;
-                output[verticesInRow] += xzShift;
-                return output[verticesInRow];
+                output[verticesInRow + column - 1].y += vertex.y;
+                output[verticesInRow + column - 1].y /= 4;
+                output[verticesInRow + column - 1] += xzShift;
+                return output[verticesInRow + column - 1];
             }
 
             upperDiamonds[column - 1].y += vertex.y;
