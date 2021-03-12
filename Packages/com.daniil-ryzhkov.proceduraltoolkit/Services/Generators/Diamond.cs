@@ -5,20 +5,20 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class Diamond
     {
-        private readonly Vector3[] inputVertices;
+        private readonly Vector3[] input;
         private readonly int verticesInRow;
         private readonly Vector3 xzShift;
         private readonly Vector3[] output;
 
-        public Diamond(Vector3[] inputVertices, int iteration)
+        public Diamond(Vector3[] input, int iteration)
         {
-            this.inputVertices = inputVertices;
+            this.input = input;
 
             verticesInRow = (int)Mathf.Pow(2, iteration) + 1;
 
             output = new Vector3[2 * verticesInRow * (verticesInRow - 1) + 1];
 
-            xzShift = (inputVertices[verticesInRow + 1] - inputVertices[0]) / 2f;
+            xzShift = (input[verticesInRow + 1] - input[0]) / 2f;
             xzShift.y = 0;
         }
 
@@ -27,7 +27,7 @@ namespace ProceduralToolkit.Services.Generators
             get
             {
                 var index = 0;
-                foreach (var vertex in inputVertices)
+                foreach (var vertex in input)
                 {
                     HandleVertexFromInput(vertex, index);
                     index++;
@@ -39,7 +39,7 @@ namespace ProceduralToolkit.Services.Generators
         private void HandleVertexFromInput(Vector3 vertex, int index)
         {
             var (row, column) = IndexToRowColumn(index);
-            HandleOriginal(vertex, row, column);
+            HandleOriginal(vertex, OriginalIndex(row, column));
             HandleDiamond(vertex, row, column);
         }
 
@@ -115,9 +115,9 @@ namespace ProceduralToolkit.Services.Generators
             return diamondHandler;
         }
 
-        private void HandleOriginal(Vector3 vertex, int row, int column)
+        private void HandleOriginal(Vector3 vertex, int index)
         {
-            output[Original(row) + column] = vertex;
+            output[index] = vertex;
         }
 
         private void HandleLowerRight(Vector3 vertex, int row, int column)
@@ -145,5 +145,6 @@ namespace ProceduralToolkit.Services.Generators
         private int Original(int row) => row * (2 * verticesInRow - 1);
         private int UpperDiamond(int row) => Original(row) - verticesInRow + 1;
         private int LowerDiamond(int row) => Original(row) + verticesInRow;
+        private int OriginalIndex(int row, int column) => Original(row) + column;
     }
 }
