@@ -26,11 +26,14 @@ namespace ProceduralToolkit.Services.Generators
         {
             get
             {
-                for (int i = 0; i < 2 * verticesInRow - 1; i += 2)
+                for (int i = 1; i < 2 * verticesInRow - 1; i += 2)
                 {
-                    for (int j = 0; j < verticesInRow; j++)
+                    for (int j = 0; j < verticesInRow - 1; j++)
                     {
                         HandleOriginal(input[i / 2 * verticesInRow + j], OriginalIndex(i / 2, j));
+                        HandleOriginal(input[i / 2 * verticesInRow + j + 1], OriginalIndex(i / 2, j + 1));
+                        HandleOriginal(input[(i + 1) / 2 * verticesInRow + j], OriginalIndex((i + 1) / 2, j));
+                        HandleOriginal(input[(i + 1) / 2 * verticesInRow + j + 1], OriginalIndex((i + 1) / 2, j + 1));
                     }
                 }
 
