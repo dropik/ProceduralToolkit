@@ -1,3 +1,4 @@
+using ProceduralToolkit.Models;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -13,52 +14,50 @@ namespace ProceduralToolkit.Services.Generators
 
         public void Execute(Vector3[] vertices, int iteration)
         {
-            var length = GetGridSideLength(vertices);
-            var diamondStep = GetDiamondStep(iteration, length);
-            var step = GetStep(diamondStep);
-            var xzShift = GetXzShift(vertices, length, diamondStep);
-
-            CalculateDiamonds(vertices, length, iteration, diamondStep, step, xzShift);
+            var context = new DiamondContext(vertices, iteration);
+            CalculateDiamonds(context);
         }
 
-        private int GetGridSideLength(Vector3[] vertices) => (int)Mathf.Sqrt(vertices.Length);
-
-        private int GetDiamondStep(int iteration, int length) => (int)((length - 1) / Mathf.Pow(2, iteration - 1));
-
-        private int GetStep(int diamondStep) => diamondStep / 2;
-
-        private Vector3 GetXzShift(Vector3[] vertices, int length, int diamondStep)
+        private void CalculateDiamonds(DiamondContext context)
         {
-            var xzShift = (vertices[GetIndex(length, diamondStep, diamondStep)] - vertices[0]) / 2f;
-            xzShift.y = 0;
-            return xzShift;
-        }
-
-        private void CalculateDiamonds(Vector3[] vertices, int length, int iteration, int diamondStep, int step, Vector3 xzShift)
-        {
-            for (int row = step; row < length; row += diamondStep)
+            for (int row = context.Step; row < context.Length; row += context.DiamondStep)
             {
-                for (int column = step; column < length; column += diamondStep)
+                for (int column = context.Step; column < context.Length; column += context.DiamondStep)
                 {
-                    CalculateOneDiamond(vertices, length, iteration, row, column, step, xzShift);
+                    context.Vertices[GetIndex(context, row, column)] = GetDiamond(context, row, column);
                 }
             }
         }
 
-        private void CalculateOneDiamond(Vector3[] vertices, int length, int iteration, int row, int column, int step, Vector3 xzShift)
+        private Vector3 GetDiamond(DiamondContext context, int row, int column)
         {
-            vertices[GetIndex(length, row, column)] = vertices[GetIndex(length, row - step, column - step)] + xzShift;
+            var diamond = GetUpperLeftNeighbour(context, row, column);
+            diamond.y += GetUpperRightNeighbour(context, row, column).y;
+            diamond.y += GetLowerLeftNeighbour(context, row, column).y;
+            diamond.y += GetLowerRightNeighbour(context, row, column).y;
+            diamond.y /= 4f;
 
-            vertices[GetIndex(length, row, column)].y += vertices[GetIndex(length, row - step, column + step)].y;
-            vertices[GetIndex(length, row, column)].y += vertices[GetIndex(length, row + step, column - step)].y;
-            vertices[GetIndex(length, row, column)].y += vertices[GetIndex(length, row + step, column + step)].y;
-            vertices[GetIndex(length, row, column)].y /= 4f;
+            diamond += context.XzShift;
 
-            vertices[GetIndex(length, row, column)].y += Displacement(iteration);
+            diamond.y += Displacement(context);
+
+            return diamond;
         }
 
-        private int GetIndex(int length, int row, int column) => row * length + column;
+        private Vector3 GetUpperLeftNeighbour(DiamondContext context, int row, int column) =>
+            context.Vertices[GetIndex(context, row - context.Step, column - context.Step)];
 
-        private float Displacement(int iteration) => displacer.GetDisplacement(iteration);
+        private Vector3 GetUpperRightNeighbour(DiamondContext context, int row, int column) =>
+            context.Vertices[GetIndex(context, row - context.Step, column + context.Step)];
+
+        private Vector3 GetLowerLeftNeighbour(DiamondContext context, int row, int column) =>
+            context.Vertices[GetIndex(context, row + context.Step, column - context.Step)];
+
+        private Vector3 GetLowerRightNeighbour(DiamondContext context, int row, int column) =>
+            context.Vertices[GetIndex(context, row + context.Step, column + context.Step)];
+
+        private int GetIndex(DiamondContext context, int row, int column) => row * context.Length + column;
+
+        private float Displacement(DiamondContext context) => displacer.GetDisplacement(context.Iteration);
     }
 }
