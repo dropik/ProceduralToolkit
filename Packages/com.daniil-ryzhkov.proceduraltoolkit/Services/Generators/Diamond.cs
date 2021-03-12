@@ -1,4 +1,3 @@
-using ProceduralToolkit.Models;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -7,15 +6,15 @@ namespace ProceduralToolkit.Services.Generators
     {
         private readonly Vector3[] input;
         private readonly int iteration;
-        private readonly DSASettings settings;
+        private readonly IDisplacer displacer;
         private readonly int length;
         private readonly Vector3 xzShift;
 
-        public Diamond(Vector3[] input, int iteration, DSASettings settings)
+        public Diamond(Vector3[] input, int iteration, IDisplacer displacer)
         {
             this.input = input;
             this.iteration = iteration;
-            this.settings = settings;
+            this.displacer = displacer;
 
             length = (int)Mathf.Sqrt(input.Length);
 
@@ -27,8 +26,6 @@ namespace ProceduralToolkit.Services.Generators
         {
             get
             {
-                Random.InitState(settings.Seed);
-
                 for (int i = 1; i < length; i += 2)
                 {
                     for (int j = 1; j < length; j += 2)
@@ -40,7 +37,7 @@ namespace ProceduralToolkit.Services.Generators
                         input[GetIndex(i, j)].y += input[GetIndex(i + 1, j + 1)].y;
                         input[GetIndex(i, j)].y /= 4f;
 
-                        input[GetIndex(i, j)].y += GetElevation();
+                        input[GetIndex(i, j)].y += Displacement;
                     }
                 }
                 return input;
@@ -49,10 +46,6 @@ namespace ProceduralToolkit.Services.Generators
 
         private int GetIndex(int row, int column) => row * length + column;
 
-        private float GetElevation()
-        {
-            var magnitude = Mathf.Pow(2, -1 * iteration * settings.Hardness) * settings.Magnitude;
-            return Random.Range(-magnitude, magnitude);
-        }
+        private float Displacement => displacer.GetDisplacement(iteration);
     }
 }
