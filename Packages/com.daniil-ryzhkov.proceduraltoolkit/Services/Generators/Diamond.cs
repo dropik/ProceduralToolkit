@@ -19,7 +19,7 @@ namespace ProceduralToolkit.Services.Generators
 
             length = (int)Mathf.Sqrt(input.Length);
 
-            xzShift = (input[2 * (length + 1)] - input[0]) / 2f;
+            xzShift = (input[GetIndex(2, 2)] - input[0]) / 2f;
             xzShift.y = 0;
         }
 
@@ -33,15 +33,21 @@ namespace ProceduralToolkit.Services.Generators
                 {
                     for (int j = 1; j < length; j += 2)
                     {
-                        input[i * length + j] = input[(i - 1) * length + j - 1] + xzShift;
-                        input[i * length + j].y += (input[(i - 1) * length + j + 1].y + input[(i + 1) * length + j - 1].y + input[(i + 1) * length + j + 1].y);
-                        input[i * length + j].y /= 4f;
-                        input[i * length + j].y += GetElevation();
+                        input[GetIndex(i, j)] = input[GetIndex(i - 1, j - 1)] + xzShift;
+
+                        input[GetIndex(i, j)].y += input[GetIndex(i - 1, j + 1)].y;
+                        input[GetIndex(i, j)].y += input[GetIndex(i + 1, j - 1)].y;
+                        input[GetIndex(i, j)].y += input[GetIndex(i + 1, j + 1)].y;
+                        input[GetIndex(i, j)].y /= 4f;
+
+                        input[GetIndex(i, j)].y += GetElevation();
                     }
                 }
                 return input;
             }
         }
+
+        private int GetIndex(int row, int column) => row * length + column;
 
         private float GetElevation()
         {
