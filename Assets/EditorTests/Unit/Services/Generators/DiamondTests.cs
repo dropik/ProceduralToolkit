@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestOnZeroIteration()
         {
+            Random.InitState(0);
+            Vector3 elevate() => new Vector3(0, Random.Range(-4f, 4f), 0);
+
             var inputVertices = new Vector3[]
             {
                 new Vector3(0, 7, 1),
@@ -22,17 +26,21 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             {
                 new Vector3(0, 7, 1),
                 new Vector3(1, 4, 1),
-                new Vector3(0.5f, 18, 0.5f),
+                new Vector3(0.5f, 18, 0.5f) + elevate(),
                 new Vector3(0, 52, 0),
                 new Vector3(1, 9, 0)
             };
-            var diamond = new Diamond(inputVertices, 0);
+            var settings = new DSASettings { Seed = 0, Hardness = 2, Magnitude = 4 };
+            var diamond = new Diamond(inputVertices, 0, settings);
             CollectionAssert.AreEqual(expectedVertices, diamond.Output);
         }
 
         [Test]
         public void TestOnNonZeroIteration()
         {
+            Random.InitState(0);
+            Vector3 elevate() => new Vector3(0, Random.Range(-5f, 5f), 0);
+
             var inputVertices = new Vector3[]
             {
                 new Vector3(0, 1, 4),
@@ -96,10 +104,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(3, 1, 4),
                 new Vector3(4, 1, 4),
 
-                new Vector3(0, 1, 4) + d,
-                new Vector3(1, 1, 4) + d,
-                new Vector3(2, 1, 4) + d,
-                new Vector3(3, 1, 4) + d,
+                new Vector3(0, 1, 4) + d + elevate(),
+                new Vector3(1, 1, 4) + d + elevate(),
+                new Vector3(2, 1, 4) + d + elevate(),
+                new Vector3(3, 1, 4) + d + elevate(),
 
                 new Vector3(0, 1, 3),
                 new Vector3(1, 1, 3),
@@ -107,10 +115,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(3, 1, 3),
                 new Vector3(4, 1, 3),
 
-                new Vector3(0, 1, 3) + d,
-                new Vector3(1, 1, 3) + d,
-                new Vector3(2, 1, 3) + d,
-                new Vector3(3, 1, 3) + d,
+                new Vector3(0, 1, 3) + d + elevate(),
+                new Vector3(1, 1, 3) + d + elevate(),
+                new Vector3(2, 1, 3) + d + elevate(),
+                new Vector3(3, 1, 3) + d + elevate(),
 
                 new Vector3(0, 1, 2),
                 new Vector3(1, 1, 2),
@@ -118,10 +126,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(3, 1, 2),
                 new Vector3(4, 1, 2),
 
-                new Vector3(0, 1, 2) + d,
-                new Vector3(1, 1, 2) + d,
-                new Vector3(2, 1, 2) + d,
-                new Vector3(3, 1, 2) + d,
+                new Vector3(0, 1, 2) + d + elevate(),
+                new Vector3(1, 1, 2) + d + elevate(),
+                new Vector3(2, 1, 2) + d + elevate(),
+                new Vector3(3, 1, 2) + d + elevate(),
 
                 new Vector3(0, 1, 1),
                 new Vector3(1, 1, 1),
@@ -129,10 +137,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(3, 1, 1),
                 new Vector3(4, 1, 1),
 
-                new Vector3(0, 1, 1) + d,
-                new Vector3(1, 1, 1) + d,
-                new Vector3(2, 1, 1) + d,
-                new Vector3(3, 1, 1) + d,
+                new Vector3(0, 1, 1) + d + elevate(),
+                new Vector3(1, 1, 1) + d + elevate(),
+                new Vector3(2, 1, 1) + d + elevate(),
+                new Vector3(3, 1, 1) + d + elevate(),
 
                 new Vector3(0, 1, 0),
                 new Vector3(1, 1, 0),
@@ -141,7 +149,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(4, 1, 0)
             };
 
-            var diamond = new Diamond(inputVertices, 2);
+            var settings = new DSASettings { Seed = 0, Hardness = 0.5f, Magnitude = 10 };
+            var diamond = new Diamond(inputVertices, 2, settings);
 
             CollectionAssert.AreEqual(expectedVertices, diamond.Output);
         }
