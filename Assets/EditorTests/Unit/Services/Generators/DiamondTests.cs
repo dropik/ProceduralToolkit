@@ -14,6 +14,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             {
                 new Vector3(0, 7, 1),
                 new Vector3(1, 4, 1),
+                Vector3.zero,
                 new Vector3(0, 52, 0),
                 new Vector3(1, 9, 0)
             };
@@ -40,11 +41,21 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(3, 1, 4),
                 new Vector3(4, 1, 4),
 
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+
                 new Vector3(0, 1, 3),
                 new Vector3(1, 1, 3),
                 new Vector3(2, 1, 3),
                 new Vector3(3, 1, 3),
                 new Vector3(4, 1, 3),
+
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
 
                 new Vector3(0, 1, 2),
                 new Vector3(1, 1, 2),
@@ -52,11 +63,21 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
                 new Vector3(3, 1, 2),
                 new Vector3(4, 1, 2),
 
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+
                 new Vector3(0, 1, 1),
                 new Vector3(1, 1, 1),
                 new Vector3(2, 1, 1),
                 new Vector3(3, 1, 1),
                 new Vector3(4, 1, 1),
+
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
+                Vector3.zero,
 
                 new Vector3(0, 1, 0),
                 new Vector3(1, 1, 0),

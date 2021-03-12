@@ -8,7 +8,6 @@ namespace ProceduralToolkit.Services.Generators
         private readonly Vector3[] input;
         private readonly int verticesInRow;
         private readonly Vector3 xzShift;
-        private readonly Vector3[] output;
 
         public Diamond(Vector3[] input, int iteration)
         {
@@ -16,9 +15,7 @@ namespace ProceduralToolkit.Services.Generators
 
             verticesInRow = (int)Mathf.Pow(2, iteration) + 1;
 
-            output = new Vector3[2 * verticesInRow * (verticesInRow - 1) + 1];
-
-            xzShift = (input[verticesInRow + 1] - input[0]) / 2f;
+            xzShift = (input[OriginalIndex(1, 1)] - input[0]) / 2f;
             xzShift.y = 0;
         }
 
@@ -30,23 +27,13 @@ namespace ProceduralToolkit.Services.Generators
                 {
                     for (int j = 0; j < verticesInRow - 1; j++)
                     {
-                        HandleOriginal(input[i / 2 * verticesInRow + j], OriginalIndex(i / 2, j));
-                        HandleOriginal(input[i / 2 * verticesInRow + j + 1], OriginalIndex(i / 2, j + 1));
-                        HandleOriginal(input[(i + 1) / 2 * verticesInRow + j], OriginalIndex((i + 1) / 2, j));
-                        HandleOriginal(input[(i + 1) / 2 * verticesInRow + j + 1], OriginalIndex((i + 1) / 2, j + 1));
-
-                        output[(i / 2) * (2 * verticesInRow - 1) + verticesInRow + j] = output[OriginalIndex(i / 2, j)] + xzShift;
-                        output[(i / 2) * (2 * verticesInRow - 1) + verticesInRow + j].y += (output[OriginalIndex(i / 2, j + 1)].y + output[OriginalIndex((i + 1) / 2, j)].y + output[OriginalIndex((i + 1) / 2, j + 1)].y);
-                        output[(i / 2) * (2 * verticesInRow - 1) + verticesInRow + j].y /= 4f;
+                        input[(i / 2) * (2 * verticesInRow - 1) + verticesInRow + j] = input[OriginalIndex(i / 2, j)] + xzShift;
+                        input[(i / 2) * (2 * verticesInRow - 1) + verticesInRow + j].y += (input[OriginalIndex(i / 2, j + 1)].y + input[OriginalIndex((i + 1) / 2, j)].y + input[OriginalIndex((i + 1) / 2, j + 1)].y);
+                        input[(i / 2) * (2 * verticesInRow - 1) + verticesInRow + j].y /= 4f;
                     }
                 }
-                return output;
+                return input;
             }
-        }
-
-        private void HandleOriginal(Vector3 vertex, int index)
-        {
-            output[index] = vertex;
         }
 
         private int Original(int row) => row * (2 * verticesInRow - 1);
