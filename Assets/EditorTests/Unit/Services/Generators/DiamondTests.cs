@@ -9,6 +9,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     public class DiamondTests
     {
         const int DISPLACEMENT = 4;
+        const int N = 5;
+
         private Mock<IDisplacer> mockDisplacer;
 
         [SetUp]
@@ -21,154 +23,55 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);
 
         [Test]
-        public void TestOnZeroIteration()
+        public void TestOnFirstIteration()
         {
-            var vertices = new Vector3[]
-            {
-                new Vector3(0, 7, 1),
-                Vector3.zero,
-                new Vector3(1, 4, 1),
+            var vertices = new Vector3[N * N];
 
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
+            vertices[0] = new Vector3(0, 7, 1);
+            vertices[N - 1] = new Vector3(1, 4, 1);
+            vertices[(N - 1) * N] = new Vector3(0, 52, 0);
+            vertices[(N - 1) * N + N - 1] = new Vector3(1, 9, 0);
 
-                new Vector3(0, 52, 0),
-                Vector3.zero,
-                new Vector3(1, 9, 0)
-            };
-            var expectedVertices = new Vector3[9];
+            var expectedVertices = new Vector3[N * N];
             vertices.CopyTo(expectedVertices, 0);
-            expectedVertices[4] = new Vector3(0.5f, 18, 0.5f) + Displace();
-            var diamond = new Diamond(mockDisplacer.Object);
+            expectedVertices[2 * N + 2] = new Vector3(0.5f, 18, 0.5f) + Displace();
 
+            var diamond = new Diamond(mockDisplacer.Object);
             diamond.CalculateDiamonds(vertices, 1);
 
             CollectionAssert.AreEqual(expectedVertices, vertices);
         }
 
         [Test]
-        public void TestOnNonZeroIteration()
+        public void TestOnSecondIteration()
         {
-            var vertices = new Vector3[]
-            {
-                new Vector3(0, 1, 4),
-                Vector3.zero,
-                new Vector3(1, 1, 4),
-                Vector3.zero,
-                new Vector3(2, 1, 4),
-                Vector3.zero,
-                new Vector3(3, 1, 4),
-                Vector3.zero,
-                new Vector3(4, 1, 4),
+            var vertices = new Vector3[N * N];
 
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
+            vertices[0 * N + 0] = new Vector3(0, 1, 4);
+            vertices[0 * N + 2] = new Vector3(1, 1, 4);
+            vertices[0 * N + 4] = new Vector3(2, 1, 4);
 
-                new Vector3(0, 1, 3),
-                Vector3.zero,
-                new Vector3(1, 1, 3),
-                Vector3.zero,
-                new Vector3(2, 1, 3),
-                Vector3.zero,
-                new Vector3(3, 1, 3),
-                Vector3.zero,
-                new Vector3(4, 1, 3),
+            vertices[2 * N + 0] = new Vector3(0, 1, 3);
+            vertices[2 * N + 2] = new Vector3(1, 1, 3);
+            vertices[2 * N + 4] = new Vector3(2, 1, 3);
 
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-
-                new Vector3(0, 1, 2),
-                Vector3.zero,
-                new Vector3(1, 1, 2),
-                Vector3.zero,
-                new Vector3(2, 1, 2),
-                Vector3.zero,
-                new Vector3(3, 1, 2),
-                Vector3.zero,
-                new Vector3(4, 1, 2),
-
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-
-                new Vector3(0, 1, 1),
-                Vector3.zero,
-                new Vector3(1, 1, 1),
-                Vector3.zero,
-                new Vector3(2, 1, 1),
-                Vector3.zero,
-                new Vector3(3, 1, 1),
-                Vector3.zero,
-                new Vector3(4, 1, 1),
-
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-                Vector3.zero,
-
-                new Vector3(0, 1, 0),
-                Vector3.zero,
-                new Vector3(1, 1, 0),
-                Vector3.zero,
-                new Vector3(2, 1, 0),
-                Vector3.zero,
-                new Vector3(3, 1, 0),
-                Vector3.zero,
-                new Vector3(4, 1, 0)
-            };
+            vertices[4 * N + 0] = new Vector3(0, 1, 2);
+            vertices[4 * N + 2] = new Vector3(1, 1, 2);
+            vertices[4 * N + 4] = new Vector3(2, 1, 2);
 
             var d = new Vector3(0.5f, 0, -0.5f);
 
-            var expectedVertices = new Vector3[81];
+            var expectedVertices = new Vector3[N * N];
             vertices.CopyTo(expectedVertices, 0);
-            expectedVertices[10] = new Vector3(0, 1, 4) + d + Displace();
-            expectedVertices[12] = new Vector3(1, 1, 4) + d + Displace();
-            expectedVertices[14] = new Vector3(2, 1, 4) + d + Displace();
-            expectedVertices[16] = new Vector3(3, 1, 4) + d + Displace();
 
-            expectedVertices[28] = new Vector3(0, 1, 3) + d + Displace();
-            expectedVertices[30] = new Vector3(1, 1, 3) + d + Displace();
-            expectedVertices[32] = new Vector3(2, 1, 3) + d + Displace();
-            expectedVertices[34] = new Vector3(3, 1, 3) + d + Displace();
+            expectedVertices[1 * N + 1] = new Vector3(0, 1, 4) + d + Displace();
+            expectedVertices[1 * N + 3] = new Vector3(1, 1, 4) + d + Displace();
 
-            expectedVertices[46] = new Vector3(0, 1, 2) + d + Displace();
-            expectedVertices[48] = new Vector3(1, 1, 2) + d + Displace();
-            expectedVertices[50] = new Vector3(2, 1, 2) + d + Displace();
-            expectedVertices[52] = new Vector3(3, 1, 2) + d + Displace();
-
-            expectedVertices[64] = new Vector3(0, 1, 1) + d + Displace();
-            expectedVertices[66] = new Vector3(1, 1, 1) + d + Displace();
-            expectedVertices[68] = new Vector3(2, 1, 1) + d + Displace();
-            expectedVertices[70] = new Vector3(3, 1, 1) + d + Displace();
+            expectedVertices[3 * N + 1] = new Vector3(0, 1, 3) + d + Displace();
+            expectedVertices[3 * N + 3] = new Vector3(1, 1, 3) + d + Displace();
 
             var diamond = new Diamond(mockDisplacer.Object);
-            diamond.CalculateDiamonds(vertices, 3);
+            diamond.CalculateDiamonds(vertices, 2);
 
             CollectionAssert.AreEqual(expectedVertices, vertices);
         }

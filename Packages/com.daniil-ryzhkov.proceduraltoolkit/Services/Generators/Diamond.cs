@@ -19,20 +19,21 @@ namespace ProceduralToolkit.Services.Generators
             this.iteration = iteration;
             length = (int)Mathf.Sqrt(vertices.Length);
 
-            var step = (int)((length - 1) / Mathf.Pow(2, iteration - 1));
+            var diamondStep = (int)((length - 1) / Mathf.Pow(2, iteration - 1));
+            var step = diamondStep / 2;
 
-            var xzShift = (vertices[GetIndex(step, step)] - vertices[0]) / 2f;
+            var xzShift = (vertices[GetIndex(diamondStep, diamondStep)] - vertices[0]) / 2f;
             xzShift.y = 0;
 
-            for (int row = step / 2; row < length; row += step)
+            for (int row = step; row < length; row += diamondStep)
             {
-                for (int column = step / 2; column < length; column += step)
+                for (int column = step; column < length; column += diamondStep)
                 {
-                    vertices[GetIndex(row, column)] = vertices[GetIndex(row - 1, column - 1)] + xzShift;
+                    vertices[GetIndex(row, column)] = vertices[GetIndex(row - step, column - step)] + xzShift;
 
-                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row - 1, column + 1)].y;
-                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row + 1, column - 1)].y;
-                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row + 1, column + 1)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row - step, column + step)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row + step, column - step)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row + step, column + step)].y;
                     vertices[GetIndex(row, column)].y /= 4f;
 
                     vertices[GetIndex(row, column)].y += Displacement;
