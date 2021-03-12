@@ -19,21 +19,23 @@ namespace ProceduralToolkit.Services.Generators
             this.iteration = iteration;
             length = (int)Mathf.Sqrt(vertices.Length);
 
-            var xzShift = (vertices[GetIndex(2, 2)] - vertices[0]) / 2f;
+            var step = (int)((length - 1) / Mathf.Pow(2, iteration - 1));
+
+            var xzShift = (vertices[GetIndex(step, step)] - vertices[0]) / 2f;
             xzShift.y = 0;
 
-            for (int i = 1; i < length; i += 2)
+            for (int row = step / 2; row < length; row += step)
             {
-                for (int j = 1; j < length; j += 2)
+                for (int column = step / 2; column < length; column += step)
                 {
-                    vertices[GetIndex(i, j)] = vertices[GetIndex(i - 1, j - 1)] + xzShift;
+                    vertices[GetIndex(row, column)] = vertices[GetIndex(row - 1, column - 1)] + xzShift;
 
-                    vertices[GetIndex(i, j)].y += vertices[GetIndex(i - 1, j + 1)].y;
-                    vertices[GetIndex(i, j)].y += vertices[GetIndex(i + 1, j - 1)].y;
-                    vertices[GetIndex(i, j)].y += vertices[GetIndex(i + 1, j + 1)].y;
-                    vertices[GetIndex(i, j)].y /= 4f;
+                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row - 1, column + 1)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row + 1, column - 1)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetIndex(row + 1, column + 1)].y;
+                    vertices[GetIndex(row, column)].y /= 4f;
 
-                    vertices[GetIndex(i, j)].y += Displacement;
+                    vertices[GetIndex(row, column)].y += Displacement;
                 }
             }
         }
