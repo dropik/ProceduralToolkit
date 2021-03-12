@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class Diamond
+    public class Diamond : IDsaStep
     {
         private readonly IDisplacer displacer;
 
