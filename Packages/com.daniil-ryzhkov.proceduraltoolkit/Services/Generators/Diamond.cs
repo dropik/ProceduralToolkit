@@ -54,17 +54,17 @@ namespace ProceduralToolkit.Services.Generators
             {
                 if (column == 0)
                 {
-                    HandleLowerRight(vertex, row, column);
+                    HandleLowerRight(vertex, LowerRightIndex(row, column));
                     return;
                 }
                 if (column < verticesInRow - 1)
                 {
-                    HandleLowerLeft(vertex, row, column);
-                    HandleLowerRight(vertex, row, column);
+                    HandleLowerLeft(vertex, LowerLeftIndex(row, column));
+                    HandleLowerRight(vertex, LowerRightIndex(row, column));
                     return;
                 }
 
-                HandleLowerLeft(vertex, row, column);
+                HandleLowerLeft(vertex, LowerLeftIndex(row, column));
                 return;
             }
 
@@ -72,39 +72,39 @@ namespace ProceduralToolkit.Services.Generators
             {
                 if (column == 0)
                 {
-                    HandleUpperRight(vertex, row, column);
-                    HandleLowerRight(vertex, row, column);
+                    HandleUpperRight(vertex, UpperRightIndex(row, column));
+                    HandleLowerRight(vertex, LowerRightIndex(row, column));
                     return;
                 }
 
                 if (column < verticesInRow - 1)
                 {
-                    HandleUpperLeft(vertex, row, column);
-                    HandleUpperRight(vertex, row, column);
-                    HandleLowerLeft(vertex, row, column);
-                    HandleLowerRight(vertex, row, column);
+                    HandleUpperLeft(vertex, UpperLeftIndex(row, column));
+                    HandleUpperRight(vertex, UpperRightIndex(row, column));
+                    HandleLowerLeft(vertex, LowerLeftIndex(row, column));
+                    HandleLowerRight(vertex, LowerRightIndex(row, column));
                     return;
                 }
 
-                HandleUpperLeft(vertex, row, column);
-                HandleLowerLeft(vertex, row, column);
+                HandleUpperLeft(vertex, UpperLeftIndex(row, column));
+                HandleLowerLeft(vertex, LowerLeftIndex(row, column));
                 return;
             }
 
             if (column == 0)
             {
-                HandleUpperRight(vertex, row, column);
+                HandleUpperRight(vertex, UpperRightIndex(row, column));
                 return;
             }
 
             if (column < verticesInRow - 1)
             {
-                HandleUpperLeft(vertex, row, column);
-                HandleUpperRight(vertex, row, column);
+                HandleUpperLeft(vertex, UpperLeftIndex(row, column));
+                HandleUpperRight(vertex, UpperRightIndex(row, column));
                 return;
             }
 
-            HandleUpperLeft(vertex, row, column);
+            HandleUpperLeft(vertex, UpperLeftIndex(row, column));
         }
 
         private void HandleOriginal(Vector3 vertex, int index)
@@ -112,31 +112,35 @@ namespace ProceduralToolkit.Services.Generators
             output[index] = vertex;
         }
 
-        private void HandleLowerRight(Vector3 vertex, int row, int column)
+        private void HandleLowerRight(Vector3 vertex, int index)
         {
-            output[LowerDiamond(row) + column] = vertex;
+            output[index] = vertex;
         }
 
-        private void HandleLowerLeft(Vector3 vertex, int row, int column)
+        private void HandleLowerLeft(Vector3 vertex, int index)
         {
-            output[LowerDiamond(row) + column - 1].y += vertex.y;
+            output[index].y += vertex.y;
         }
 
-        private void HandleUpperRight(Vector3 vertex, int row, int column)
+        private void HandleUpperRight(Vector3 vertex, int index)
         {
-            output[UpperDiamond(row) + column].y += vertex.y;
+            output[index].y += vertex.y;
         }
 
-        private void HandleUpperLeft(Vector3 vertex, int row, int column)
+        private void HandleUpperLeft(Vector3 vertex, int index)
         {
-            output[UpperDiamond(row) + column - 1].y += vertex.y;
-            output[UpperDiamond(row) + column - 1].y /= 4;
-            output[UpperDiamond(row) + column - 1] += xzShift;
+            output[index].y += vertex.y;
+            output[index].y /= 4;
+            output[index] += xzShift;
         }
 
         private int Original(int row) => row * (2 * verticesInRow - 1);
         private int UpperDiamond(int row) => Original(row) - verticesInRow + 1;
         private int LowerDiamond(int row) => Original(row) + verticesInRow;
         private int OriginalIndex(int row, int column) => Original(row) + column;
+        private int LowerRightIndex(int row, int column) => LowerDiamond(row) + column;
+        private int LowerLeftIndex(int row, int column) => LowerDiamond(row) + column - 1;
+        private int UpperRightIndex(int row, int column) => UpperDiamond(row) + column;
+        private int UpperLeftIndex(int row, int column) => UpperDiamond(row) + column - 1;
     }
 }
