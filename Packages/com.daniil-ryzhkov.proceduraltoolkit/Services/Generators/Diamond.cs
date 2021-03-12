@@ -26,6 +26,14 @@ namespace ProceduralToolkit.Services.Generators
         {
             get
             {
+                for (int i = 0; i < 2 * verticesInRow - 1; i += 2)
+                {
+                    for (int j = 0; j < verticesInRow; j++)
+                    {
+                        HandleOriginal(input[i / 2 * verticesInRow + j], OriginalIndex(i / 2, j));
+                    }
+                }
+
                 var index = 0;
                 foreach (var vertex in input)
                 {
@@ -39,7 +47,6 @@ namespace ProceduralToolkit.Services.Generators
         private void HandleVertexFromInput(Vector3 vertex, int index)
         {
             var (row, column) = IndexToRowColumn(index);
-            HandleOriginal(vertex, OriginalIndex(row, column));
             HandleDiamond(vertex, row, column);
         }
 
