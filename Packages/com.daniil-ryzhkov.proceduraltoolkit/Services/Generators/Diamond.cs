@@ -1,4 +1,5 @@
 using ProceduralToolkit.Models;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -20,11 +21,19 @@ namespace ProceduralToolkit.Services.Generators
 
         private void CalculateDiamonds(DiamondContext context)
         {
+            foreach (var (row, column) in GetRowsAndColumns(context))
+            {
+                context.Vertices[GetIndex(context, row, column)] = GetDiamond(context, row, column);
+            }
+        }
+
+        private IEnumerable<(int row, int column)> GetRowsAndColumns(DiamondContext context)
+        {
             for (int row = context.Step; row < context.Length; row += context.DiamondStep)
             {
                 for (int column = context.Step; column < context.Length; column += context.DiamondStep)
                 {
-                    context.Vertices[GetIndex(context, row, column)] = GetDiamond(context, row, column);
+                    yield return (row, column);
                 }
             }
         }
