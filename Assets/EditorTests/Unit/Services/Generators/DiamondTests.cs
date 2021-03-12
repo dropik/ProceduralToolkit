@@ -37,7 +37,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             expectedVertices[2 * N + 2] = new Vector3(0.5f, 18, 0.5f) + Displace();
 
             var diamond = new Diamond(mockDisplacer.Object);
-            diamond.CalculateDiamonds(vertices, 1);
+            diamond.Execute(vertices, 1);
 
             CollectionAssert.AreEqual(expectedVertices, vertices);
         }
@@ -71,7 +71,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             expectedVertices[3 * N + 3] = new Vector3(1, 1, 3) + d + Displace();
 
             var diamond = new Diamond(mockDisplacer.Object);
-            diamond.CalculateDiamonds(vertices, 2);
+            diamond.Execute(vertices, 2);
 
             CollectionAssert.AreEqual(expectedVertices, vertices);
         }
