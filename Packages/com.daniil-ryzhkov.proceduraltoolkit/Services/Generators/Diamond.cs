@@ -40,33 +40,38 @@ namespace ProceduralToolkit.Services.Generators
 
         private Vector3 GetDiamond(DiamondContext context, int row, int column)
         {
-            var diamond = GetUpperLeftNeighbour(context, row, column);
-            diamond.y += GetUpperRightNeighbour(context, row, column).y;
-            diamond.y += GetLowerLeftNeighbour(context, row, column).y;
-            diamond.y += GetLowerRightNeighbour(context, row, column).y;
-            diamond.y /= 4f;
-
+            var diamond = GetSumOfNeighbours(context, row, column);
             diamond += context.XzShift;
-
             diamond.y += Displacement(context);
-
             return diamond;
         }
 
-        private Vector3 GetUpperLeftNeighbour(DiamondContext context, int row, int column) =>
-            context.Vertices[GetIndex(context, row - context.Step, column - context.Step)];
+        private Vector3 GetSumOfNeighbours(DiamondContext context, int row, int column)
+        {
+            var sum = GetUpperLeftNeighbour(context, row, column);
+            sum.y += GetUpperRightNeighbour(context, row, column).y;
+            sum.y += GetLowerLeftNeighbour(context, row, column).y;
+            sum.y += GetLowerRightNeighbour(context, row, column).y;
+            sum.y /= 4f;
+            return sum;
+        }
 
-        private Vector3 GetUpperRightNeighbour(DiamondContext context, int row, int column) =>
-            context.Vertices[GetIndex(context, row - context.Step, column + context.Step)];
+        private Vector3 GetUpperLeftNeighbour(DiamondContext context, int row, int column)
+            => context.Vertices[GetIndex(context, row - context.Step, column - context.Step)];
 
-        private Vector3 GetLowerLeftNeighbour(DiamondContext context, int row, int column) =>
-            context.Vertices[GetIndex(context, row + context.Step, column - context.Step)];
+        private Vector3 GetUpperRightNeighbour(DiamondContext context, int row, int column)
+            => context.Vertices[GetIndex(context, row - context.Step, column + context.Step)];
 
-        private Vector3 GetLowerRightNeighbour(DiamondContext context, int row, int column) =>
-            context.Vertices[GetIndex(context, row + context.Step, column + context.Step)];
+        private Vector3 GetLowerLeftNeighbour(DiamondContext context, int row, int column)
+            => context.Vertices[GetIndex(context, row + context.Step, column - context.Step)];
 
-        private int GetIndex(DiamondContext context, int row, int column) => row * context.Length + column;
+        private Vector3 GetLowerRightNeighbour(DiamondContext context, int row, int column)
+            => context.Vertices[GetIndex(context, row + context.Step, column + context.Step)];
 
-        private float Displacement(DiamondContext context) => displacer.GetDisplacement(context.Iteration);
+        private int GetIndex(DiamondContext context, int row, int column)
+            => row * context.Length + column;
+
+        private float Displacement(DiamondContext context)
+            => displacer.GetDisplacement(context.Iteration);
     }
 }
