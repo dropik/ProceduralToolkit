@@ -26,7 +26,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 
             mockDisplacer = new Mock<IDisplacer>();
             mockDisplacer.Setup(m => m.GetDisplacement(It.IsAny<int>())).Returns(DISPLACEMENT);
-            diamond = new DiamondDsaStep(vertices, N, mockDisplacer.Object);
+
+
+            diamond = new DiamondDsaStep(vertices, N, new Vector3(1, 0, -1), mockDisplacer.Object);
         }
 
         private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);

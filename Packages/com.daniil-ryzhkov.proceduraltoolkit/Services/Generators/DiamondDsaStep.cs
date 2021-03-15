@@ -8,18 +8,20 @@ namespace ProceduralToolkit.Services.Generators
     {
         private readonly Vector3[] vertices;
         private readonly int length;
+        private readonly Vector3 gridSize;
         private readonly IDisplacer displacer;
 
-        public DiamondDsaStep(Vector3[] vertices, int length, IDisplacer displacer)
+        public DiamondDsaStep(Vector3[] vertices, int length, Vector3 gridSize, IDisplacer displacer)
         {
             this.vertices = vertices;
             this.length = length;
+            this.gridSize = gridSize;
             this.displacer = displacer;
         }
 
         public void Execute(int iteration)
         {
-            var context = new DiamondContext(vertices, length, iteration);
+            var context = new DiamondContext(length, iteration);
             CalculateDiamonds(context);
         }
 
@@ -44,20 +46,26 @@ namespace ProceduralToolkit.Services.Generators
 
         private Vector3 GetDiamond(DiamondContext context, int row, int column)
         {
-            var diamond = GetSumOfNeighbours(row, column, context.Step);
-            diamond += context.XzShift;
+            var diamond = GetVertexOnGrid(row, column);
+            diamond.y = GetNeighboursHeightAverage(row, column, context.Step);
             diamond.y += Displacement(context);
             return diamond;
         }
 
-        private Vector3 GetSumOfNeighbours(int row, int column, int step)
+        private Vector3 GetVertexOnGrid(int row, int column)
+            => Vector3.Scale(new Vector3(1, 0, 1), vertices[0] + GetShift(row, column));
+
+        private Vector3 GetShift(int row, int column)
+            => Vector3.Scale(new Vector3(column, 0, row), gridSize);
+
+        private float GetNeighboursHeightAverage(int row, int column, int step)
         {
-            var sum = GetUpperLeftNeighbour(row, column, step);
-            sum.y += GetUpperRightNeighbour(row, column, step).y;
-            sum.y += GetLowerLeftNeighbour(row, column, step).y;
-            sum.y += GetLowerRightNeighbour(row, column, step).y;
-            sum.y /= 4f;
-            return sum;
+            return (GetUpperLeftNeighbour(row, column, step).y +
+                    GetUpperRightNeighbour(row, column, step).y +
+                    GetLowerLeftNeighbour(row, column, step).y +
+                    GetLowerRightNeighbour(row, column, step).y)
+                    /
+                    4f;
         }
 
         private Vector3 GetUpperLeftNeighbour(int row, int column, int step)

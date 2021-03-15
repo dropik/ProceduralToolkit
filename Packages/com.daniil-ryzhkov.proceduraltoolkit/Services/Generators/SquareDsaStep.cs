@@ -49,7 +49,7 @@ namespace ProceduralToolkit.Services.Generators
         private Vector3 GetSquare(int row, int column, SquareContext context)
         {
             var square = GetVertexOnGrid(row, column);
-            square = GetNeighboursAverage(square, row, column, context.Step);
+            square.y = GetNeighboursHeightAverage(row, column, context.Step);
             square.y += displacer.GetDisplacement(context.Iteration);
             return square;
         }
@@ -60,16 +60,14 @@ namespace ProceduralToolkit.Services.Generators
         private Vector3 GetShift(int row, int column)
             => Vector3.Scale(new Vector3(column, 0, row), gridSize);
 
-        private Vector3 GetNeighboursAverage(Vector3 square, int row, int column, int step)
+        private float GetNeighboursHeightAverage(int row, int column, int step)
         {
-            square.y = (UpNeighbour(row, column, step) +
-                        RightNeighbour(row, column, step) +
-                        DownNeighbour(row, column, step) +
-                        LeftNeighbour(row, column, step))
-                        /
-                        4f;
-
-            return square;
+            return (UpNeighbour(row, column, step) +
+                    RightNeighbour(row, column, step) +
+                    DownNeighbour(row, column, step) +
+                    LeftNeighbour(row, column, step))
+                    /
+                    4f;
         }
 
         private float UpNeighbour(int row, int column, int step)
