@@ -1,4 +1,5 @@
 ﻿using ProceduralToolkit.Models;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -24,6 +25,19 @@ namespace ProceduralToolkit.Services.Generators
             HandleStep(context);
         }
 
-        protected abstract void HandleStep(DsaStepContext context);
+        private void HandleStep(DsaStepContext context)
+        {
+            foreach (var (row, column) in GetRowsAndColumnsForStep(context))
+            {
+                Vertices[GetIndex(row, column)] = GetStepVertex(row, column, context);
+            }
+        }
+
+        protected abstract IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context);
+
+        protected abstract Vector3 GetStepVertex(int row, int column, DsaStepContext context);
+
+        protected int GetIndex(int row, int column)
+            => row * Length + column;
     }
 }

@@ -9,15 +9,7 @@ namespace ProceduralToolkit.Services.Generators
         public DiamondDsaStep(LandscapeContext context, IDisplacer displacer)
             : base(context, displacer) { }
 
-        protected override void HandleStep(DsaStepContext context)
-        {
-            foreach (var (row, column) in GetRowsAndColumns(context))
-            {
-                Vertices[GetIndex(row, column)] = GetDiamond(context, row, column);
-            }
-        }
-
-        private IEnumerable<(int row, int column)> GetRowsAndColumns(DsaStepContext context)
+        protected override IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context)
         {
             for (int row = context.HalfStep; row < Length; row += context.Step)
             {
@@ -28,7 +20,7 @@ namespace ProceduralToolkit.Services.Generators
             }
         }
 
-        private Vector3 GetDiamond(DsaStepContext context, int row, int column)
+        protected override Vector3 GetStepVertex(int row, int column, DsaStepContext context)
         {
             var diamond = GetVertexOnGrid(row, column);
             diamond.y = GetNeighboursHeightAverage(row, column, context.HalfStep);
@@ -63,9 +55,6 @@ namespace ProceduralToolkit.Services.Generators
 
         private Vector3 GetLowerRightNeighbour(int row, int column, int step)
             => Vertices[GetIndex(row + step, column + step)];
-
-        private int GetIndex(int row, int column)
-            => row * Length + column;
 
         private float Displacement(DsaStepContext context)
             => Displacer.GetDisplacement(context.Iteration);

@@ -9,15 +9,7 @@ namespace ProceduralToolkit.Services.Generators
         public SquareDsaStep(LandscapeContext context, IDisplacer displacer)
             : base(context, displacer) { }
 
-        protected override void HandleStep(DsaStepContext context)
-        {
-            foreach (var (row, column) in GetRowsAndColumnsOfSquares(context))
-            {
-                Vertices[GetIndex(row, column)] = GetSquare(row, column, context);
-            }
-        }
-
-        private IEnumerable<(int row, int column)> GetRowsAndColumnsOfSquares(DsaStepContext context)
+        protected override IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context)
         {
             var start = context.HalfStep;
             for (int row = 0; row < Length; row += context.HalfStep)
@@ -30,7 +22,7 @@ namespace ProceduralToolkit.Services.Generators
             }
         }
 
-        private Vector3 GetSquare(int row, int column, DsaStepContext context)
+        protected override Vector3 GetStepVertex(int row, int column, DsaStepContext context)
         {
             var square = GetVertexOnGrid(row, column);
             square.y = GetNeighboursHeightAverage(row, column, context.HalfStep);
@@ -97,8 +89,5 @@ namespace ProceduralToolkit.Services.Generators
             }
             return index;
         }
-
-        private int GetIndex(int row, int column)
-            => row * Length + column;
     }
 }
