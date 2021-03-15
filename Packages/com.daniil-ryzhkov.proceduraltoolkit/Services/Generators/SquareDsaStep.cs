@@ -60,39 +60,61 @@ namespace ProceduralToolkit.Services.Generators
 
         private Vector3 GetNeighboursAverage(Vector3 square, int row, int column, int step)
         {
-            square.y += vertices[GetCircularIndex(row - step, column)].y;
-            square.y += vertices[GetCircularIndex(row, column + step)].y;
-            square.y += vertices[GetCircularIndex(row + step, column)].y;
-            square.y += vertices[GetCircularIndex(row, column - step)].y;
-            square.y /= 4f;
+            square.y = (UpNeighbour(row, column, step) +
+                        RightNeighbour(row, column, step) +
+                        DownNeighbour(row, column, step) +
+                        LeftNeighbour(row, column, step))
+                        /
+                        4f;
 
             return square;
         }
 
+        private float UpNeighbour(int row, int column, int step)
+        {
+            row = ShiftBackward(row, step);
+            return vertices[GetIndex(row, column)].y;
+        }
+
+        private float RightNeighbour(int row, int column, int step)
+        {
+            column = ShiftForward(column, step);
+            return vertices[GetIndex(row, column)].y;
+        }
+
+        private float DownNeighbour(int row, int column, int step)
+        {
+            row = ShiftForward(row, step);
+            return vertices[GetIndex(row, column)].y;
+        }
+
+        private float LeftNeighbour(int row, int column, int step)
+        {
+            column = ShiftBackward(column, step);
+            return vertices[GetIndex(row, column)].y;
+        }
+
+        private int ShiftForward(int index, int step)
+        {
+            index += step;
+            if (index > length - 1)
+            {
+                index -= length - 1;
+            }
+            return index;
+        }
+
+        private int ShiftBackward(int index, int step)
+        {
+            index -= step;
+            if (index < 0)
+            {
+                index += length - 1;
+            }
+            return index;
+        }
+
         private int GetIndex(int row, int column)
             => row * length + column;
-        
-        private int GetCircularIndex(int row, int column)
-        {
-            if (row < 0)
-            {
-                row += length - 1;
-            }
-            else if (row > length - 1)
-            {
-                row -= length - 1;
-            }
-
-            if (column < 0)
-            {
-                column += length - 1;
-            }
-            else if (column > length - 1)
-            {
-                column -= length - 1;
-            }
-
-            return GetIndex(row, column);
-        }
     }
 }
