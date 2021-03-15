@@ -9,12 +9,14 @@ namespace ProceduralToolkit.Services.Generators
         private readonly Vector3[] vertices;
         private readonly IDisplacer displacer;
         private readonly int length;
+        private readonly Vector3 gridSize;
 
-        public SquareDsaStep(Vector3[] vertices, IDisplacer displacer)
+        public SquareDsaStep(Vector3[] vertices, int length, Vector3 gridSize, IDisplacer displacer)
         {
             this.vertices = vertices;
             this.displacer = displacer;
-            length = (int)Mathf.Sqrt(vertices.Length);
+            this.length = length;
+            this.gridSize = gridSize;
         }
 
         public void Execute(int iteration)
@@ -56,7 +58,7 @@ namespace ProceduralToolkit.Services.Generators
             => Vector3.Scale(new Vector3(1, 0, 1), vertices[0] + GetShift(row, column));
 
         private Vector3 GetShift(int row, int column)
-            => Vector3.Scale(new Vector3(column, 0, row) / (length - 1), vertices[length * length - 1] - vertices[0]);
+            => Vector3.Scale(new Vector3(column, 0, row), gridSize);
 
         private Vector3 GetNeighboursAverage(Vector3 square, int row, int column, int step)
         {
