@@ -7,16 +7,16 @@ namespace ProceduralToolkit.Services.Generators
     public class SquareDsaStep : IDsaStep
     {
         private readonly Vector3[] vertices;
-        private readonly IDisplacer displacer;
         private readonly int length;
         private readonly Vector3 gridSize;
+        private readonly IDisplacer displacer;
 
-        public SquareDsaStep(Vector3[] vertices, int length, Vector3 gridSize, IDisplacer displacer)
+        public SquareDsaStep(LandscapeContext context, IDisplacer displacer)
         {
-            this.vertices = vertices;
+            vertices = context.Vertices;
+            length = context.Length;
+            gridSize = context.GridSize;
             this.displacer = displacer;
-            this.length = length;
-            this.gridSize = gridSize;
         }
 
         public void Execute(int iteration)
