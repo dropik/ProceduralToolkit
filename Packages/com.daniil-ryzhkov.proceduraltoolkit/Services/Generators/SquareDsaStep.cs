@@ -1,6 +1,5 @@
 ﻿using ProceduralToolkit.Models;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
@@ -22,49 +21,35 @@ namespace ProceduralToolkit.Services.Generators
             }
         }
 
-        protected override Vector3 GetStepVertex(int row, int column, DsaStepContext context)
+        protected override float GetNeighboursHeightAverage(int row, int column, int step)
         {
-            var square = GetVertexOnGrid(row, column);
-            square.y = GetNeighboursHeightAverage(row, column, context.HalfStep);
-            square.y += Displacer.GetDisplacement(context.Iteration);
-            return square;
-        }
-
-        private Vector3 GetVertexOnGrid(int row, int column)
-            => Vector3.Scale(new Vector3(1, 0, 1), Vertices[0] + GetShift(row, column));
-
-        private Vector3 GetShift(int row, int column)
-            => Vector3.Scale(new Vector3(column, 0, row), GridSize);
-
-        private float GetNeighboursHeightAverage(int row, int column, int step)
-        {
-            return (UpNeighbour(row, column, step) +
-                    RightNeighbour(row, column, step) +
-                    DownNeighbour(row, column, step) +
-                    LeftNeighbour(row, column, step))
+            return (GetUpHeight(row, column, step) +
+                    GetRightHeight(row, column, step) +
+                    GetDownHeight(row, column, step) +
+                    GetLeftHeight(row, column, step))
                     /
                     4f;
         }
 
-        private float UpNeighbour(int row, int column, int step)
+        private float GetUpHeight(int row, int column, int step)
         {
             row = ShiftBackward(row, step);
             return Vertices[GetIndex(row, column)].y;
         }
 
-        private float RightNeighbour(int row, int column, int step)
+        private float GetRightHeight(int row, int column, int step)
         {
             column = ShiftForward(column, step);
             return Vertices[GetIndex(row, column)].y;
         }
 
-        private float DownNeighbour(int row, int column, int step)
+        private float GetDownHeight(int row, int column, int step)
         {
             row = ShiftForward(row, step);
             return Vertices[GetIndex(row, column)].y;
         }
 
-        private float LeftNeighbour(int row, int column, int step)
+        private float GetLeftHeight(int row, int column, int step)
         {
             column = ShiftBackward(column, step);
             return Vertices[GetIndex(row, column)].y;
