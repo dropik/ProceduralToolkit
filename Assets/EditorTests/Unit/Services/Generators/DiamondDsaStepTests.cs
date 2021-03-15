@@ -1,5 +1,6 @@
 using Moq;
 using NUnit.Framework;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
 using UnityEngine;
 
@@ -27,8 +28,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             mockDisplacer = new Mock<IDisplacer>();
             mockDisplacer.Setup(m => m.GetDisplacement(It.IsAny<int>())).Returns(DISPLACEMENT);
 
-
-            diamond = new DiamondDsaStep(vertices, N, new Vector3(1, 0, -1), mockDisplacer.Object);
+            var context = new LandscapeContext
+            {
+                Vertices = vertices,
+                Length = N,
+                GridSize = new Vector3(1, 0, -1)
+            };
+            diamond = new DiamondDsaStep(context, mockDisplacer.Object);
         }
 
         private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);

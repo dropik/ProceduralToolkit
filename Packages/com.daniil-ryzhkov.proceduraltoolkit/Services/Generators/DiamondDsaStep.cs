@@ -11,11 +11,11 @@ namespace ProceduralToolkit.Services.Generators
         private readonly Vector3 gridSize;
         private readonly IDisplacer displacer;
 
-        public DiamondDsaStep(Vector3[] vertices, int length, Vector3 gridSize, IDisplacer displacer)
+        public DiamondDsaStep(LandscapeContext context, IDisplacer displacer)
         {
-            this.vertices = vertices;
-            this.length = length;
-            this.gridSize = gridSize;
+            vertices = context.Vertices;
+            length = context.Length;
+            gridSize = context.GridSize;
             this.displacer = displacer;
         }
 
