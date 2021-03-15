@@ -21,11 +21,11 @@ namespace ProceduralToolkit.Services.Generators
 
         public void Execute(int iteration)
         {
-            var context = new DiamondContext(length, iteration);
+            var context = new DsaStepContext(length, iteration);
             CalculateDiamonds(context);
         }
 
-        private void CalculateDiamonds(DiamondContext context)
+        private void CalculateDiamonds(DsaStepContext context)
         {
             foreach (var (row, column) in GetRowsAndColumns(context))
             {
@@ -33,21 +33,21 @@ namespace ProceduralToolkit.Services.Generators
             }
         }
 
-        private IEnumerable<(int row, int column)> GetRowsAndColumns(DiamondContext context)
+        private IEnumerable<(int row, int column)> GetRowsAndColumns(DsaStepContext context)
         {
-            for (int row = context.Step; row < length; row += context.DiamondStep)
+            for (int row = context.HalfStep; row < length; row += context.Step)
             {
-                for (int column = context.Step; column < length; column += context.DiamondStep)
+                for (int column = context.HalfStep; column < length; column += context.Step)
                 {
                     yield return (row, column);
                 }
             }
         }
 
-        private Vector3 GetDiamond(DiamondContext context, int row, int column)
+        private Vector3 GetDiamond(DsaStepContext context, int row, int column)
         {
             var diamond = GetVertexOnGrid(row, column);
-            diamond.y = GetNeighboursHeightAverage(row, column, context.Step);
+            diamond.y = GetNeighboursHeightAverage(row, column, context.HalfStep);
             diamond.y += Displacement(context);
             return diamond;
         }
@@ -83,7 +83,7 @@ namespace ProceduralToolkit.Services.Generators
         private int GetIndex(int row, int column)
             => row * length + column;
 
-        private float Displacement(DiamondContext context)
+        private float Displacement(DsaStepContext context)
             => displacer.GetDisplacement(context.Iteration);
     }
 }

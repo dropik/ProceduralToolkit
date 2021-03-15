@@ -21,11 +21,11 @@ namespace ProceduralToolkit.Services.Generators
 
         public void Execute(int iteration)
         {
-            var context = new SquareContext(length, iteration);
+            var context = new DsaStepContext(length, iteration);
             CalculateSquares(context);
         }
 
-        private void CalculateSquares(SquareContext context)
+        private void CalculateSquares(DsaStepContext context)
         {
             foreach (var (row, column) in GetRowsAndColumnsOfSquares(context))
             {
@@ -33,23 +33,23 @@ namespace ProceduralToolkit.Services.Generators
             }
         }
 
-        private IEnumerable<(int row, int column)> GetRowsAndColumnsOfSquares(SquareContext context)
+        private IEnumerable<(int row, int column)> GetRowsAndColumnsOfSquares(DsaStepContext context)
         {
-            var start = context.Step;
-            for (int row = 0; row < length; row += context.Step)
+            var start = context.HalfStep;
+            for (int row = 0; row < length; row += context.HalfStep)
             {
-                for (int column = start; column < length; column += context.SquareStep)
+                for (int column = start; column < length; column += context.Step)
                 {
                     yield return (row, column);
                 }
-                start = (start + context.Step) % context.SquareStep;
+                start = (start + context.HalfStep) % context.Step;
             }
         }
 
-        private Vector3 GetSquare(int row, int column, SquareContext context)
+        private Vector3 GetSquare(int row, int column, DsaStepContext context)
         {
             var square = GetVertexOnGrid(row, column);
-            square.y = GetNeighboursHeightAverage(row, column, context.Step);
+            square.y = GetNeighboursHeightAverage(row, column, context.HalfStep);
             square.y += displacer.GetDisplacement(context.Iteration);
             return square;
         }
