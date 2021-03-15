@@ -6,14 +6,14 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 {
     [Category("Unit")]
-    public class DiamondTests
+    public class DiamondDsaStepTests
     {
         const int DISPLACEMENT = 4;
         const int N = 5;
 
         private Vector3[] vertices;
         private Mock<IDisplacer> mockDisplacer;
-        private Diamond diamond;
+        private DiamondDsaStep diamond;
 
         [SetUp]
         public void Setup()
@@ -21,7 +21,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             vertices = new Vector3[N * N];
             mockDisplacer = new Mock<IDisplacer>();
             mockDisplacer.Setup(m => m.GetDisplacement(It.IsAny<int>())).Returns(DISPLACEMENT);
-            diamond = new Diamond(vertices, mockDisplacer.Object);
+            diamond = new DiamondDsaStep(vertices, mockDisplacer.Object);
         }
 
         private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);

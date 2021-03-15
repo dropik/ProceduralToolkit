@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class Diamond : IDsaStep
+    public class DiamondDsaStep : IDsaStep
     {
         private readonly Vector3[] vertices;
         private readonly IDisplacer displacer;
 
-        public Diamond(Vector3[] vertices, IDisplacer displacer)
+        public DiamondDsaStep(Vector3[] vertices, IDisplacer displacer)
         {
             this.displacer = displacer;
             this.vertices = vertices;
