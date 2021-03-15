@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using ProceduralToolkit.Models;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
@@ -18,39 +19,44 @@ namespace ProceduralToolkit.Services.Generators
 
         public void Execute(int iteration)
         {
-            var squareStep = (int)((length - 1) / Mathf.Pow(2, iteration - 1));
-            var step = squareStep / 2;
+            var context = new SquareContext(length, iteration);
+            CalculateSquares(context);
+        }
 
-            foreach (var (row, column) in GetRowsAndColumns(step, squareStep))
+        private void CalculateSquares(SquareContext context)
+        {
+            foreach (var (row, column) in GetRowsAndColumnsOfSquares(context))
             {
-                vertices[GetIndex(row, column)] = GetSquare(row, column, step, iteration);
+                vertices[GetIndex(row, column)] = GetSquare(row, column, context);
             }
         }
 
-        private IEnumerable<(int row, int column)> GetRowsAndColumns(int step, int squareStep)
+        private IEnumerable<(int row, int column)> GetRowsAndColumnsOfSquares(SquareContext context)
         {
-            var start = step;
-            for (int row = 0; row < length; row += step)
+            var start = context.Step;
+            for (int row = 0; row < length; row += context.Step)
             {
-                for (int column = start; column < length; column += squareStep)
+                for (int column = start; column < length; column += context.SquareStep)
                 {
                     yield return (row, column);
                 }
-                start = (start + step) % squareStep;
+                start = (start + context.Step) % context.SquareStep;
             }
         }
 
-        private Vector3 GetSquare(int row, int column, int step, int iteration)
+        private Vector3 GetSquare(int row, int column, SquareContext context)
         {
             var square = GetVertexOnGrid(row, column);
-            square = GetNeighboursAverage(square, row, column, step);
-            square.y += displacer.GetDisplacement(iteration);
+            square = GetNeighboursAverage(square, row, column, context.Step);
+            square.y += displacer.GetDisplacement(context.Iteration);
             return square;
         }
 
-        private Vector3 GetVertexOnGrid(int row, int column) => Vector3.Scale(new Vector3(1, 0, 1), vertices[0] + GetShift(row, column));
+        private Vector3 GetVertexOnGrid(int row, int column)
+            => Vector3.Scale(new Vector3(1, 0, 1), vertices[0] + GetShift(row, column));
 
-        private Vector3 GetShift(int row, int column) => Vector3.Scale(new Vector3(column, 0, row) / (length - 1), vertices[length * length - 1] - vertices[0]);
+        private Vector3 GetShift(int row, int column)
+            => Vector3.Scale(new Vector3(column, 0, row) / (length - 1), vertices[length * length - 1] - vertices[0]);
 
         private Vector3 GetNeighboursAverage(Vector3 square, int row, int column, int step)
         {
@@ -63,7 +69,8 @@ namespace ProceduralToolkit.Services.Generators
             return square;
         }
 
-        private int GetIndex(int row, int column) => row * length + column;
+        private int GetIndex(int row, int column)
+            => row * length + column;
         
         private int GetCircularIndex(int row, int column)
         {
