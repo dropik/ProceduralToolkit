@@ -19,9 +19,14 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public void Setup()
         {
             vertices = new Vector3[N * N];
+            vertices[0] = new Vector3(0, 7, 4);
+            vertices[N - 1] = new Vector3(4, 4, 4);
+            vertices[(N - 1) * N] = new Vector3(0, 52, 0);
+            vertices[(N - 1) * N + N - 1] = new Vector3(4, 9, 0);
+
             mockDisplacer = new Mock<IDisplacer>();
             mockDisplacer.Setup(m => m.GetDisplacement(It.IsAny<int>())).Returns(DISPLACEMENT);
-            diamond = new DiamondDsaStep(vertices, mockDisplacer.Object);
+            diamond = new DiamondDsaStep(vertices, N, mockDisplacer.Object);
         }
 
         private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);
@@ -29,14 +34,10 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestOnFirstIteration()
         {
-            vertices[0] = new Vector3(0, 7, 1);
-            vertices[N - 1] = new Vector3(1, 4, 1);
-            vertices[(N - 1) * N] = new Vector3(0, 52, 0);
-            vertices[(N - 1) * N + N - 1] = new Vector3(1, 9, 0);
-
+            var mid = (N - 1) / 2;
             var expectedVertices = new Vector3[N * N];
             vertices.CopyTo(expectedVertices, 0);
-            expectedVertices[2 * N + 2] = new Vector3(0.5f, 18, 0.5f) + Displace();
+            expectedVertices[mid * N + mid] = new Vector3(2, 18, 2) + Displace();
 
             diamond.Execute(iteration: 1);
 
@@ -46,28 +47,22 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestOnSecondIteration()
         {
-            vertices[0 * N + 0] = new Vector3(0, 1, 4);
-            vertices[0 * N + 2] = new Vector3(1, 1, 4);
-            vertices[0 * N + 4] = new Vector3(2, 1, 4);
+            vertices[0 * N + 2] = new Vector3(2, 1, 4);
 
-            vertices[2 * N + 0] = new Vector3(0, 1, 3);
-            vertices[2 * N + 2] = new Vector3(1, 1, 3);
-            vertices[2 * N + 4] = new Vector3(2, 1, 3);
+            vertices[2 * N + 0] = new Vector3(0, 1, 2);
+            vertices[2 * N + 2] = new Vector3(2, 1, 2);
+            vertices[2 * N + 4] = new Vector3(4, 1, 2);
 
-            vertices[4 * N + 0] = new Vector3(0, 1, 2);
-            vertices[4 * N + 2] = new Vector3(1, 1, 2);
-            vertices[4 * N + 4] = new Vector3(2, 1, 2);
-
-            var d = new Vector3(0.5f, 0, -0.5f);
+            vertices[4 * N + 2] = new Vector3(2, 1, 0);
 
             var expectedVertices = new Vector3[N * N];
             vertices.CopyTo(expectedVertices, 0);
 
-            expectedVertices[1 * N + 1] = new Vector3(0, 1, 4) + d + Displace();
-            expectedVertices[1 * N + 3] = new Vector3(1, 1, 4) + d + Displace();
+            expectedVertices[1 * N + 1] = new Vector3(1, 2.5f, 3) + Displace();
+            expectedVertices[1 * N + 3] = new Vector3(3, 1.75f, 3) + Displace();
 
-            expectedVertices[3 * N + 1] = new Vector3(0, 1, 3) + d + Displace();
-            expectedVertices[3 * N + 3] = new Vector3(1, 1, 3) + d + Displace();
+            expectedVertices[3 * N + 1] = new Vector3(1, 13.75f, 1) + Displace();
+            expectedVertices[3 * N + 3] = new Vector3(3, 3, 1) + Displace();
 
             diamond.Execute(iteration: 2);
 

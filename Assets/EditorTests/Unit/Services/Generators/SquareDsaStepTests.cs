@@ -62,17 +62,13 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestOnSecondIteration()
         {
-            // 7
             vertices[0 * N + 2] = new Vector3(2, 1, 4);
-            // 4
 
             vertices[2 * N + 0] = new Vector3(0, 1, 2);
             vertices[2 * N + 2] = new Vector3(2, 1, 2);
             vertices[2 * N + 4] = new Vector3(4, 1, 2);
 
-            // 52
             vertices[4 * N + 2] = new Vector3(2, 1, 0);
-            // 9
 
             vertices[1 * N + 1] = new Vector3(1, 2.5f, 3) + Displace();
             vertices[1 * N + 3] = new Vector3(3, 1.75f, 3) + Displace();

@@ -10,10 +10,10 @@ namespace ProceduralToolkit.Services.Generators
         private readonly int length;
         private readonly IDisplacer displacer;
 
-        public DiamondDsaStep(Vector3[] vertices, IDisplacer displacer)
+        public DiamondDsaStep(Vector3[] vertices, int length, IDisplacer displacer)
         {
             this.vertices = vertices;
-            length = (int)Mathf.Sqrt(vertices.Length);
+            this.length = length;
             this.displacer = displacer;
         }
 
