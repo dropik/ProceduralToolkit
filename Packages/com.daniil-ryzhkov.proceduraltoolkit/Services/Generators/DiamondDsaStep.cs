@@ -4,24 +4,14 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class DiamondDsaStep : IDsaStep
+    public class DiamondDsaStep : BaseDsaStep
     {
-        private readonly Vector3[] vertices;
-        private readonly int length;
-        private readonly Vector3 gridSize;
-        private readonly IDisplacer displacer;
-
         public DiamondDsaStep(LandscapeContext context, IDisplacer displacer)
-        {
-            vertices = context.Vertices;
-            length = context.Length;
-            gridSize = context.GridSize;
-            this.displacer = displacer;
-        }
+            : base(context, displacer) { }
 
-        public void Execute(int iteration)
+        public override void Execute(int iteration)
         {
-            var context = new DsaStepContext(length, iteration);
+            var context = new DsaStepContext(Length, iteration);
             CalculateDiamonds(context);
         }
 
@@ -29,15 +19,15 @@ namespace ProceduralToolkit.Services.Generators
         {
             foreach (var (row, column) in GetRowsAndColumns(context))
             {
-                vertices[GetIndex(row, column)] = GetDiamond(context, row, column);
+                Vertices[GetIndex(row, column)] = GetDiamond(context, row, column);
             }
         }
 
         private IEnumerable<(int row, int column)> GetRowsAndColumns(DsaStepContext context)
         {
-            for (int row = context.HalfStep; row < length; row += context.Step)
+            for (int row = context.HalfStep; row < Length; row += context.Step)
             {
-                for (int column = context.HalfStep; column < length; column += context.Step)
+                for (int column = context.HalfStep; column < Length; column += context.Step)
                 {
                     yield return (row, column);
                 }
@@ -53,10 +43,10 @@ namespace ProceduralToolkit.Services.Generators
         }
 
         private Vector3 GetVertexOnGrid(int row, int column)
-            => Vector3.Scale(new Vector3(1, 0, 1), vertices[0] + GetShift(row, column));
+            => Vector3.Scale(new Vector3(1, 0, 1), Vertices[0] + GetShift(row, column));
 
         private Vector3 GetShift(int row, int column)
-            => Vector3.Scale(new Vector3(column, 0, row), gridSize);
+            => Vector3.Scale(new Vector3(column, 0, row), GridSize);
 
         private float GetNeighboursHeightAverage(int row, int column, int step)
         {
@@ -69,21 +59,21 @@ namespace ProceduralToolkit.Services.Generators
         }
 
         private Vector3 GetUpperLeftNeighbour(int row, int column, int step)
-            => vertices[GetIndex(row - step, column - step)];
+            => Vertices[GetIndex(row - step, column - step)];
 
         private Vector3 GetUpperRightNeighbour(int row, int column, int step)
-            => vertices[GetIndex(row - step, column + step)];
+            => Vertices[GetIndex(row - step, column + step)];
 
         private Vector3 GetLowerLeftNeighbour(int row, int column, int step)
-            => vertices[GetIndex(row + step, column - step)];
+            => Vertices[GetIndex(row + step, column - step)];
 
         private Vector3 GetLowerRightNeighbour(int row, int column, int step)
-            => vertices[GetIndex(row + step, column + step)];
+            => Vertices[GetIndex(row + step, column + step)];
 
         private int GetIndex(int row, int column)
-            => row * length + column;
+            => row * Length + column;
 
         private float Displacement(DsaStepContext context)
-            => displacer.GetDisplacement(context.Iteration);
+            => Displacer.GetDisplacement(context.Iteration);
     }
 }
