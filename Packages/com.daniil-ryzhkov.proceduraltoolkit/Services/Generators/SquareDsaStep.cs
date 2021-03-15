@@ -28,42 +28,43 @@ namespace ProceduralToolkit.Services.Generators
             {
                 for (int column = start; column < length; column += squareStep)
                 {
-                    vertices[row * length + column] = GetVertexOnGrid(row, column);
+                    vertices[GetIndex(row, column)] = GetVertexOnGrid(row, column);
 
-                    var upRow = row - step;
-                    if (upRow < 0)
-                    {
-                        upRow += length - 1;
-                    }
-                    vertices[row * length + column].y += vertices[upRow * length + column].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetCircularIndex(row - step, column)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetCircularIndex(row, column + step)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetCircularIndex(row + step, column)].y;
+                    vertices[GetIndex(row, column)].y += vertices[GetCircularIndex(row, column - step)].y;
+                    vertices[GetIndex(row, column)].y /= 4f;
 
-                    var rightColumn = column + step;
-                    if (rightColumn > length - 1)
-                    {
-                        rightColumn -= length - 1;
-                    }
-                    vertices[row * length + column].y += vertices[row * length + rightColumn].y;
-
-                    var downRow = row + step;
-                    if (downRow > length - 1)
-                    {
-                        downRow -= length - 1;
-                    }
-                    vertices[row * length + column].y += vertices[downRow * length + column].y;
-
-                    var leftColumn = column - step;
-                    if (leftColumn < 0)
-                    {
-                        leftColumn += length - 1;
-                    }
-                    vertices[row * length + column].y += vertices[row * length + leftColumn].y;
-
-                    vertices[row * length + column].y /= 4f;
-
-                    vertices[row * length + column].y += displacer.GetDisplacement(iteration);
+                    vertices[GetIndex(row, column)].y += displacer.GetDisplacement(iteration);
                 }
                 start = (start + step) % squareStep;
             }
+        }
+
+        private int GetIndex(int row, int column) => row * length + column;
+        
+        private int GetCircularIndex(int row, int column)
+        {
+            if (row < 0)
+            {
+                row += length - 1;
+            }
+            else if (row > length - 1)
+            {
+                row -= length - 1;
+            }
+
+            if (column < 0)
+            {
+                column += length - 1;
+            }
+            else if (column > length - 1)
+            {
+                column -= length - 1;
+            }
+
+            return GetIndex(row, column);
         }
     }
 }
