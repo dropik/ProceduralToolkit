@@ -9,13 +9,7 @@ namespace ProceduralToolkit.Services.Generators
         public SquareDsaStep(LandscapeContext context, IDisplacer displacer)
             : base(context, displacer) { }
 
-        public override void Execute(int iteration)
-        {
-            var context = new DsaStepContext(Length, iteration);
-            CalculateSquares(context);
-        }
-
-        private void CalculateSquares(DsaStepContext context)
+        protected override void HandleStep(DsaStepContext context)
         {
             foreach (var (row, column) in GetRowsAndColumnsOfSquares(context))
             {

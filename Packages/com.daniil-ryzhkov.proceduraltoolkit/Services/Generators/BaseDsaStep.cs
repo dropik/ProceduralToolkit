@@ -18,6 +18,12 @@ namespace ProceduralToolkit.Services.Generators
             Displacer = displacer;
         }
 
-        public abstract void Execute(int iteration);
+        public void Execute(int iteration)
+        {
+            var context = new DsaStepContext(Length, iteration);
+            HandleStep(context);
+        }
+
+        protected abstract void HandleStep(DsaStepContext context);
     }
 }
