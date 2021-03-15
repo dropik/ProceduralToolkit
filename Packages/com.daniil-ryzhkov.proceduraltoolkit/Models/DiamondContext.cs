@@ -6,7 +6,6 @@ namespace ProceduralToolkit.Models
     {
         public DiamondContext(Vector3[] vertices, int iteration)
         {
-            Vertices = vertices;
             Iteration = iteration;
             Length = (int)Mathf.Sqrt(vertices.Length);
             DiamondStep = (int)((Length - 1) / Mathf.Pow(2, iteration - 1));
@@ -17,7 +16,6 @@ namespace ProceduralToolkit.Models
             XzShift = xzShift;
         }
 
-        public Vector3[] Vertices { get; set; }
         public int Iteration { get; set; }
         public int Length { get; set; }
         public int DiamondStep { get; set; }

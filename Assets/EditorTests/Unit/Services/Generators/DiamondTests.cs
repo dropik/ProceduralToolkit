@@ -11,13 +11,17 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         const int DISPLACEMENT = 4;
         const int N = 5;
 
+        private Vector3[] vertices;
         private Mock<IDisplacer> mockDisplacer;
+        private Diamond diamond;
 
         [SetUp]
         public void Setup()
         {
+            vertices = new Vector3[N * N];
             mockDisplacer = new Mock<IDisplacer>();
             mockDisplacer.Setup(m => m.GetDisplacement(It.IsAny<int>())).Returns(DISPLACEMENT);
+            diamond = new Diamond(vertices, mockDisplacer.Object);
         }
 
         private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);
@@ -25,8 +29,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestOnFirstIteration()
         {
-            var vertices = new Vector3[N * N];
-
             vertices[0] = new Vector3(0, 7, 1);
             vertices[N - 1] = new Vector3(1, 4, 1);
             vertices[(N - 1) * N] = new Vector3(0, 52, 0);
@@ -36,8 +38,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             vertices.CopyTo(expectedVertices, 0);
             expectedVertices[2 * N + 2] = new Vector3(0.5f, 18, 0.5f) + Displace();
 
-            var diamond = new Diamond(mockDisplacer.Object);
-            diamond.Execute(vertices, 1);
+            diamond.Execute(iteration: 1);
 
             CollectionAssert.AreEqual(expectedVertices, vertices);
         }
@@ -45,8 +46,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestOnSecondIteration()
         {
-            var vertices = new Vector3[N * N];
-
             vertices[0 * N + 0] = new Vector3(0, 1, 4);
             vertices[0 * N + 2] = new Vector3(1, 1, 4);
             vertices[0 * N + 4] = new Vector3(2, 1, 4);
@@ -70,8 +69,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             expectedVertices[3 * N + 1] = new Vector3(0, 1, 3) + d + Displace();
             expectedVertices[3 * N + 3] = new Vector3(1, 1, 3) + d + Displace();
 
-            var diamond = new Diamond(mockDisplacer.Object);
-            diamond.Execute(vertices, 2);
+            diamond.Execute(iteration: 2);
 
             CollectionAssert.AreEqual(expectedVertices, vertices);
         }

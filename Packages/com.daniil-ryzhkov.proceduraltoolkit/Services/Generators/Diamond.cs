@@ -6,14 +6,16 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class Diamond : IDsaStep
     {
+        private readonly Vector3[] vertices;
         private readonly IDisplacer displacer;
 
-        public Diamond(IDisplacer displacer)
+        public Diamond(Vector3[] vertices, IDisplacer displacer)
         {
             this.displacer = displacer;
+            this.vertices = vertices;
         }
 
-        public void Execute(Vector3[] vertices, int iteration)
+        public void Execute(int iteration)
         {
             var context = new DiamondContext(vertices, iteration);
             CalculateDiamonds(context);
@@ -23,7 +25,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             foreach (var (row, column) in GetRowsAndColumns(context))
             {
-                context.Vertices[GetIndex(context, row, column)] = GetDiamond(context, row, column);
+                vertices[GetIndex(context, row, column)] = GetDiamond(context, row, column);
             }
         }
 
@@ -57,16 +59,16 @@ namespace ProceduralToolkit.Services.Generators
         }
 
         private Vector3 GetUpperLeftNeighbour(DiamondContext context, int row, int column)
-            => context.Vertices[GetIndex(context, row - context.Step, column - context.Step)];
+            => vertices[GetIndex(context, row - context.Step, column - context.Step)];
 
         private Vector3 GetUpperRightNeighbour(DiamondContext context, int row, int column)
-            => context.Vertices[GetIndex(context, row - context.Step, column + context.Step)];
+            => vertices[GetIndex(context, row - context.Step, column + context.Step)];
 
         private Vector3 GetLowerLeftNeighbour(DiamondContext context, int row, int column)
-            => context.Vertices[GetIndex(context, row + context.Step, column - context.Step)];
+            => vertices[GetIndex(context, row + context.Step, column - context.Step)];
 
         private Vector3 GetLowerRightNeighbour(DiamondContext context, int row, int column)
-            => context.Vertices[GetIndex(context, row + context.Step, column + context.Step)];
+            => vertices[GetIndex(context, row + context.Step, column + context.Step)];
 
         private int GetIndex(DiamondContext context, int row, int column)
             => row * context.Length + column;
