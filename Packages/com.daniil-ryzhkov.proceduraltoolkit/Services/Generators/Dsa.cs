@@ -33,8 +33,8 @@ namespace ProceduralToolkit.Services.Generators
         {
             for (int i = 1; i <= context.Iterations; i++)
             {
-                diamondStep?.Execute(i);
-                squareStep?.Execute(i);
+                diamondStep.Execute(i);
+                squareStep.Execute(i);
             }
         }
 

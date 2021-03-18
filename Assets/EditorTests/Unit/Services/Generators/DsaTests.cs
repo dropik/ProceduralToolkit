@@ -10,12 +10,16 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     public class DsaTests
     {
         private LandscapeContext context;
+        private Mock<IDsaStep> mockDiamondStep;
+        private Mock<IDsaStep> mockSquareStep;
         private Dsa dsa;
 
         private void SetupContext(int iterations)
         {
             context = new LandscapeContext { Iterations = iterations };
-            dsa = new Dsa(context, null, null);
+            mockDiamondStep = new Mock<IDsaStep>();
+            mockSquareStep = new Mock<IDsaStep>();
+            dsa = new Dsa(context, mockDiamondStep.Object, mockSquareStep.Object);
         }
 
         [Test]
@@ -24,9 +28,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public void TestStepsExecuted(int iterations)
         {
             SetupContext(iterations);
-            var mockDiamondStep = new Mock<IDsaStep>();
-            var mockSquareStep = new Mock<IDsaStep>();
-            dsa = new Dsa(context, mockDiamondStep.Object, mockSquareStep.Object);
 
             dsa.Execute();
 
