@@ -16,7 +16,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         public void TestStepsExecuted(int length, int expectedCalls)
         {
             var vertices = new Vector3[length * length];
-            var context = new LandscapeContext { Vertices = vertices, Length = length };
+            var context = new LandscapeContext { Vertices = vertices, Length = length, Iterations = expectedCalls };
             var mockDiamondStep = new Mock<IDsaStep>();
             var mockSquareStep = new Mock<IDsaStep>();
             var dsa = new Dsa(context, mockDiamondStep.Object, mockSquareStep.Object);

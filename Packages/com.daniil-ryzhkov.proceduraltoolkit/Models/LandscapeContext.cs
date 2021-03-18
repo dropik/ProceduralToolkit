@@ -6,6 +6,7 @@ namespace ProceduralToolkit.Models
     {
         public Vector3[] Vertices { get; set; }
         public int Length { get; set; }
+        public int Iterations { get; set; }
         public Vector3 GridSize { get; set; }
     }
 }
