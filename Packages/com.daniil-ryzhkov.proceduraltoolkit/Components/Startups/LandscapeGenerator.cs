@@ -65,6 +65,17 @@ namespace ProceduralToolkit.Components.Startups
                 var converter = new SquaresToIndicesConverter(rect.Squares);
                 return (rect.Vertices, converter.Indices);
             });
+            services.AddSingleton<LandscapeContext>();
+            services.AddTransient(() => new DSASettings() /* GetComponent<DiamondSquare>().Settings */);
+            services.AddTransient<IDisplacer, Displacer>();
+            services.AddSingleton<IDsa>(() =>
+            {
+                var context = services.GetService<LandscapeContext>();
+                // context.Iterations = GetComponent<DiamondSquare>().Settings.Resolution;
+                return new Dsa(context,
+                               new DiamondDsaStep(context, services.GetService<IDisplacer>()),
+                               new SquareDsaStep(context, services.GetService<IDisplacer>()));
+            });
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();
         }

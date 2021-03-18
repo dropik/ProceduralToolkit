@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using ProceduralToolkit.Services;
+using ProceduralToolkit.Services.Generators;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
@@ -10,6 +11,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
     {
         private MeshAssembler meshAssembler;
         private Mock<IMeshBuilder> mockMeshBuilder;
+        private Mock<IDsa> mockDsa;
 
         private const string TEST_MESH_NAME = "Test Mesh";
 
@@ -25,11 +27,20 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
             mockMeshBuilder = new Mock<IMeshBuilder>();
             mockMeshBuilder.Setup(m => m.Build())
                            .Returns(new Mesh() { name = TEST_MESH_NAME });
+
+            mockDsa = new Mock<IDsa>();
         }
 
         private void SetupGenerator()
         {
-            meshAssembler = new MeshAssembler(mockMeshBuilder.Object);
+            meshAssembler = new MeshAssembler(mockMeshBuilder.Object, mockDsa.Object);
+        }
+
+        [Test]
+        public void TestDsaExecuted()
+        {
+            meshAssembler.Assemble();
+            mockDsa.Verify(m => m.Execute(), Times.Once);
         }
 
         [Test]
@@ -37,20 +48,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         {
             meshAssembler.Assemble();
             mockMeshBuilder.Verify(m => m.Build(), Times.Once);
-        }
-
-        [Test]
-        public void TestGeneratedInvokeOkWhenHasNoCallbacks()
-        {
-            try
-            {
-                meshAssembler.Assemble();
-                Assert.Pass();
-            }
-            catch (System.NullReferenceException)
-            {
-                Assert.Fail();
-            }
         }
 
         [Test]
