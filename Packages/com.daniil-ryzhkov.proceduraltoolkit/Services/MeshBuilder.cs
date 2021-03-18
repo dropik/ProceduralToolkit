@@ -9,25 +9,30 @@ namespace ProceduralToolkit.Services
 {
     public class MeshBuilder : IMeshBuilder
     {
-        private readonly Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)> dataProvider;
+        private readonly Func<IEnumerable<Vector3>> verticesProvider;
+        private readonly LandscapeContext context;
+        private readonly IIndicesGenerator indicesGenerator;
 
-        public MeshBuilder(Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)> dataProvider, LandscapeContext context, IIndicesGenerator indicesGenerator)
+        public MeshBuilder(Func<IEnumerable<Vector3>> verticesProvider, LandscapeContext context, IIndicesGenerator indicesGenerator)
         {
-            this.dataProvider = dataProvider;
+            this.verticesProvider = verticesProvider;
+            this.context = context;
+            this.indicesGenerator = indicesGenerator;
         }
 
         public Mesh Build()
         {
             var mesh = new Mesh();
-            BuildToMesh(mesh);
+            BuildMesh(mesh);
             return mesh;
         }
 
-        private void BuildToMesh(Mesh mesh)
+        private void BuildMesh(Mesh mesh)
         {
-            var (vertices, indices) = dataProvider.Invoke();
+            var vertices = verticesProvider();
             mesh.SetVertices(vertices.ToArray());
-            mesh.SetIndices(indices.ToArray(), MeshTopology.Triangles, 0);
+            indicesGenerator.Execute();
+            mesh.SetIndices(context.Indices, MeshTopology.Triangles, 0);
             mesh.RecalculateNormals();
         }
     }

@@ -59,11 +59,10 @@ namespace ProceduralToolkit.Components.Startups
 
         protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
         {
-            services.AddSingleton<Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)>>(() =>
+            services.AddSingleton<Func<IEnumerable<Vector3>>>(() =>
             {
                 var rect = new RectangleGenerator(GetComponent<Rectangle>().Settings);
-                var converter = new SquaresToIndicesConverter(rect.Squares);
-                return (rect.Vertices, converter.Indices);
+                return rect.Vertices;
             });
             services.AddSingleton<LandscapeContext>();
             services.AddTransient(() => new DSASettings() /* GetComponent<DiamondSquare>().Settings */);

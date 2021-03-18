@@ -17,6 +17,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         };
         private readonly int[] expectedIndices = { 0, 1, 2 };
 
+        private LandscapeContext context;
         private Mock<IIndicesGenerator> mockIndicesGenerator;
 
         private MeshBuilder meshBuilder;
@@ -24,8 +25,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         [SetUp]
         public void SetUp()
         {
+            context = new LandscapeContext();
+
             mockIndicesGenerator = new Mock<IIndicesGenerator>();
-            meshBuilder = new MeshBuilder(() => (expectedVertices, expectedIndices), new LandscapeContext(), mockIndicesGenerator.Object);
+            mockIndicesGenerator.Setup(m => m.Execute()).Callback(() => context.Indices = expectedIndices);
+
+            meshBuilder = new MeshBuilder(() => expectedVertices, context, mockIndicesGenerator.Object);
         }
 
         [Test]
@@ -54,29 +59,6 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         {
             var resultingMesh = meshBuilder.Build();
             Assert.That(resultingMesh.normals.Length, Is.Not.Zero);
-        }
-
-        [Test]
-        public void TestOnDifferentSizes()
-        {
-            var verticesInSquare = new Vector3[]
-            {
-                new Vector3(0, 0, 0),
-                new Vector3(0, 1, 0),
-                new Vector3(1, 1, 0),
-                new Vector3(1, 0, 0)
-            };
-            var indicesInSquare = new int[]
-            {
-                0, 1, 2,
-                0, 2, 3
-            };
-            meshBuilder = new MeshBuilder(() => (verticesInSquare, indicesInSquare), new LandscapeContext(), mockIndicesGenerator.Object);
-
-            var resultingMesh = meshBuilder.Build();
-
-            CollectionAssert.AreEqual(verticesInSquare, resultingMesh.vertices);
-            CollectionAssert.AreEqual(indicesInSquare, resultingMesh.GetIndices(0));
         }
     }
 }
