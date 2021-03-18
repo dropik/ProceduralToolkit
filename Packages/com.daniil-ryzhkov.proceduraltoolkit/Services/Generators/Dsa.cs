@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class Dsa
+    public class Dsa : IDsa
     {
         private readonly LandscapeContext context;
         private readonly IDsaStep diamondStep;

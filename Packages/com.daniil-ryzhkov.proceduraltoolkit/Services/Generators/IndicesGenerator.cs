@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ProceduralToolkit.Services.Generators
 {
-    public class IndicesGenerator
+    public class IndicesGenerator : IIndicesGenerator
     {
         private readonly LandscapeContext context;
 
