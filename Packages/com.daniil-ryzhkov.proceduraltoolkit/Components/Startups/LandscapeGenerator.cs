@@ -58,7 +58,7 @@ namespace ProceduralToolkit.Components.Startups
         protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
         {
             services.AddSingleton<LandscapeContext>();
-            services.AddTransient(() => GetComponent<DiamondSquare>().Settings);
+            services.AddSingleton<DsaSettings>();
             services.AddTransient<IDisplacer, Displacer>();
             services.AddSingleton<IDsa>(() =>
             {
@@ -82,6 +82,7 @@ namespace ProceduralToolkit.Components.Startups
         {
             foreach (var generator in GeneratorSettings)
             {
+                services.InjectServicesTo(generator);
                 generator.Updated += services.GetService<IMeshAssembler>().Assemble;
             }
             services.InjectServicesTo(GetComponent<MeshAssemblerComponent>());

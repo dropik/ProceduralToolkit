@@ -17,6 +17,7 @@ namespace ProceduralToolkit.Components
 
         public void Start()
         {
+            SendMessage("TryUpdateSettings", SendMessageOptions.DontRequireReceiver);
             meshAssembler?.Assemble();
         }
     }

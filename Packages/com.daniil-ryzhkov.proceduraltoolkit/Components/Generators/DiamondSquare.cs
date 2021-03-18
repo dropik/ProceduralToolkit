@@ -1,11 +1,16 @@
 using System;
 using ProceduralToolkit.Models;
+using ProceduralToolkit.Services.DI;
 using UnityEngine;
 
 namespace ProceduralToolkit.Components.Generators
 {
+    [ExecuteInEditMode]
     public class DiamondSquare : MonoBehaviour, IGeneratorSettings
     {
+        [Service]
+        private readonly DsaSettings settings;
+
         [Min(0)]
         public int seed;
 
@@ -23,15 +28,6 @@ namespace ProceduralToolkit.Components.Generators
 
         public event Action Updated;
 
-        public DsaSettings Settings => new DsaSettings
-        {
-            Seed = seed,
-            Resolution = resolution,
-            SideLength = sideLength,
-            Magnitude = magnitude,
-            Hardness = hardness
-        };
-
         public void Reset()
         {
             seed = 0;
@@ -43,7 +39,20 @@ namespace ProceduralToolkit.Components.Generators
 
         public void OnValidate()
         {
+            TryUpdateSettings();
             Updated?.Invoke();
+        }
+
+        private void TryUpdateSettings()
+        {
+            if (settings != null)
+            {
+                settings.Seed = seed;
+                settings.Resolution = resolution;
+                settings.SideLength = sideLength;
+                settings.Magnitude = magnitude;
+                settings.Hardness = hardness;
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Components.Generators;
 using ProceduralToolkit.Models;
+using ProceduralToolkit.Services.DI;
 using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Components.Generators
@@ -12,12 +13,17 @@ namespace ProceduralToolkit.EditorTests.Unit.Components.Generators
     {
         private GameObject gameObject;
         private DiamondSquare ds;
+        private DsaSettings settings;
 
         [SetUp]
         public void Setup()
         {
+            settings = new DsaSettings();
             gameObject = new GameObject();
             ds = gameObject.AddComponent<DiamondSquare>();
+            var services = ServiceContainerFactory.Create();
+            services.AddSingleton(settings);
+            services.InjectServicesTo(ds);
         }
 
         [TearDown]
@@ -46,7 +52,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Components.Generators
         }
 
         [Test]
-        public void TestDSASettingsCreated()
+        public void TestDSASettingsUpdated()
         {
             const int seed = 10;
             const int resolution = 5;
@@ -69,7 +75,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Components.Generators
                 Hardness = hardness
             };
 
-            var settings = ds.Settings;
+            ds.OnValidate();
 
             Assert.That(settings, Is.EqualTo(expectedSettings));
         }

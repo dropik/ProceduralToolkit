@@ -1,4 +1,3 @@
-using System;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Components;
@@ -15,15 +14,30 @@ namespace ProceduralToolkit.EditorTests.Unit.Components
         private MeshAssemblerComponent meshAssembler;
         private Mock<IMeshAssembler> mockAssembler;
         private IServiceContainer services;
+        private UpdateSettingsListener listener;
+
+        [ExecuteInEditMode]
+        internal class UpdateSettingsListener : MonoBehaviour
+        {
+            public bool Updated { get; set; } = false;
+
+            private void TryUpdateSettings()
+            {
+                Updated = true;
+            }
+        }
 
         [SetUp]
         public void Setup()
         {
             obj = new GameObject();
             meshAssembler = obj.AddComponent<MeshAssemblerComponent>();
+            listener = obj.AddComponent<UpdateSettingsListener>();
+
             services = ServiceContainerFactory.Create();
             mockAssembler = new Mock<IMeshAssembler>();
-            services.AddSingleton<IMeshAssembler>(mockAssembler.Object);
+            services.AddSingleton(mockAssembler.Object);
+            services.InjectServicesTo(meshAssembler);
         }
 
         [TearDown]
@@ -31,29 +45,22 @@ namespace ProceduralToolkit.EditorTests.Unit.Components
         {
             if (obj != null)
             {
-                UnityEngine.Object.DestroyImmediate(obj);
+                Object.DestroyImmediate(obj);
             }
         }
             
         [Test]
         public void TestAssemblerCalledOnStart()
         {
-            services.InjectServicesTo(meshAssembler);
             meshAssembler.Start();
             mockAssembler.Verify(m => m.Assemble(), Times.Once);
         }
 
         [Test]
-        public void TestAssemblerOnStartNotInjected()
+        public void TestUpateSettingsMessageSent()
         {
-            try
-            {
-                meshAssembler.Start();
-            }
-            catch (Exception)
-            {
-                Assert.Fail();
-            }
+            meshAssembler.Start();
+            Assert.That(listener.Updated);
         }
     }
 }

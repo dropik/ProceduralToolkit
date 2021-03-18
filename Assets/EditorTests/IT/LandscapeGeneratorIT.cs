@@ -3,6 +3,7 @@ using NUnit.Framework;
 using ProceduralToolkit.Components;
 using ProceduralToolkit.Components.Generators;
 using ProceduralToolkit.Components.Startups;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
 using UnityEditor;
@@ -20,6 +21,7 @@ namespace ProceduralToolkit.EditorTests.IT
             protected override void SetupMeshAssemblerServices(IServiceContainer services)
             {
                 services.AddSingleton(MockMeshAssembler.Object);
+                services.AddSingleton<DsaSettings>();
             }
         }
 
