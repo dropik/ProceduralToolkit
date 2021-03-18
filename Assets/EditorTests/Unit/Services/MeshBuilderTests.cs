@@ -1,6 +1,9 @@
 ﻿using NUnit.Framework;
 using UnityEngine;
 using ProceduralToolkit.Services;
+using ProceduralToolkit.Models;
+using Moq;
+using ProceduralToolkit.Services.Generators;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {
@@ -14,12 +17,15 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         };
         private readonly int[] expectedIndices = { 0, 1, 2 };
 
+        private Mock<IIndicesGenerator> mockIndicesGenerator;
+
         private MeshBuilder meshBuilder;
 
         [SetUp]
         public void SetUp()
         {
-            meshBuilder = new MeshBuilder(() => (expectedVertices, expectedIndices));
+            mockIndicesGenerator = new Mock<IIndicesGenerator>();
+            meshBuilder = new MeshBuilder(() => (expectedVertices, expectedIndices), new LandscapeContext(), mockIndicesGenerator.Object);
         }
 
         [Test]
@@ -65,7 +71,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
                 0, 1, 2,
                 0, 2, 3
             };
-            meshBuilder = new MeshBuilder(() => (verticesInSquare, indicesInSquare));
+            meshBuilder = new MeshBuilder(() => (verticesInSquare, indicesInSquare), new LandscapeContext(), mockIndicesGenerator.Object);
 
             var resultingMesh = meshBuilder.Build();
 

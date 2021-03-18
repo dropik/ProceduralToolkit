@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProceduralToolkit.Models;
+using ProceduralToolkit.Services.Generators;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,7 +11,7 @@ namespace ProceduralToolkit.Services
     {
         private readonly Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)> dataProvider;
 
-        public MeshBuilder(Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)> dataProvider)
+        public MeshBuilder(Func<(IEnumerable<Vector3> vertices, IEnumerable<int> indices)> dataProvider, LandscapeContext context, IIndicesGenerator indicesGenerator)
         {
             this.dataProvider = dataProvider;
         }

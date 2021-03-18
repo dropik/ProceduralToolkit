@@ -76,6 +76,7 @@ namespace ProceduralToolkit.Components.Startups
                                new DiamondDsaStep(context, services.GetService<IDisplacer>()),
                                new SquareDsaStep(context, services.GetService<IDisplacer>()));
             });
+            services.AddTransient<IIndicesGenerator, IndicesGenerator>();
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();
         }
