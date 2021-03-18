@@ -62,7 +62,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             var halfSide = context.SideLength / 2;
             vertices[0] = new Vector3(-halfSide, 0, halfSide);
-            vertices[context.Length] = new Vector3(halfSide, 0, halfSide);
+            vertices[context.Length - 1] = new Vector3(halfSide, 0, halfSide);
             vertices[(context.Length - 1) * context.Length] = new Vector3(-halfSide, 0, -halfSide);
             vertices[context.Length * context.Length - 1] = new Vector3(halfSide, 0, -halfSide);
         }

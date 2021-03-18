@@ -73,7 +73,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
             dsa.Execute();
 
             Assert.That(context.Vertices[0], Is.EqualTo(expectedUpLeft));
-            Assert.That(context.Vertices[length], Is.EqualTo(expectedUpRight));
+            Assert.That(context.Vertices[length - 1], Is.EqualTo(expectedUpRight));
             Assert.That(context.Vertices[(length - 1) * length], Is.EqualTo(expectedDownLeft));
             Assert.That(context.Vertices[length * length - 1], Is.EqualTo(expectedDownRight));
         }

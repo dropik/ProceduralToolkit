@@ -49,7 +49,7 @@ namespace ProceduralToolkit.EditorTests.IT
         [Test]
         public void TestViewInitialized()
         {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
+            gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
             var view = gameObject.transform.Find("view");
             Assert.That(view != null);
             var meshRenderer = view.GetComponent<MeshRenderer>();
@@ -68,18 +68,18 @@ namespace ProceduralToolkit.EditorTests.IT
         }
 
         [Test]
-        public void TestMeshUpdatedOnPlaneChange()
+        public void TestMeshUpdatedOnDsaSettingsChange()
         {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGenerator>();
+            gameObject.AddComponent<LandscapeGenerator>();
             var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
             assembler.Start();
             var view = gameObject.GetComponentInChildren<MeshGeneratorView>();
             view.Update();
             var meshFilter = gameObject.GetComponentInChildren<MeshFilter>();
             var vertices1 = meshFilter.sharedMesh.vertices;
-            var rect = gameObject.GetComponent<Rectangle>();
-            rect.length = 10;
-            rect.OnValidate();
+            var ds = gameObject.GetComponent<DiamondSquare>();
+            ds.sideLength = 500;
+            ds.OnValidate();
             view.Update();
             var vertices2 = meshFilter.sharedMesh.vertices;
             CollectionAssert.AreNotEqual(vertices1, vertices2);

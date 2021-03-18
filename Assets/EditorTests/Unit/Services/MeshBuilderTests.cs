@@ -25,12 +25,15 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         [SetUp]
         public void SetUp()
         {
-            context = new LandscapeContext();
+            context = new LandscapeContext()
+            {
+                Vertices = expectedVertices
+            };
 
             mockIndicesGenerator = new Mock<IIndicesGenerator>();
             mockIndicesGenerator.Setup(m => m.Execute()).Callback(() => context.Indices = expectedIndices);
 
-            meshBuilder = new MeshBuilder(() => expectedVertices, context, mockIndicesGenerator.Object);
+            meshBuilder = new MeshBuilder(context, mockIndicesGenerator.Object);
         }
 
         [Test]

@@ -32,7 +32,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Components.Generators
             Assert.That(ds.seed, Is.EqualTo(0));
             Assert.That(ds.resolution, Is.EqualTo(5));
             Assert.That(ds.sideLength, Is.EqualTo(1000));
-            Assert.That(ds.magnitude, Is.EqualTo(1000));
+            Assert.That(ds.magnitude, Is.EqualTo(100));
             Assert.That(ds.hardness, Is.EqualTo(0.5f));
         }
 

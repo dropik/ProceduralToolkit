@@ -6,12 +6,10 @@ using ProceduralToolkit.Services.DI;
 using ProceduralToolkit.Components.Generators;
 using System.Collections.Generic;
 using ProceduralToolkit.Models;
-using System;
-using System.Linq;
 
 namespace ProceduralToolkit.Components.Startups
 {
-    [RequireComponent(typeof(Rectangle))]
+    [RequireComponent(typeof(DiamondSquare))]
     [RequireComponent(typeof(MeshAssemblerComponent))]
     public class LandscapeGenerator : Startup
     {
@@ -59,18 +57,15 @@ namespace ProceduralToolkit.Components.Startups
 
         protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
         {
-            services.AddSingleton<Func<IEnumerable<Vector3>>>(() =>
-            {
-                var rect = new RectangleGenerator(GetComponent<Rectangle>().Settings);
-                return rect.Vertices;
-            });
             services.AddSingleton<LandscapeContext>();
-            services.AddTransient(() => new DsaSettings() /* GetComponent<DiamondSquare>().Settings */);
+            services.AddTransient(() => GetComponent<DiamondSquare>().Settings);
             services.AddTransient<IDisplacer, Displacer>();
             services.AddSingleton<IDsa>(() =>
             {
                 var context = services.GetService<LandscapeContext>();
-                // context.Iterations = GetComponent<DiamondSquare>().Settings.Resolution;
+                var settings = services.GetService<DsaSettings>();
+                context.Iterations = settings.Resolution;
+                context.SideLength = settings.SideLength;
                 return new Dsa(context,
                                new DiamondDsaStep(context, services.GetService<IDisplacer>()),
                                new SquareDsaStep(context, services.GetService<IDisplacer>()));

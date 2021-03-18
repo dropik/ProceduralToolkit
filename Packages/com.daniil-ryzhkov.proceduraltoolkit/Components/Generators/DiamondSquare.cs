@@ -37,7 +37,7 @@ namespace ProceduralToolkit.Components.Generators
             seed = 0;
             resolution = 5;
             sideLength = 1000;
-            magnitude = 1000;
+            magnitude = 100;
             hardness = 0.5f;
         }
 
