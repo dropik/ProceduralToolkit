@@ -19,6 +19,7 @@ namespace ProceduralToolkit.Services.Generators
         public void Execute()
         {
             context.Length = (int)Mathf.Pow(2, context.Iterations) + 1;
+            context.Vertices = new Vector3[context.Length * context.Length];
 
             for (int i = 1; i <= context.Iterations; i++)
             {
