@@ -14,7 +14,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [TestCase(1024, 2, 100, 3, 1.5625f)]
         public void TestDisplacement(int seed, float hardness, float magnitude, int iteration, float expectedMagnitude)
         {
-            var settings = new DSASettings
+            var settings = new DsaSettings
             {
                 Seed = seed,
                 Hardness = hardness,

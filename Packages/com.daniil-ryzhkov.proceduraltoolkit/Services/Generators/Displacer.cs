@@ -5,9 +5,9 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class Displacer : IDisplacer
     {
-        private readonly DSASettings settings;
+        private readonly DsaSettings settings;
 
-        public Displacer(DSASettings settings)
+        public Displacer(DsaSettings settings)
         {
             this.settings = settings;
             Random.InitState(settings.Seed);

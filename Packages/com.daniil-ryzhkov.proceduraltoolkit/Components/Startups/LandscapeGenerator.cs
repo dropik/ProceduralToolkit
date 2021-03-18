@@ -65,7 +65,7 @@ namespace ProceduralToolkit.Components.Startups
                 return rect.Vertices;
             });
             services.AddSingleton<LandscapeContext>();
-            services.AddTransient(() => new DSASettings() /* GetComponent<DiamondSquare>().Settings */);
+            services.AddTransient(() => new DsaSettings() /* GetComponent<DiamondSquare>().Settings */);
             services.AddTransient<IDisplacer, Displacer>();
             services.AddSingleton<IDsa>(() =>
             {
