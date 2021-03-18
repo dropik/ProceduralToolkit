@@ -11,9 +11,9 @@ namespace ProceduralToolkit.Services.Generators
         protected override IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context)
         {
             var start = context.HalfStep;
-            for (int row = 0; row < Length; row += context.HalfStep)
+            for (int row = 0; row < Context.Length; row += context.HalfStep)
             {
-                for (int column = start; column < Length; column += context.Step)
+                for (int column = start; column < Context.Length; column += context.Step)
                 {
                     yield return (row, column);
                 }
@@ -58,9 +58,9 @@ namespace ProceduralToolkit.Services.Generators
         private int ShiftForward(int index, int step)
         {
             index += step;
-            if (index > Length - 1)
+            if (index > Context.Length - 1)
             {
-                index -= Length - 1;
+                index -= Context.Length - 1;
             }
             return index;
         }
@@ -70,7 +70,7 @@ namespace ProceduralToolkit.Services.Generators
             index -= step;
             if (index < 0)
             {
-                index += Length - 1;
+                index += Context.Length - 1;
             }
             return index;
         }

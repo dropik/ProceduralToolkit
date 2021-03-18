@@ -10,9 +10,9 @@ namespace ProceduralToolkit.Services.Generators
 
         protected override IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context)
         {
-            for (int row = context.HalfStep; row < Length; row += context.Step)
+            for (int row = context.HalfStep; row < Context.Length; row += context.Step)
             {
-                for (int column = context.HalfStep; column < Length; column += context.Step)
+                for (int column = context.HalfStep; column < Context.Length; column += context.Step)
                 {
                     yield return (row, column);
                 }

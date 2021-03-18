@@ -6,23 +6,19 @@ namespace ProceduralToolkit.Services.Generators
 {
     public abstract class BaseDsaStep : IDsaStep
     {
-        private readonly Vector3 gridSize;
         private readonly IDisplacer displacer;
 
-        protected int Length { get; private set; }
         protected LandscapeContext Context { get; private set; }
 
         public BaseDsaStep(LandscapeContext context, IDisplacer displacer)
         {
             Context = context;
-            Length = context.Length;
-            gridSize = context.GridSize;
             this.displacer = displacer;
         }
 
         public void Execute(int iteration)
         {
-            var context = new DsaStepContext(Length, iteration);
+            var context = new DsaStepContext(Context.Length, iteration);
             HandleStep(context);
         }
 
@@ -45,13 +41,13 @@ namespace ProceduralToolkit.Services.Generators
         }
 
         protected int GetIndex(int row, int column)
-            => row * Length + column;
+            => row * Context.Length + column;
 
         private Vector3 GetVertexOnGrid(int row, int column)
             => Vector3.Scale(new Vector3(1, 0, 1), Context.Vertices[0] + GetShift(row, column));
 
         private Vector3 GetShift(int row, int column)
-            => Vector3.Scale(new Vector3(column, 0, row), gridSize);
+            => Vector3.Scale(new Vector3(column, 0, row), Context.GridSize);
 
         protected abstract float GetNeighboursHeightAverage(int row, int column, int step);
     }
