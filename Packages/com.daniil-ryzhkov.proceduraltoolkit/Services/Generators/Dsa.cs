@@ -1,4 +1,5 @@
 using ProceduralToolkit.Models;
+using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators
 {
@@ -17,10 +18,12 @@ namespace ProceduralToolkit.Services.Generators
 
         public void Execute()
         {
+            context.Length = (int)Mathf.Pow(2, context.Iterations) + 1;
+
             for (int i = 1; i <= context.Iterations; i++)
             {
-                diamondStep.Execute(i);
-                squareStep.Execute(i);
+                diamondStep?.Execute(i);
+                squareStep?.Execute(i);
             }
         }
     }
