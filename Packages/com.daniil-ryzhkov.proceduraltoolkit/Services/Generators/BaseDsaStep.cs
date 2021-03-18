@@ -9,12 +9,12 @@ namespace ProceduralToolkit.Services.Generators
         private readonly Vector3 gridSize;
         private readonly IDisplacer displacer;
 
-        protected Vector3[] Vertices { get; private set; }
         protected int Length { get; private set; }
+        protected LandscapeContext Context { get; private set; }
 
         public BaseDsaStep(LandscapeContext context, IDisplacer displacer)
         {
-            Vertices = context.Vertices;
+            Context = context;
             Length = context.Length;
             gridSize = context.GridSize;
             this.displacer = displacer;
@@ -30,7 +30,7 @@ namespace ProceduralToolkit.Services.Generators
         {
             foreach (var (row, column) in GetRowsAndColumnsForStep(context))
             {
-                Vertices[GetIndex(row, column)] = GetStepVertex(row, column, context);
+                Context.Vertices[GetIndex(row, column)] = GetStepVertex(row, column, context);
             }
         }
 
@@ -48,7 +48,7 @@ namespace ProceduralToolkit.Services.Generators
             => row * Length + column;
 
         private Vector3 GetVertexOnGrid(int row, int column)
-            => Vector3.Scale(new Vector3(1, 0, 1), Vertices[0] + GetShift(row, column));
+            => Vector3.Scale(new Vector3(1, 0, 1), Context.Vertices[0] + GetShift(row, column));
 
         private Vector3 GetShift(int row, int column)
             => Vector3.Scale(new Vector3(column, 0, row), gridSize);

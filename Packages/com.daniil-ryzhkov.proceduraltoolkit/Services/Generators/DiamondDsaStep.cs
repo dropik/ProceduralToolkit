@@ -30,15 +30,15 @@ namespace ProceduralToolkit.Services.Generators
         }
 
         private float GetUpLeftHeight(int row, int column, int step)
-            => Vertices[GetIndex(row - step, column - step)].y;
+            => Context.Vertices[GetIndex(row - step, column - step)].y;
 
         private float GetUpRightHeight(int row, int column, int step)
-            => Vertices[GetIndex(row - step, column + step)].y;
+            => Context.Vertices[GetIndex(row - step, column + step)].y;
 
         private float GetDownLeftHeight(int row, int column, int step)
-            => Vertices[GetIndex(row + step, column - step)].y;
+            => Context.Vertices[GetIndex(row + step, column - step)].y;
 
         private float GetDownRightHeight(int row, int column, int step)
-            => Vertices[GetIndex(row + step, column + step)].y;
+            => Context.Vertices[GetIndex(row + step, column + step)].y;
     }
 }
