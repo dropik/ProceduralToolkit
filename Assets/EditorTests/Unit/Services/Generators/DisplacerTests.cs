@@ -23,9 +23,9 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
 
             Random.InitState(seed);
             var expectedDisplacement = Random.Range(-expectedMagnitude, expectedMagnitude);
-            Random.InitState(Random.Range(0, 100));
-
+            Random.InitState(seed);
             var displacer = new Displacer(settings);
+
             Assert.That(displacer.GetDisplacement(iteration), Is.EqualTo(expectedDisplacement));
         }
     }

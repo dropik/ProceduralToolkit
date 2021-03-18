@@ -10,7 +10,6 @@ namespace ProceduralToolkit.Services.Generators
         public Displacer(DsaSettings settings)
         {
             this.settings = settings;
-            Random.InitState(settings.Seed);
         }
 
         public float GetDisplacement(int iteration)

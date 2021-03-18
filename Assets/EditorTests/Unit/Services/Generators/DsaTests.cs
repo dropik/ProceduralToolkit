@@ -9,17 +9,22 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
     [Category("Unit")]
     public class DsaTests
     {
+        private DsaSettings settings;
         private LandscapeContext context;
         private Mock<IDsaStep> mockDiamondStep;
         private Mock<IDsaStep> mockSquareStep;
         private Dsa dsa;
 
-        private void SetupContext(int iterations)
+        private void Setup(int iterations)
         {
-            context = new LandscapeContext { Iterations = iterations };
+            settings = new DsaSettings
+            {
+                Resolution = iterations
+            };
+            context = new LandscapeContext();
             mockDiamondStep = new Mock<IDsaStep>();
             mockSquareStep = new Mock<IDsaStep>();
-            dsa = new Dsa(context, mockDiamondStep.Object, mockSquareStep.Object);
+            dsa = new Dsa(settings, context, mockDiamondStep.Object, mockSquareStep.Object);
         }
 
         [Test]
@@ -27,7 +32,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [TestCase(3)]
         public void TestStepsExecuted(int iterations)
         {
-            SetupContext(iterations);
+            Setup(iterations);
 
             dsa.Execute();
 
@@ -43,7 +48,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [TestCase(2, 5)]
         public void TestLengthCalculated(int iterations, int expectedLength)
         {
-            SetupContext(iterations);
+            Setup(iterations);
             dsa.Execute();
             Assert.That(context.Length, Is.EqualTo(expectedLength));
         }
@@ -53,7 +58,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [TestCase(2, 25)]
         public void TestVerticesBufferAllocated(int iterations, int expectedLength)
         {
-            SetupContext(iterations);
+            Setup(iterations);
             dsa.Execute();
             Assert.That(context.Vertices.Length, Is.EqualTo(expectedLength));
         }
@@ -63,8 +68,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         {
             const int iterations = 2;
             const int length = 5;
-            SetupContext(iterations);
-            context.SideLength = 100;
+            Setup(iterations);
+            settings.SideLength = 100;
             var expectedUpLeft = new Vector3(-50, 0, 50);
             var expectedUpRight = new Vector3(50, 0, 50);
             var expectedDownLeft = new Vector3(-50, 0, -50);
@@ -81,8 +86,8 @@ namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
         [Test]
         public void TestGridSizeCalculated()
         {
-            SetupContext(2);
-            context.SideLength = 100;
+            Setup(2);
+            settings.SideLength = 100;
             var expectedGridSize = new Vector3(25, 0, -25);
 
             dsa.Execute();

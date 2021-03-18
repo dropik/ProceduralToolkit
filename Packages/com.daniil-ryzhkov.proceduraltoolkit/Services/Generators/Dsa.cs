@@ -5,12 +5,14 @@ namespace ProceduralToolkit.Services.Generators
 {
     public class Dsa : IDsa
     {
+        private readonly DsaSettings settings;
         private readonly LandscapeContext context;
         private readonly IDsaStep diamondStep;
         private readonly IDsaStep squareStep;
 
-        public Dsa(LandscapeContext context, IDsaStep diamondStep, IDsaStep squareStep)
+        public Dsa(DsaSettings settings, LandscapeContext context, IDsaStep diamondStep, IDsaStep squareStep)
         {
+            this.settings = settings;
             this.context = context;
             this.diamondStep = diamondStep;
             this.squareStep = squareStep;
@@ -24,6 +26,8 @@ namespace ProceduralToolkit.Services.Generators
 
         private void SetupInitialValues()
         {
+            Random.InitState(settings.Seed);
+            CopySettingsToContext();
             CalculateLength();
             context.Vertices = CreateVerticesBuffer();
             CalculateGridSize();
@@ -36,6 +40,12 @@ namespace ProceduralToolkit.Services.Generators
                 diamondStep.Execute(i);
                 squareStep.Execute(i);
             }
+        }
+
+        private void CopySettingsToContext()
+        {
+            context.Iterations = settings.Resolution;
+            context.SideLength = settings.SideLength;
         }
 
         private void CalculateLength()

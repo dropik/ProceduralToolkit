@@ -63,10 +63,8 @@ namespace ProceduralToolkit.Components.Startups
             services.AddSingleton<IDsa>(() =>
             {
                 var context = services.GetService<LandscapeContext>();
-                var settings = services.GetService<DsaSettings>();
-                context.Iterations = settings.Resolution;
-                context.SideLength = settings.SideLength;
-                return new Dsa(context,
+                return new Dsa(services.GetService<DsaSettings>(),
+                               context,
                                new DiamondDsaStep(context, services.GetService<IDisplacer>()),
                                new SquareDsaStep(context, services.GetService<IDisplacer>()));
             });
