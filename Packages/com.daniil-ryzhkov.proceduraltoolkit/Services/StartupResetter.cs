@@ -1,6 +1,6 @@
+using ProceduralToolkit.Components.Generators;
 using System;
 using System.Collections.Generic;
-using ProceduralToolkit.Components.Generators;
 using UnityEngine;
 
 namespace ProceduralToolkit.Services
@@ -14,11 +14,11 @@ namespace ProceduralToolkit.Services
         {
             this.gameObject = gameObject;
             children = new List<GameObject>();
-            Generators = new IGeneratorComponent[0];
+            GeneratorSettings = new IGeneratorSettings[0];
         }
 
         public string DefaultName { get; set; }
-        public IEnumerable<IGeneratorComponent> Generators { get; set; }
+        public IEnumerable<IGeneratorSettings> GeneratorSettings { get; set; }
         public event Func<GameObject> InitChild;
 
         public void Reset()
@@ -35,7 +35,7 @@ namespace ProceduralToolkit.Services
 
         private void ResetGenerators()
         {
-            foreach (var generator in Generators)
+            foreach (var generator in GeneratorSettings)
             {
                 generator.Reset();
             }

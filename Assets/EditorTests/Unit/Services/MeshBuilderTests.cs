@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
-using Moq;
-using UnityEngine;
-using ProceduralToolkit.Services;
+﻿using Moq;
+using NUnit.Framework;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
+using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services
+namespace ProceduralToolkit.Services
 {
     [Category("Unit")]
     public class MeshBuilderTests
@@ -14,41 +14,52 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
             new Vector3(0, 1, 0),
             new Vector3(0, 0, 1)
         };
-        private readonly int[] expectedTriangles = { 0, 1, 2 };
+        private readonly int[] expectedIndices = { 0, 1, 2 };
 
-        private Mock<IGenerator> mockGenerator;
+        private LandscapeContext context;
+        private Mock<IIndicesGenerator> mockIndicesGenerator;
+
         private MeshBuilder meshBuilder;
-        private Mesh resultingMesh;
 
         [SetUp]
         public void SetUp()
         {
-            mockGenerator = new Mock<IGenerator>();
-            mockGenerator.SetupGet(m => m.Vertices)
-                         .Returns(expectedVertices);
-            mockGenerator.SetupGet(m => m.Triangles)
-                         .Returns(expectedTriangles);
-            meshBuilder = new MeshBuilder(mockGenerator.Object);
+            context = new LandscapeContext()
+            {
+                Vertices = expectedVertices
+            };
+
+            mockIndicesGenerator = new Mock<IIndicesGenerator>();
+            mockIndicesGenerator.Setup(m => m.Execute()).Callback(() => context.Indices = expectedIndices);
+
+            meshBuilder = new MeshBuilder(context, mockIndicesGenerator.Object);
         }
 
         [Test]
         public void TestAddedVertices()
         {
-            resultingMesh = meshBuilder.Build();
+            var resultingMesh = meshBuilder.Build();
             CollectionAssert.AreEqual(expectedVertices, resultingMesh.vertices);
         }
 
         [Test]
-        public void TestAddedTriangles()
+        public void TestAddedIndices()
         {
-            resultingMesh = meshBuilder.Build();
-            CollectionAssert.AreEqual(expectedTriangles, resultingMesh.triangles);
+            var resultingMesh = meshBuilder.Build();
+            CollectionAssert.AreEqual(expectedIndices, resultingMesh.GetIndices(0));
+        }
+
+        [Test]
+        public void TestTopologyIsTriangles()
+        {
+            var resultingMesh = meshBuilder.Build();
+            Assert.That(resultingMesh.GetTopology(0), Is.EqualTo(MeshTopology.Triangles));
         }
 
         [Test]
         public void TestRecalculatedNormals()
         {
-            resultingMesh = meshBuilder.Build();
+            var resultingMesh = meshBuilder.Build();
             Assert.That(resultingMesh.normals.Length, Is.Not.Zero);
         }
     }

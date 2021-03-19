@@ -1,8 +1,7 @@
 using Moq;
 using NUnit.Framework;
-using ProceduralToolkit.Services.DI;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services.DI
+namespace ProceduralToolkit.Services.DI
 {
     [Category("Unit")]
     public class FuncServiceFactoryTests

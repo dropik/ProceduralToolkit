@@ -1,12 +1,11 @@
-using System;
-using System.Collections;
 using Moq;
 using NUnit.Framework;
-using ProceduralToolkit.Services.DI;
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services.DI
+namespace ProceduralToolkit.Services.DI
 {
     [Category("Unit")]
     public class ServiceInjectorTests

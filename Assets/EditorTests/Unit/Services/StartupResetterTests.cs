@@ -1,11 +1,10 @@
-using System;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Components.Generators;
-using ProceduralToolkit.Services;
+using System;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services
+namespace ProceduralToolkit.Services
 {
     [Category("Unit")]
     public class StartupResetterTests
@@ -39,12 +38,12 @@ namespace ProceduralToolkit.EditorTests.Unit.Services
         [Test]
         public void TesetGeneratorsReset()
         {
-            var mockGenerator1 = new Mock<IGeneratorComponent>();
-            var mockGenerator2 = new Mock<IGeneratorComponent>();
-            var generators = new IGeneratorComponent[] { mockGenerator1.Object, mockGenerator2.Object };
+            var mockGenerator1 = new Mock<IGeneratorSettings>();
+            var mockGenerator2 = new Mock<IGeneratorSettings>();
+            var generators = new IGeneratorSettings[] { mockGenerator1.Object, mockGenerator2.Object };
             var resetter = new StartupResetter(gameObject)
             {
-                Generators = generators
+                GeneratorSettings = generators
             };
             resetter.Reset();
             mockGenerator1.Verify(m => m.Reset(), Times.Once);

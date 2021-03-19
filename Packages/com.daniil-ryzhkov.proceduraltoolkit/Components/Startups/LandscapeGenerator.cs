@@ -1,18 +1,17 @@
-﻿using UnityEditor;
-using UnityEngine;
-using ProceduralToolkit.Services;
-using ProceduralToolkit.Services.Generators;
-using ProceduralToolkit.Services.DI;
-using ProceduralToolkit.Components.Generators;
-using System.Collections.Generic;
+﻿using ProceduralToolkit.Components.Generators;
 using ProceduralToolkit.Models;
-using System;
-using System.Linq;
+using ProceduralToolkit.Services;
+using ProceduralToolkit.Services.DI;
+using ProceduralToolkit.Services.Generators;
+using ProceduralToolkit.Services.Generators.DiamondSquare;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 namespace ProceduralToolkit.Components.Startups
 {
-    [RequireComponent(typeof(Generators.Plane))]
-    [RequireComponent(typeof(MeshAssemblerComponent))]
+    [RequireComponent(typeof(DiamondSquare))]
+    [RequireComponent(typeof(GeneratorStarterComponent))]
     public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
@@ -22,19 +21,19 @@ namespace ProceduralToolkit.Components.Startups
         private GameObject view;
 
         private IGeneratorView MeshGeneratorView => view.GetComponent<IGeneratorView>();
-        private IEnumerable<IGeneratorComponent> Generators => GetComponents<IGeneratorComponent>();
+        private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
 
         public void Reset()
         {
             var resetter = new StartupResetter(gameObject)
             {
                 DefaultName = "LandscapeGenerator",
-                Generators = Generators
+                GeneratorSettings = GeneratorSettings
             };
             resetter.InitChild += InitView;
             resetter.Reset();
         }
-        
+
         private GameObject InitView()
         {
             view = new GameObject() { name = "view" };
@@ -53,22 +52,28 @@ namespace ProceduralToolkit.Components.Startups
         private void ConfigureServices()
         {
             services = ServiceContainerFactory.Create();
-            SetupGeneratorServices(services);
             SetupMeshAssemblerServices(services);
             SetupViewServices(services);
         }
 
-        protected virtual void SetupGeneratorServices(IServiceContainer services)
-        {
-            services.AddSingleton<Func<PlaneGeneratorSettings, IGenerator>>(settings => new PlaneGenerator(settings));
-        }
-
         protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
         {
-            services.AddSingleton(Generator);
+            services.AddSingleton<LandscapeContext>();
+            services.AddSingleton<DsaSettings>();
+            services.AddTransient<IDisplacer, Displacer>();
+            services.AddSingleton<IDsa>(() =>
+            {
+                var context = services.GetService<LandscapeContext>();
+                var settings = services.GetService<DsaSettings>();
+                return new DsaPregenerationSetup(new Dsa(context,
+                                                         new DiamondDsaStep(context, services.GetService<IDisplacer>()),
+                                                         new SquareDsaStep(context, services.GetService<IDisplacer>())),
+                                                 settings,
+                                                 context);
+            });
+            services.AddTransient<IIndicesGenerator, IndicesGenerator>();
             services.AddSingleton<MeshBuilder>();
             services.AddSingleton<MeshAssembler>();
-            services.GetService<IMeshAssembler>().Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
         }
 
         protected virtual void SetupViewServices(IServiceContainer services)
@@ -76,17 +81,16 @@ namespace ProceduralToolkit.Components.Startups
             services.AddSingleton(() => view.GetComponent<MeshFilter>());
         }
 
-        private IGenerator Generator => Generators.First();
-
         private void InjectServices()
         {
-            foreach (var generator in Generators)
+            foreach (var generator in GeneratorSettings)
             {
                 services.InjectServicesTo(generator);
-                generator.GeneratorUpdated += services.GetService<IMeshAssembler>().Assemble;
+                generator.Updated += services.GetService<IMeshAssembler>().Assemble;
             }
-            services.InjectServicesTo(GetComponent<MeshAssemblerComponent>());
+            services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(MeshGeneratorView);
+            services.GetService<IMeshAssembler>().Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
         }
 
         public override void RegisterUndo()

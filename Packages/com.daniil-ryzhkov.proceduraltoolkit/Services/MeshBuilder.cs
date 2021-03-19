@@ -1,38 +1,33 @@
-﻿using UnityEngine;
-using System.Linq;
+﻿using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.Generators;
+using UnityEngine;
 
 namespace ProceduralToolkit.Services
 {
     public class MeshBuilder : IMeshBuilder
     {
-        private readonly IGenerator generator;
-        private Mesh resultingMesh;
+        private readonly LandscapeContext context;
+        private readonly IIndicesGenerator indicesGenerator;
 
-        public MeshBuilder(IGenerator generator)
+        public MeshBuilder(LandscapeContext context, IIndicesGenerator indicesGenerator)
         {
-            this.generator = generator;
+            this.context = context;
+            this.indicesGenerator = indicesGenerator;
         }
 
         public Mesh Build()
         {
-            resultingMesh = new Mesh();
-            AddVertices();
-            AddTriangles();
-            resultingMesh.RecalculateNormals();
-            return resultingMesh;
+            var mesh = new Mesh();
+            BuildMesh(mesh);
+            return mesh;
         }
 
-        private void AddVertices()
+        private void BuildMesh(Mesh mesh)
         {
-            var vertices = generator.Vertices.ToList();
-            resultingMesh.vertices = vertices.ToArray();
-        }
-
-        private void AddTriangles()
-        {
-            var triangles = generator.Triangles.ToList();
-            resultingMesh.triangles = triangles.ToArray();
+            mesh.SetVertices(context.Vertices);
+            indicesGenerator.Execute();
+            mesh.SetIndices(context.Indices, MeshTopology.Triangles, 0);
+            mesh.RecalculateNormals();
         }
     }
 }

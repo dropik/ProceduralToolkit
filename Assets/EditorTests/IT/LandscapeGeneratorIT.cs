@@ -1,13 +1,15 @@
 ﻿using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Components;
+using ProceduralToolkit.Components.Generators;
 using ProceduralToolkit.Components.Startups;
+using ProceduralToolkit.Models;
 using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
 using UnityEditor;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.IT
+namespace ProceduralToolkit.IntegrationTests
 {
     [Category("IT")]
     public class LandscapeGeneratorIT
@@ -19,6 +21,7 @@ namespace ProceduralToolkit.EditorTests.IT
             protected override void SetupMeshAssemblerServices(IServiceContainer services)
             {
                 services.AddSingleton(MockMeshAssembler.Object);
+                services.AddSingleton<DsaSettings>();
             }
         }
 
@@ -48,7 +51,7 @@ namespace ProceduralToolkit.EditorTests.IT
         [Test]
         public void TestViewInitialized()
         {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
+            gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
             var view = gameObject.transform.Find("view");
             Assert.That(view != null);
             var meshRenderer = view.GetComponent<MeshRenderer>();
@@ -61,31 +64,27 @@ namespace ProceduralToolkit.EditorTests.IT
         public void TestMockAssemblerCalled()
         {
             var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
-            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
+            var assembler = gameObject.GetComponent<GeneratorStarterComponent>();
             assembler.Start();
             landscapeGenerator.MockMeshAssembler.Verify(m => m.Assemble(), Times.Once);
         }
 
         [Test]
-        public void TestMockAssemblerCalledOnPlaneChange()
+        public void TestMeshUpdatedOnDsaSettingsChange()
         {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
-            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
-            var plane = gameObject.GetComponent<ProceduralToolkit.Components.Generators.Plane>();
-            plane.OnValidate();
-            landscapeGenerator.MockMeshAssembler.Verify(m => m.Assemble(), Times.Once);
-        }
-
-        [Test]
-        public void TestMeshAssigned()
-        {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGenerator>();
-            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
+            gameObject.AddComponent<LandscapeGenerator>();
+            var assembler = gameObject.GetComponent<GeneratorStarterComponent>();
             assembler.Start();
             var view = gameObject.GetComponentInChildren<MeshGeneratorView>();
             view.Update();
             var meshFilter = gameObject.GetComponentInChildren<MeshFilter>();
-            Assert.That(meshFilter.sharedMesh != null);
+            var vertices1 = meshFilter.sharedMesh.vertices;
+            var ds = gameObject.GetComponent<DiamondSquare>();
+            ds.sideLength = 500;
+            ds.OnValidate();
+            view.Update();
+            var vertices2 = meshFilter.sharedMesh.vertices;
+            CollectionAssert.AreNotEqual(vertices1, vertices2);
         }
     }
 }

@@ -1,11 +1,11 @@
-using System.Collections;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Services.DI;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace ProceduralToolkit.EditorTests.IT
+namespace ProceduralToolkit.IntegrationTests
 {
     [Category("IT")]
     public class ServiceContainerIT

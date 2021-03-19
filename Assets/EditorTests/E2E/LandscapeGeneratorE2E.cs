@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using NUnit.Framework;
-using ProceduralToolkit.Components.Startups;
+﻿using NUnit.Framework;
+using System.Collections;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using static ProceduralToolkit.EditorTests.Utils.Skips;
+using static ProceduralToolkit.Utils.Skips;
 
-namespace ProceduralToolkit.EditorTests.E2E
+namespace ProceduralToolkit.E2E
 {
     [Category("E2E")]
     public class LandscapeGeneratorE2E
@@ -15,7 +14,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         private Scene testScene;
 
         private const string TEST_SCENE = "Assets/EditorTests/E2E/Scenes/LandscapeGeneratorE2E.unity";
-        private const float TEST_LENGTH = 2f;
 
         private GameObject Root => GameObject.Find("LandscapeGenerator");
         private GameObject View => Root.transform.Find("view").gameObject;
@@ -65,7 +63,7 @@ namespace ProceduralToolkit.EditorTests.E2E
         private void AssertGeneration()
         {
             AssertViewCreated();
-            AssertMeshCreatedCorrectly();
+            AssertMeshCreated();
             AssertMaterialAssigned();
         }
 
@@ -74,11 +72,11 @@ namespace ProceduralToolkit.EditorTests.E2E
             Assert.That(View, Is.Not.Null);
         }
 
-        private void AssertMeshCreatedCorrectly()
+        private void AssertMeshCreated()
         {
             var generatedMesh = View.GetComponent<MeshFilter>().sharedMesh;
             Assert.That(generatedMesh, Is.Not.Null);
-            Assert.That(generatedMesh.vertexCount, Is.EqualTo(6));
+            Assert.That(generatedMesh.vertexCount, Is.GreaterThan(0));
         }
 
         private void AssertMaterialAssigned()
