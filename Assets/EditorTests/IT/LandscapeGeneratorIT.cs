@@ -52,12 +52,10 @@ namespace ProceduralToolkit.IntegrationTests
         public void TestViewInitialized()
         {
             gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
-            var view = gameObject.transform.Find("view");
-            Assert.That(view != null);
-            var meshRenderer = view.GetComponent<MeshRenderer>();
-            Assert.That(meshRenderer != null);
-            Assert.That(meshRenderer.sharedMaterial != null);
-            Assert.That(view.GetComponent<MeshGeneratorView>() != null);
+            var terrain = gameObject.GetComponent<Terrain>();
+            var terrainData = terrain.terrainData;
+            Assert.That(terrainData.heightmapResolution, Is.EqualTo(33));
+            Assert.That(terrain.materialTemplate, Is.Not.Null);
         }
 
         [Test]
@@ -75,16 +73,17 @@ namespace ProceduralToolkit.IntegrationTests
             gameObject.AddComponent<LandscapeGenerator>();
             var assembler = gameObject.GetComponent<GeneratorStarterComponent>();
             assembler.Start();
-            var view = gameObject.GetComponentInChildren<MeshGeneratorView>();
+            var view = gameObject.GetComponent<TerrainGeneratorView>();
             view.Update();
-            var meshFilter = gameObject.GetComponentInChildren<MeshFilter>();
-            var vertices1 = meshFilter.sharedMesh.vertices;
+            var terrain = gameObject.GetComponent<Terrain>();
+            var terrainData = terrain.terrainData;
+            var heights1 = terrainData.GetHeights(0, 0, 33, 33);
             var ds = gameObject.GetComponent<DiamondSquare>();
-            ds.sideLength = 500;
+            ds.seed = 10;
             ds.OnValidate();
             view.Update();
-            var vertices2 = meshFilter.sharedMesh.vertices;
-            CollectionAssert.AreNotEqual(vertices1, vertices2);
+            var heights2 = terrainData.GetHeights(0, 0, 33, 33);
+            CollectionAssert.AreNotEqual(heights1, heights2);
         }
     }
 }

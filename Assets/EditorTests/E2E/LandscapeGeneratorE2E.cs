@@ -16,7 +16,7 @@ namespace ProceduralToolkit.E2E
         private const string TEST_SCENE = "Assets/EditorTests/E2E/Scenes/LandscapeGeneratorE2E.unity";
 
         private GameObject Root => GameObject.Find("LandscapeGenerator");
-        private GameObject View => Root.transform.Find("view").gameObject;
+        private TerrainData TerrainData => Root.GetComponent<Terrain>().terrainData;
 
         [UnitySetUp]
         public IEnumerator SetUp()
@@ -69,19 +69,19 @@ namespace ProceduralToolkit.E2E
 
         private void AssertViewCreated()
         {
-            Assert.That(View, Is.Not.Null);
+            Assert.That(TerrainData, Is.Not.Null);
         }
 
         private void AssertMeshCreated()
         {
-            var generatedMesh = View.GetComponent<MeshFilter>().sharedMesh;
-            Assert.That(generatedMesh, Is.Not.Null);
-            Assert.That(generatedMesh.vertexCount, Is.GreaterThan(0));
+            var resolution = TerrainData.heightmapResolution;
+            var heights = TerrainData.GetHeights(0, 0, resolution, resolution);
+            CollectionAssert.DoesNotContain(heights, 0);
         }
 
         private void AssertMaterialAssigned()
         {
-            var material = View.GetComponent<MeshRenderer>().sharedMaterial;
+            var material = Root.GetComponent<Terrain>().materialTemplate;
             Assert.That(material, Is.Not.Null);
         }
     }

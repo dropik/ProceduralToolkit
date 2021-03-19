@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Components
 {
+    [ExecuteInEditMode]
     public class TerrainGeneratorView : MonoBehaviour, IGeneratorView
     {
         [Service]
@@ -12,6 +13,11 @@ namespace ProceduralToolkit.Components
         private readonly DsaSettings settings;
 
         public Mesh NewMesh { get; set; }
+
+        public void Awake()
+        {
+            hideFlags = HideFlags.HideInInspector;
+        }
 
         public void Update()
         {

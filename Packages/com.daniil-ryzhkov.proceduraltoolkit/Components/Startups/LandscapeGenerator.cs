@@ -12,15 +12,14 @@ namespace ProceduralToolkit.Components.Startups
 {
     [RequireComponent(typeof(DiamondSquare))]
     [RequireComponent(typeof(GeneratorStarterComponent))]
+    [RequireComponent(typeof(Terrain))]
+    [RequireComponent(typeof(TerrainCollider))]
+    [RequireComponent(typeof(TerrainGeneratorView))]
     public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
 
-        [SerializeReference]
-        [HideInInspector]
-        private GameObject view;
-
-        private IGeneratorView MeshGeneratorView => view.GetComponent<IGeneratorView>();
+        private IGeneratorView View => GetComponent<IGeneratorView>();
         private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
 
         public void Reset()
@@ -36,11 +35,19 @@ namespace ProceduralToolkit.Components.Startups
 
         private GameObject InitView()
         {
-            view = new GameObject() { name = "view" };
-            view.transform.parent = transform;
-            view.AddComponent<MeshRenderer>().sharedMaterial = new Material(Shader.Find("Standard"));
-            view.AddComponent<MeshGeneratorView>();
-            return view;
+            var terrainData = new TerrainData
+            {
+                heightmapResolution = 33,
+                size = new Vector3(1000, 1000, 1000)
+            };
+
+            var terrain = GetComponent<Terrain>();
+            terrain.terrainData = terrainData;
+            terrain.materialTemplate = new Material(Shader.Find("Nature/Terrain/Standard"));
+
+            GetComponent<TerrainCollider>().terrainData = terrainData;
+
+            return default;
         }
 
         public void OnValidate()
@@ -78,7 +85,7 @@ namespace ProceduralToolkit.Components.Startups
 
         protected virtual void SetupViewServices(IServiceContainer services)
         {
-            services.AddSingleton(() => view.GetComponent<MeshFilter>());
+            services.AddSingleton(() => GetComponent<Terrain>());
         }
 
         private void InjectServices()
@@ -89,8 +96,8 @@ namespace ProceduralToolkit.Components.Startups
                 generator.Updated += services.GetService<IMeshAssembler>().Assemble;
             }
             services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
-            services.InjectServicesTo(MeshGeneratorView);
-            services.GetService<IMeshAssembler>().Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
+            services.InjectServicesTo(View);
+            services.GetService<IMeshAssembler>().Generated += (mesh) => View.NewMesh = mesh;
         }
 
         public override void RegisterUndo()

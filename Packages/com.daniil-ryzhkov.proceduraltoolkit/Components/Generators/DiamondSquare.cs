@@ -34,7 +34,7 @@ namespace ProceduralToolkit.Components.Generators
             resolution = 5;
             sideLength = 1000;
             magnitude = 100;
-            hardness = 0.5f;
+            hardness = 1;
         }
 
         public void OnValidate()
