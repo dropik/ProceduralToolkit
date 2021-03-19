@@ -63,10 +63,12 @@ namespace ProceduralToolkit.Components.Startups
             services.AddSingleton<IDsa>(() =>
             {
                 var context = services.GetService<LandscapeContext>();
-                return new Dsa(services.GetService<DsaSettings>(),
-                               context,
-                               new DiamondDsaStep(context, services.GetService<IDisplacer>()),
-                               new SquareDsaStep(context, services.GetService<IDisplacer>()));
+                var settings = services.GetService<DsaSettings>();
+                return new DsaPregenerationSetup(new Dsa(context,
+                                                         new DiamondDsaStep(context, services.GetService<IDisplacer>()),
+                                                         new SquareDsaStep(context, services.GetService<IDisplacer>())),
+                                                 settings,
+                                                 context);
             });
             services.AddTransient<IIndicesGenerator, IndicesGenerator>();
             services.AddSingleton<MeshBuilder>();
