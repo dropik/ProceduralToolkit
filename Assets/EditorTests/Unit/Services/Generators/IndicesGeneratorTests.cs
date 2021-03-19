@@ -1,8 +1,7 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.Models;
-using ProceduralToolkit.Services.Generators;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
+namespace ProceduralToolkit.Services.Generators
 {
     [Category("Unit")]
     class IndicesGeneratorTests

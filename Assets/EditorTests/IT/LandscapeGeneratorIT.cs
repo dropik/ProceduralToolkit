@@ -9,7 +9,7 @@ using ProceduralToolkit.Services.DI;
 using UnityEditor;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.IT
+namespace ProceduralToolkit.IntegrationTests
 {
     [Category("IT")]
     public class LandscapeGeneratorIT

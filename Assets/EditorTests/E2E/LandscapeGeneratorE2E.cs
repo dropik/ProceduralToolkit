@@ -4,9 +4,9 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using static ProceduralToolkit.EditorTests.Utils.Skips;
+using static ProceduralToolkit.Utils.Skips;
 
-namespace ProceduralToolkit.EditorTests.E2E
+namespace ProceduralToolkit.E2E
 {
     [Category("E2E")]
     public class LandscapeGeneratorE2E

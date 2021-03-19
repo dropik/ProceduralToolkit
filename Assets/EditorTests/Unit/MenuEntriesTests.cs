@@ -2,7 +2,7 @@
 using ProceduralToolkit.Components.Startups;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit
+namespace ProceduralToolkit
 {
     [Category("Unit")]
     public class MenuEntriesTests

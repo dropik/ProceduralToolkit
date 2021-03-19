@@ -1,11 +1,10 @@
 ﻿using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Models;
-using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.Generators;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services
+namespace ProceduralToolkit.Services
 {
     [Category("Unit")]
     public class MeshBuilderTests

@@ -1,10 +1,9 @@
 ﻿using Moq;
 using NUnit.Framework;
-using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.Generators.DiamondSquare;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services
+namespace ProceduralToolkit.Services
 {
     [Category("Unit")]
     public class MeshAssemblerTests

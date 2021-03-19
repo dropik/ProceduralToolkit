@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace ProceduralToolkit.EditorTests.Utils
+namespace ProceduralToolkit.Utils
 {
     public static class Skips
     {

@@ -1,9 +1,8 @@
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Models;
-using ProceduralToolkit.Services.Generators.DiamondSquare;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.DiamondSquare
+namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
     public class DsaTests

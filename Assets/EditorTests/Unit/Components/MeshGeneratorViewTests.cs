@@ -1,9 +1,8 @@
 ﻿using NUnit.Framework;
-using ProceduralToolkit.Components;
 using ProceduralToolkit.Services.DI;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Components
+namespace ProceduralToolkit.Components
 {
     [Category("Unit")]
     public class MeshGeneratorViewTests
