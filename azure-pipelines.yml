@@ -1,4 +1,9 @@
 trigger:
+  branches:
+    exclude:
+      - '*'
+
+pr:
   - development
 
 pool: default
