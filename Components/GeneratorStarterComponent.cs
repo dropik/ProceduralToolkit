@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ProceduralToolkit.Components
 {
     [ExecuteInEditMode]
-    public class MeshAssemblerComponent : MonoBehaviour
+    public class GeneratorStarterComponent : MonoBehaviour
     {
         [Service]
         private readonly IMeshAssembler meshAssembler;
@@ -17,7 +17,8 @@ namespace ProceduralToolkit.Components
 
         public void Start()
         {
-            meshAssembler.Assemble();
+            SendMessage("TryUpdateSettings", SendMessageOptions.DontRequireReceiver);
+            meshAssembler?.Assemble();
         }
     }
 }
