@@ -10,7 +10,7 @@ using ProceduralToolkit.Models;
 namespace ProceduralToolkit.Components.Startups
 {
     [RequireComponent(typeof(DiamondSquare))]
-    [RequireComponent(typeof(MeshAssemblerComponent))]
+    [RequireComponent(typeof(GeneratorStarterComponent))]
     public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
@@ -87,7 +87,7 @@ namespace ProceduralToolkit.Components.Startups
                 services.InjectServicesTo(generator);
                 generator.Updated += services.GetService<IMeshAssembler>().Assemble;
             }
-            services.InjectServicesTo(GetComponent<MeshAssemblerComponent>());
+            services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(MeshGeneratorView);
             services.GetService<IMeshAssembler>().Generated += (mesh) => MeshGeneratorView.NewMesh = mesh;
         }

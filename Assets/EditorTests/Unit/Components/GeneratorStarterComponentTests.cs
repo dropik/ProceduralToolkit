@@ -8,10 +8,10 @@ using UnityEngine;
 namespace ProceduralToolkit.EditorTests.Unit.Components
 {
     [Category("Unit")]
-    public class MeshAssemblerComponentTests
+    public class GeneratorStarterComponentTests
     {
         private GameObject obj;
-        private MeshAssemblerComponent meshAssembler;
+        private GeneratorStarterComponent meshAssembler;
         private Mock<IMeshAssembler> mockAssembler;
         private IServiceContainer services;
         private UpdateSettingsListener listener;
@@ -31,7 +31,7 @@ namespace ProceduralToolkit.EditorTests.Unit.Components
         public void Setup()
         {
             obj = new GameObject();
-            meshAssembler = obj.AddComponent<MeshAssemblerComponent>();
+            meshAssembler = obj.AddComponent<GeneratorStarterComponent>();
             listener = obj.AddComponent<UpdateSettingsListener>();
 
             services = ServiceContainerFactory.Create();

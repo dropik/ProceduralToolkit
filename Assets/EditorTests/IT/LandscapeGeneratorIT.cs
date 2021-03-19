@@ -64,7 +64,7 @@ namespace ProceduralToolkit.EditorTests.IT
         public void TestMockAssemblerCalled()
         {
             var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
-            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
+            var assembler = gameObject.GetComponent<GeneratorStarterComponent>();
             assembler.Start();
             landscapeGenerator.MockMeshAssembler.Verify(m => m.Assemble(), Times.Once);
         }
@@ -73,7 +73,7 @@ namespace ProceduralToolkit.EditorTests.IT
         public void TestMeshUpdatedOnDsaSettingsChange()
         {
             gameObject.AddComponent<LandscapeGenerator>();
-            var assembler = gameObject.GetComponent<MeshAssemblerComponent>();
+            var assembler = gameObject.GetComponent<GeneratorStarterComponent>();
             assembler.Start();
             var view = gameObject.GetComponentInChildren<MeshGeneratorView>();
             view.Update();
