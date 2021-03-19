@@ -1,7 +1,7 @@
-﻿using ProceduralToolkit.Components;
-using NUnit.Framework;
-using UnityEngine;
+﻿using NUnit.Framework;
+using ProceduralToolkit.Components;
 using ProceduralToolkit.Services.DI;
+using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Components
 {

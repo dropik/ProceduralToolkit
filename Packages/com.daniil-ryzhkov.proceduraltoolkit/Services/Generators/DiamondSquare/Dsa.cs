@@ -1,6 +1,6 @@
 using ProceduralToolkit.Models;
 
-namespace ProceduralToolkit.Services.Generators
+namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     public class Dsa : IDsa
     {

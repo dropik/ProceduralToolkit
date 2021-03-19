@@ -1,4 +1,4 @@
-﻿namespace ProceduralToolkit.Services.Generators
+﻿namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     public interface IDsa
     {

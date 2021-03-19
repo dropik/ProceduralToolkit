@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProceduralToolkit.Services.Generators
+namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     public abstract class BaseDsaStep : IDsaStep
     {

@@ -1,7 +1,7 @@
 using ProceduralToolkit.Models;
 using UnityEngine;
 
-namespace ProceduralToolkit.Services.Generators
+namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     public class Displacer : IDisplacer
     {

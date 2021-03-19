@@ -1,4 +1,4 @@
-﻿using ProceduralToolkit.Services.Generators;
+﻿using ProceduralToolkit.Services.Generators.DiamondSquare;
 using System;
 using UnityEngine;
 

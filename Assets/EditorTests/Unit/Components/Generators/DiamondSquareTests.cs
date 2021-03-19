@@ -1,9 +1,9 @@
-using System;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Components.Generators;
 using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.DI;
+using System;
 using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Components.Generators

@@ -1,8 +1,8 @@
 ﻿using Moq;
 using NUnit.Framework;
-using UnityEngine;
 using ProceduralToolkit.Services;
-using ProceduralToolkit.Services.Generators;
+using ProceduralToolkit.Services.Generators.DiamondSquare;
+using UnityEngine;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services
 {

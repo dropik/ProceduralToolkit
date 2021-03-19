@@ -1,10 +1,10 @@
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Models;
-using ProceduralToolkit.Services.Generators;
+using ProceduralToolkit.Services.Generators.DiamondSquare;
 using UnityEngine;
 
-namespace ProceduralToolkit.EditorTests.Unit.Services.Generators
+namespace ProceduralToolkit.EditorTests.Unit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
     public class DiamondDsaStepTests

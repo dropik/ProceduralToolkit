@@ -1,6 +1,6 @@
-using System;
 using ProceduralToolkit.Models;
 using ProceduralToolkit.Services.DI;
+using System;
 using UnityEngine;
 
 namespace ProceduralToolkit.Components.Generators

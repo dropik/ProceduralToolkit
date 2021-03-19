@@ -1,8 +1,8 @@
-using System;
-using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Services.DI;
+using System;
+using System.Collections.Generic;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.DI
 {

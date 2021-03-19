@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using NUnit.Framework;
-using ProceduralToolkit.Components.Startups;
+﻿using NUnit.Framework;
+using System.Collections;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +14,6 @@ namespace ProceduralToolkit.EditorTests.E2E
         private Scene testScene;
 
         private const string TEST_SCENE = "Assets/EditorTests/E2E/Scenes/LandscapeGeneratorE2E.unity";
-        private const float TEST_LENGTH = 2f;
 
         private GameObject Root => GameObject.Find("LandscapeGenerator");
         private GameObject View => Root.transform.Find("view").gameObject;

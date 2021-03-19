@@ -1,7 +1,7 @@
-using System;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Services.DI;
+using System;
 
 namespace ProceduralToolkit.EditorTests.Unit.Services.DI
 {

@@ -1,7 +1,7 @@
 ﻿using ProceduralToolkit.Models;
 using System.Collections.Generic;
 
-namespace ProceduralToolkit.Services.Generators
+namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     public class SquareDsaStep : BaseDsaStep
     {

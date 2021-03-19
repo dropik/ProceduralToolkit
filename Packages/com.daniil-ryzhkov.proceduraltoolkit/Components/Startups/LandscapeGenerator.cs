@@ -1,11 +1,12 @@
-﻿using UnityEditor;
-using UnityEngine;
-using ProceduralToolkit.Services;
-using ProceduralToolkit.Services.Generators;
-using ProceduralToolkit.Services.DI;
-using ProceduralToolkit.Components.Generators;
-using System.Collections.Generic;
+﻿using ProceduralToolkit.Components.Generators;
 using ProceduralToolkit.Models;
+using ProceduralToolkit.Services;
+using ProceduralToolkit.Services.DI;
+using ProceduralToolkit.Services.Generators;
+using ProceduralToolkit.Services.Generators.DiamondSquare;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 namespace ProceduralToolkit.Components.Startups
 {
@@ -32,7 +33,7 @@ namespace ProceduralToolkit.Components.Startups
             resetter.InitChild += InitView;
             resetter.Reset();
         }
-        
+
         private GameObject InitView()
         {
             view = new GameObject() { name = "view" };
