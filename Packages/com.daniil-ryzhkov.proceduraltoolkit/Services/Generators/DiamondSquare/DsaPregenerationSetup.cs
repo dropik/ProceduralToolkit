@@ -3,23 +3,21 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public class DsaPregenerationSetup : IDsa
+    public class DsaPregenerationSetup : BaseDsaDecorator
     {
-        private readonly IDsa wrappee;
         private readonly DsaSettings settings;
         private readonly LandscapeContext context;
 
-        public DsaPregenerationSetup(IDsa wrappee, DsaSettings settings, LandscapeContext context)
+        public DsaPregenerationSetup(IDsa wrappee, DsaSettings settings, LandscapeContext context) : base(wrappee)
         {
-            this.wrappee = wrappee;
             this.settings = settings;
             this.context = context;
         }
 
-        public void Execute()
+        public override void Execute()
         {
             SetupInitialValues();
-            wrappee.Execute();
+            base.Execute();
         }
 
         private void SetupInitialValues()

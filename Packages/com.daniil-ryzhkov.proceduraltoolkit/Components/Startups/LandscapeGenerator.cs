@@ -67,22 +67,26 @@ namespace ProceduralToolkit.Components.Startups
             services.AddSingleton<LandscapeContext>();
             services.AddSingleton<DsaSettings>();
             services.AddTransient<IDisplacer, Displacer>();
+
             services.AddSingleton<IDsa>(() =>
             {
                 var context = services.GetService<LandscapeContext>();
                 var settings = services.GetService<DsaSettings>();
+                var displacer = services.GetService<IDisplacer>();
+                
                 return
                     new DsaRandomizer(
                         new DsaPregenerationSetup(
                             new Dsa(
                                 context,
-                                new DiamondDsaStep(context, services.GetService<IDisplacer>()),
-                                new SquareDsaStep(context, services.GetService<IDisplacer>())
+                                new DiamondDsaStep(context, displacer),
+                                new SquareDsaStep(context, displacer)
                             ), settings,
                             context
                         ), settings
                 );
             });
+
             services.AddSingleton<GeneratorStarter>();
         }
 

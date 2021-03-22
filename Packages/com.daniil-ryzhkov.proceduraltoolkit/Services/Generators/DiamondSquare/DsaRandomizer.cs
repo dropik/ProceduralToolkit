@@ -3,21 +3,19 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public class DsaRandomizer : IDsa
+    public class DsaRandomizer : BaseDsaDecorator
     {
-        private readonly IDsa wrappee;
         private readonly DsaSettings settings;
 
-        public DsaRandomizer(IDsa wrappee, DsaSettings settings)
+        public DsaRandomizer(IDsa wrappee, DsaSettings settings) : base(wrappee)
         {
-            this.wrappee = wrappee;
             this.settings = settings;
         }
 
-        public void Execute()
+        public override void Execute()
         {
             Random.InitState(settings.Seed);
-            wrappee.Execute();
+            base.Execute();
         }
     }
 }

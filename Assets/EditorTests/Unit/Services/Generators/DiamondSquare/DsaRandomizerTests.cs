@@ -6,28 +6,25 @@ using UnityEngine;
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
-    public class DsaRandomizerTests
+    public class DsaRandomizerTests : BaseDsaDecoratorTests
     {
         private DsaSettings settings;
-        private Mock<IDsa> mockWrappee;
         private DsaRandomizer randomizer;
-
-        [SetUp]
-        public void Setup()
+        
+        protected override void PreSetup()
         {
-            mockWrappee = new Mock<IDsa>();
             settings = new DsaSettings
             {
                 Seed = 123
             };
-            randomizer = new DsaRandomizer(mockWrappee.Object, settings);
         }
 
-        [Test]
-        public void TestWrappeeExecuted()
+        protected override BaseDsaDecorator CreateDecorator(IDsa wrappee)
+            => new DsaRandomizer(wrappee, settings);
+
+        protected override void PostSetup()
         {
-            randomizer.Execute();
-            mockWrappee.Verify(m => m.Execute(), Times.Once);
+            randomizer = Decorator as DsaRandomizer;
         }
 
         [Test]

@@ -1,34 +1,27 @@
-﻿using Moq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ProceduralToolkit.Models;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
-    public class DsaPregenerationSetupTests
+    public class DsaPregenerationSetupTests : BaseDsaDecoratorTests
     {
         private DsaSettings settings;
         private LandscapeContext context;
-        private Mock<IDsa> mockWrappee;
         private DsaPregenerationSetup setup;
 
-        private void Setup(int iterations)
+        protected override void PreSetup()
         {
-            mockWrappee = new Mock<IDsa>();
-            settings = new DsaSettings
-            {
-                Resolution = iterations
-            };
+            settings = new DsaSettings();
             context = new LandscapeContext();
-            setup = new DsaPregenerationSetup(mockWrappee.Object, settings, context);
         }
 
-        [Test]
-        public void TestWrappeeExecuted()
+        protected override BaseDsaDecorator CreateDecorator(IDsa wrappee)
+            => new DsaPregenerationSetup(wrappee, settings, context);
+
+        protected override void PostSetup()
         {
-            Setup(2);
-            setup.Execute();
-            mockWrappee.Verify(m => m.Execute(), Times.Once);
+            setup = Decorator as DsaPregenerationSetup;
         }
 
         [Test]
@@ -36,7 +29,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         [TestCase(2, 5)]
         public void TestLengthCalculated(int iterations, int expectedLength)
         {
-            Setup(iterations);
+            settings.Resolution = iterations;
             setup.Execute();
             Assert.That(context.Length, Is.EqualTo(expectedLength));
         }
@@ -44,7 +37,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         [Test]
         public void TestHeightsBufferAllocated()
         {
-            Setup(2);
+            settings.Resolution = 2;
             setup.Execute();
             Assert.That(context.Heights.Length, Is.EqualTo(25));
         }
@@ -52,7 +45,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         [Test]
         public void TestCornerHeightsAreSet()
         {
-            Setup(2);
+            settings.Resolution = 2;
 
             setup.Execute();
             
