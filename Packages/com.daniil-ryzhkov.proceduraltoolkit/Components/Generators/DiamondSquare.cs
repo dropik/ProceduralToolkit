@@ -17,7 +17,7 @@ namespace ProceduralToolkit.Components.Generators
         [Range(0, 7)]
         public int resolution;
 
-        [Min(0)]
+        [Range(0, 1)]
         public float magnitude;
 
         [Range(0, 2)]
@@ -29,7 +29,7 @@ namespace ProceduralToolkit.Components.Generators
         {
             seed = 0;
             resolution = 5;
-            magnitude = 100;
+            magnitude = 1;
             hardness = 1;
         }
 
