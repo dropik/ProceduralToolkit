@@ -24,21 +24,7 @@ namespace ProceduralToolkit.Components
             if (NewContext != null)
             {
                 var terrainData = terrain.terrainData;
-                var resolution = terrainData.heightmapResolution;
-                var index = 0;
-                var heights = new float[resolution, resolution];
-                var vertices = NewContext.Mesh.vertices;
-                var range = settings.Magnitude * 2;
-                for (int row = 0; row < resolution; row++)
-                {
-                    for (int column = 0; column < resolution; column++)
-                    {
-                        heights[row, column] = vertices[index].y / range + 0.5f;
-                        index++;
-                    }
-                }
-
-                terrainData.SetHeights(0, 0, heights);
+                terrainData.SetHeights(0, 0, NewContext.Heights);
                 NewContext = null;
             }
         }

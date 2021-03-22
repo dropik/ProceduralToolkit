@@ -43,7 +43,7 @@ namespace ProceduralToolkit.Components
         }
 
         [Test]
-        public void TestNothingHappensOnNullNewMesh()
+        public void TestNothingHappensOnNullNewContext()
         {
             view.Update();
             CollectionAssert.AreEqual(heights, terrainData.GetHeights(0, 0, RESOLUTION, RESOLUTION));
@@ -52,50 +52,31 @@ namespace ProceduralToolkit.Components
         [Test]
         public void TestTerrainHeightsUpdatedOnNewContext()
         {
-            var vertices = new Vector3[RESOLUTION * RESOLUTION];
-            vertices[3] = new Vector3(0, 200, 0);
-            vertices[10] = new Vector3(0, 24, 0);
-            vertices[50] = new Vector3(0, -100, 0);
-            vertices[123] = new Vector3(0, 300, 0);
+            var heights = new float[RESOLUTION, RESOLUTION];
+            heights[0, 3] = 0.8f;
+            heights[0, 10] = 0.54f;
+            heights[1, 17] = 0.3f;
+            heights[3, 24] = 1;
 
             var context = new LandscapeContext
             {
-                Mesh = new Mesh
-                {
-                    vertices = vertices
-                }
+                Heights = heights
             };
-
-            var expectedHeights = new float[RESOLUTION, RESOLUTION];
-            for (int i = 0; i < RESOLUTION; i++)
-            {
-                for (int j = 0; j < RESOLUTION; j++)
-                {
-                    expectedHeights[i, j] = 0.5f;
-                }
-            }
-            expectedHeights[0, 3] = 0.8333333333f;
-            expectedHeights[0, 10] = 0.54f;
-            expectedHeights[1, 17] = 0.3333333333f;
-            expectedHeights[3, 24] = 1;
 
             view.NewContext = context;
             view.Update();
 
-            CollectionAssert.AreEqual(expectedHeights,
+            CollectionAssert.AreEqual(heights,
                                       terrainData.GetHeights(0, 0, RESOLUTION, RESOLUTION),
                                       Comparer<float>.Create((x, y) => Mathf.Abs(x - y) >= 0.0001f ? 1 : 0));
         }
 
         [Test]
-        public void TestNewMeshNulledAfterUpdate()
+        public void TestNewContextNulledAfterUpdate()
         {
             view.NewContext = new LandscapeContext
             {
-                Mesh = new Mesh
-                {
-                    vertices = new Vector3[RESOLUTION * RESOLUTION]
-                }
+                Heights = new float[RESOLUTION, RESOLUTION]
             };
             view.Update();
             Assert.That(view.NewContext, Is.Null);
