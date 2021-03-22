@@ -3,9 +3,10 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Components
 {
-    public interface IGeneratorView
+    public interface IView
     {
-        LandscapeContext NewContext { get; set; }
+        void MarkDirty();
+        bool IsDirty { get; }
         void Update();
     }
 }

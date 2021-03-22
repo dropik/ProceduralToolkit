@@ -7,14 +7,14 @@ using UnityEngine;
 namespace ProceduralToolkit.Components
 {
     [Category("Unit")]
-    public class TerrainGeneratorViewTests
+    public class TerrainViewTests
     {
         private readonly float[,] heights = new float[RESOLUTION, RESOLUTION];
 
         private GameObject gameObject;
-        private Terrain terrain;
         private TerrainData terrainData;
-        private TerrainGeneratorView view;
+        private LandscapeContext context;
+        private TerrainView view;
 
         private const int RESOLUTION = 33;
 
@@ -23,15 +23,19 @@ namespace ProceduralToolkit.Components
         {
             gameObject = new GameObject();
 
-            terrain = gameObject.AddComponent<Terrain>();
             terrainData = new TerrainData();
-            terrain.terrainData = terrainData;
             terrainData.heightmapResolution = RESOLUTION;
             terrainData.SetHeights(0, 0, heights);
 
-            view = gameObject.AddComponent<TerrainGeneratorView>();
+            context = new LandscapeContext
+            {
+                Heights = heights
+            };
+
+            view = gameObject.AddComponent<TerrainView>();
             var services = ServiceContainerFactory.Create();
-            services.AddSingleton(terrain);
+            services.AddSingleton(terrainData);
+            services.AddSingleton(context);
             services.InjectServicesTo(view);
         }
 
@@ -42,14 +46,14 @@ namespace ProceduralToolkit.Components
         }
 
         [Test]
-        public void TestNothingHappensOnNullNewContext()
+        public void TestNothingHappensOnNonDirty()
         {
             view.Update();
             CollectionAssert.AreEqual(heights, terrainData.GetHeights(0, 0, RESOLUTION, RESOLUTION));
         }
 
         [Test]
-        public void TestTerrainHeightsUpdatedOnNewContext()
+        public void TestTerrainHeightsUpdatedOnMarkedDirty()
         {
             var heights = new float[RESOLUTION, RESOLUTION];
             heights[0, 3] = 0.8f;
@@ -57,12 +61,9 @@ namespace ProceduralToolkit.Components
             heights[1, 17] = 0.3f;
             heights[3, 24] = 1;
 
-            var context = new LandscapeContext
-            {
-                Heights = heights
-            };
+            context.Heights = heights;
 
-            view.NewContext = context;
+            view.MarkDirty();
             view.Update();
 
             CollectionAssert.AreEqual(heights,
@@ -71,14 +72,11 @@ namespace ProceduralToolkit.Components
         }
 
         [Test]
-        public void TestNewContextNulledAfterUpdate()
+        public void TestDirtyFlagRemovedAfterUpdate()
         {
-            view.NewContext = new LandscapeContext
-            {
-                Heights = new float[RESOLUTION, RESOLUTION]
-            };
+            view.MarkDirty();
             view.Update();
-            Assert.That(view.NewContext, Is.Null);
+            Assert.That(view.IsDirty, Is.False);
         }
     }
 }

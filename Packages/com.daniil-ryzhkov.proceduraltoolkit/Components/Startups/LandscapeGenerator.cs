@@ -13,12 +13,12 @@ namespace ProceduralToolkit.Components.Startups
     [RequireComponent(typeof(GeneratorStarterComponent))]
     [RequireComponent(typeof(Terrain))]
     [RequireComponent(typeof(TerrainCollider))]
-    [RequireComponent(typeof(TerrainGeneratorView))]
+    [RequireComponent(typeof(TerrainView))]
     public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
 
-        private IGeneratorView View => GetComponent<IGeneratorView>();
+        private IView View => GetComponent<IView>();
         private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
 
         public void Reset()
@@ -82,7 +82,7 @@ namespace ProceduralToolkit.Components.Startups
 
         protected virtual void SetupViewServices(IServiceContainer services)
         {
-            services.AddSingleton(() => GetComponent<Terrain>());
+            services.AddSingleton(() => GetComponent<Terrain>().terrainData);
         }
 
         private void InjectServices()
@@ -94,7 +94,7 @@ namespace ProceduralToolkit.Components.Startups
             }
             services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(View);
-            services.GetService<IGeneratorStarter>().Generated += () => View.NewContext = services.GetService<LandscapeContext>();
+            services.GetService<IGeneratorStarter>().Generated += View.MarkDirty;
         }
 
         public override void RegisterUndo()

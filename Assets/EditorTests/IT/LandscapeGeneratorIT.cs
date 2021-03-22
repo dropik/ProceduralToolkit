@@ -22,6 +22,7 @@ namespace ProceduralToolkit.IntegrationTests
             {
                 services.AddSingleton(MockGeneratorStarter.Object);
                 services.AddSingleton<DsaSettings>();
+                services.AddSingleton<LandscapeContext>();
             }
         }
 
@@ -73,7 +74,7 @@ namespace ProceduralToolkit.IntegrationTests
             gameObject.AddComponent<LandscapeGenerator>();
             var assembler = gameObject.GetComponent<GeneratorStarterComponent>();
             assembler.Start();
-            var view = gameObject.GetComponent<TerrainGeneratorView>();
+            var view = gameObject.GetComponent<TerrainView>();
             view.Update();
             var terrain = gameObject.GetComponent<Terrain>();
             var terrainData = terrain.terrainData;
