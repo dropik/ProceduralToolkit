@@ -6,10 +6,10 @@ using UnityEngine;
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
-    public class DsaRandomizerTests : BaseDsaDecoratorTests
+    public class PredictableRandomizerTests : BaseDsaDecoratorTests
     {
         private DsaSettings settings;
-        private DsaRandomizer randomizer;
+        private PredictableRandomizer randomizer;
         
         protected override void PreSetup()
         {
@@ -20,11 +20,11 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         }
 
         protected override BaseDsaDecorator CreateDecorator(IDsa wrappee)
-            => new DsaRandomizer(wrappee, settings);
+            => new PredictableRandomizer(wrappee, settings);
 
         protected override void PostSetup()
         {
-            randomizer = Decorator as DsaRandomizer;
+            randomizer = Decorator as PredictableRandomizer;
         }
 
         [Test]

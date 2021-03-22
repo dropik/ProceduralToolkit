@@ -1,46 +1,29 @@
 ﻿using ProceduralToolkit.Models;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public class DsaPregenerationSetup : BaseDsaDecorator
+    public class HeightsInitializer : BaseDsaDecorator
     {
-        private readonly DsaSettings settings;
         private readonly LandscapeContext context;
 
-        public DsaPregenerationSetup(IDsa wrappee, DsaSettings settings, LandscapeContext context) : base(wrappee)
+        public HeightsInitializer(IDsa wrappee, LandscapeContext context) : base(wrappee)
         {
-            this.settings = settings;
             this.context = context;
         }
 
         public override void Execute()
         {
-            SetupInitialValues();
-            base.Execute();
-        }
-
-        private void SetupInitialValues()
-        {
-            CopySettingsToContext();
-            CalculateLength();
             context.Heights = CreateHeightsBuffer();
-        }
-
-        private void CopySettingsToContext()
-        {
-            context.Iterations = settings.Resolution;
-        }
-
-        private void CalculateLength()
-        {
-            context.Length = (int)Mathf.Pow(2, context.Iterations) + 1;
+            base.Execute();
         }
 
         private float[,] CreateHeightsBuffer()
         {
             var heights = new float[context.Length, context.Length];
-            SetCornerHeights(heights);
+            if (context.Length > 0)
+            {
+                SetCornerHeights(heights);
+            }
             return heights;
         }
 

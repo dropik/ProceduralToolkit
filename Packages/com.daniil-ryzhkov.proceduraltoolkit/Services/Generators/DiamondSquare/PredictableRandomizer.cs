@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public class DsaRandomizer : BaseDsaDecorator
+    public class PredictableRandomizer : BaseDsaDecorator
     {
         private readonly DsaSettings settings;
 
-        public DsaRandomizer(IDsa wrappee, DsaSettings settings) : base(wrappee)
+        public PredictableRandomizer(IDsa wrappee, DsaSettings settings) : base(wrappee)
         {
             this.settings = settings;
         }

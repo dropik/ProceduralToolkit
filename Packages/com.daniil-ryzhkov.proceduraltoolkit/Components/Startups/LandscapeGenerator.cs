@@ -75,19 +75,21 @@ namespace ProceduralToolkit.Components.Startups
                 var displacer = services.GetService<IDisplacer>();
                 
                 return
-                    new DsaRandomizer(
+                    new PredictableRandomizer(
                         new TerrainDataToContextConverter(
-                            new DsaPregenerationSetup(
+                            new HeightsInitializer(
                                 new Dsa(
                                     context,
                                     new DiamondDsaStep(context, displacer),
                                     new SquareDsaStep(context, displacer)
-                                ), settings,
+                                ),
                                 context
-                            ), services.GetService<TerrainData>(),
+                            ),
+                            services.GetService<TerrainData>(),
                             context
-                        ), settings
-                );
+                        ),
+                        settings
+                    );
             });
 
             services.AddSingleton<GeneratorStarter>();
