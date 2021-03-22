@@ -76,12 +76,15 @@ namespace ProceduralToolkit.Components.Startups
                 
                 return
                     new DsaRandomizer(
-                        new DsaPregenerationSetup(
-                            new Dsa(
-                                context,
-                                new DiamondDsaStep(context, displacer),
-                                new SquareDsaStep(context, displacer)
-                            ), settings,
+                        new TerrainDataToContextConverter(
+                            new DsaPregenerationSetup(
+                                new Dsa(
+                                    context,
+                                    new DiamondDsaStep(context, displacer),
+                                    new SquareDsaStep(context, displacer)
+                                ), settings,
+                                context
+                            ), services.GetService<TerrainData>(),
                             context
                         ), settings
                 );
