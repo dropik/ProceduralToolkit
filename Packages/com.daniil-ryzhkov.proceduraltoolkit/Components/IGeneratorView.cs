@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using ProceduralToolkit.Models;
+using UnityEngine;
 
 namespace ProceduralToolkit.Components
 {
     public interface IGeneratorView
     {
-        Mesh NewMesh { get; set; }
+        LandscapeContext NewContext { get; set; }
         void Update();
     }
 }

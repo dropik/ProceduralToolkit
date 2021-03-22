@@ -50,7 +50,7 @@ namespace ProceduralToolkit.Components
         }
 
         [Test]
-        public void TestTerrainHeightsUpdatedOnNewMesh()
+        public void TestTerrainHeightsUpdatedOnNewContext()
         {
             var vertices = new Vector3[RESOLUTION * RESOLUTION];
             vertices[3] = new Vector3(0, 200, 0);
@@ -58,9 +58,12 @@ namespace ProceduralToolkit.Components
             vertices[50] = new Vector3(0, -100, 0);
             vertices[123] = new Vector3(0, 300, 0);
 
-            var mesh = new Mesh()
+            var context = new LandscapeContext
             {
-                vertices = vertices
+                Mesh = new Mesh
+                {
+                    vertices = vertices
+                }
             };
 
             var expectedHeights = new float[RESOLUTION, RESOLUTION];
@@ -76,7 +79,7 @@ namespace ProceduralToolkit.Components
             expectedHeights[1, 17] = 0.3333333333f;
             expectedHeights[3, 24] = 1;
 
-            view.NewMesh = mesh;
+            view.NewContext = context;
             view.Update();
 
             CollectionAssert.AreEqual(expectedHeights,
@@ -87,12 +90,15 @@ namespace ProceduralToolkit.Components
         [Test]
         public void TestNewMeshNulledAfterUpdate()
         {
-            view.NewMesh = new Mesh()
+            view.NewContext = new LandscapeContext
             {
-                vertices = new Vector3[RESOLUTION * RESOLUTION]
+                Mesh = new Mesh
+                {
+                    vertices = new Vector3[RESOLUTION * RESOLUTION]
+                }
             };
             view.Update();
-            Assert.That(view.NewMesh, Is.Null);
+            Assert.That(view.NewContext, Is.Null);
         }
     }
 }

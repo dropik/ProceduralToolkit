@@ -12,7 +12,7 @@ namespace ProceduralToolkit.Components
         [Service]
         private readonly DsaSettings settings;
 
-        public Mesh NewMesh { get; set; }
+        public LandscapeContext NewContext { get; set; }
 
         public void Awake()
         {
@@ -21,13 +21,13 @@ namespace ProceduralToolkit.Components
 
         public void Update()
         {
-            if (NewMesh != null)
+            if (NewContext != null)
             {
                 var terrainData = terrain.terrainData;
                 var resolution = terrainData.heightmapResolution;
                 var index = 0;
                 var heights = new float[resolution, resolution];
-                var vertices = NewMesh.vertices;
+                var vertices = NewContext.Mesh.vertices;
                 var range = settings.Magnitude * 2;
                 for (int row = 0; row < resolution; row++)
                 {
@@ -39,7 +39,7 @@ namespace ProceduralToolkit.Components
                 }
 
                 terrainData.SetHeights(0, 0, heights);
-                NewMesh = null;
+                NewContext = null;
             }
         }
     }
