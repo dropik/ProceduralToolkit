@@ -11,18 +11,22 @@ namespace ProceduralToolkit.Components.Generators
     public class DiamondSquareTests
     {
         private GameObject gameObject;
-        private DiamondSquare ds;
         private DsaSettings settings;
+        private Mock<Action> mockOnUpdatedAction;
+        private DiamondSquare ds;
 
         [SetUp]
         public void Setup()
         {
             settings = new DsaSettings();
+            mockOnUpdatedAction = new Mock<Action>();
+
             gameObject = new GameObject();
             ds = gameObject.AddComponent<DiamondSquare>();
             var services = ServiceContainerFactory.Create();
             services.AddSingleton(settings);
             services.InjectServicesTo(ds);
+            ds.Updated += mockOnUpdatedAction.Object;
         }
 
         [TearDown]
@@ -43,10 +47,8 @@ namespace ProceduralToolkit.Components.Generators
         [Test]
         public void TestUpdatedEventInvoked()
         {
-            var mockAction = new Mock<Action>();
-            ds.Updated += mockAction.Object;
             ds.OnValidate();
-            mockAction.Verify(m => m.Invoke(), Times.Once);
+            mockOnUpdatedAction.Verify(m => m.Invoke(), Times.Once);
         }
 
         [Test]
@@ -73,6 +75,20 @@ namespace ProceduralToolkit.Components.Generators
             ds.OnValidate();
 
             Assert.That(settings, Is.EqualTo(expectedSettings));
+        }
+
+        [Test]
+        public void TestUpdatedEvent_NotInvoked_OnTerrainChanged_WithoutHeightmapResolutionFlag()
+        {
+            ds.OnTerrainChanged(TerrainChangedFlags.DelayedHeightmapUpdate);
+            mockOnUpdatedAction.Verify(m => m.Invoke(), Times.Never);
+        }
+
+        [Test]
+        public void TestUpdatedEvent_Invoked_OnTerrainChanged_WithHeightmapResolutionFlag()
+        {
+            ds.OnTerrainChanged(TerrainChangedFlags.DelayedHeightmapUpdate | TerrainChangedFlags.HeightmapResolution);
+            mockOnUpdatedAction.Verify(m => m.Invoke(), Times.Once);
         }
     }
 }

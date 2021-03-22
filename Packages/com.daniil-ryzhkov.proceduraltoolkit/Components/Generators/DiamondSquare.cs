@@ -52,7 +52,11 @@ namespace ProceduralToolkit.Components.Generators
 
         public void OnTerrainChanged(TerrainChangedFlags flags)
         {
-            Debug.Log("Terrain changed");
+            if ((flags & TerrainChangedFlags.HeightmapResolution) != 0)
+            {
+                TryUpdateSettings();
+                Updated?.Invoke();
+            }
         }
     }
 }
