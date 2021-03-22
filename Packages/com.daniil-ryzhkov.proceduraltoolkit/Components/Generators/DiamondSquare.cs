@@ -18,9 +18,6 @@ namespace ProceduralToolkit.Components.Generators
         public int resolution;
 
         [Min(0)]
-        public float sideLength;
-
-        [Min(0)]
         public float magnitude;
 
         [Range(0, 2)]
@@ -32,7 +29,6 @@ namespace ProceduralToolkit.Components.Generators
         {
             seed = 0;
             resolution = 5;
-            sideLength = 1000;
             magnitude = 100;
             hardness = 1;
         }
@@ -49,7 +45,6 @@ namespace ProceduralToolkit.Components.Generators
             {
                 settings.Seed = seed;
                 settings.Resolution = resolution;
-                settings.SideLength = sideLength;
                 settings.Magnitude = magnitude;
                 settings.Hardness = hardness;
             }

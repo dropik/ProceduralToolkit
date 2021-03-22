@@ -1,7 +1,6 @@
 ﻿using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Models;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
@@ -40,48 +39,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             Setup(iterations);
             setup.Execute();
             Assert.That(context.Length, Is.EqualTo(expectedLength));
-        }
-
-        [Test]
-        [TestCase(0, 4)]
-        [TestCase(2, 25)]
-        public void TestVerticesBufferAllocated(int iterations, int expectedLength)
-        {
-            Setup(iterations);
-            setup.Execute();
-            Assert.That(context.Vertices.Length, Is.EqualTo(expectedLength));
-        }
-
-        [Test]
-        public void TestInitialVerticesSet()
-        {
-            const int iterations = 2;
-            const int length = 5;
-            Setup(iterations);
-            settings.SideLength = 100;
-            var expectedUpLeft = new Vector3(-50, 0, 50);
-            var expectedUpRight = new Vector3(50, 0, 50);
-            var expectedDownLeft = new Vector3(-50, 0, -50);
-            var expectedDownRight = new Vector3(50, 0, -50);
-
-            setup.Execute();
-
-            Assert.That(context.Vertices[0], Is.EqualTo(expectedUpLeft));
-            Assert.That(context.Vertices[length - 1], Is.EqualTo(expectedUpRight));
-            Assert.That(context.Vertices[(length - 1) * length], Is.EqualTo(expectedDownLeft));
-            Assert.That(context.Vertices[length * length - 1], Is.EqualTo(expectedDownRight));
-        }
-
-        [Test]
-        public void TestGridSizeCalculated()
-        {
-            Setup(2);
-            settings.SideLength = 100;
-            var expectedGridSize = new Vector3(25, 0, -25);
-
-            setup.Execute();
-
-            Assert.That(context.GridSize, Is.EqualTo(expectedGridSize));
         }
 
         [Test]

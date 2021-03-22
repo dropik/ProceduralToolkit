@@ -21,60 +21,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             }
         }
 
-        protected override float GetNeighboursAverage(int row, int column, int step)
-        {
-            return (GetUp(row, column, step) +
-                    GetRight(row, column, step) +
-                    GetDown(row, column, step) +
-                    GetLeft(row, column, step))
-                    /
-                    4f;
-        }
-
-        private float GetUp(int row, int column, int step)
-        {
-            row = ShiftBackward(row, step);
-            return Context.Vertices[GetIndex(row, column)].y;
-        }
-
-        private float GetRight(int row, int column, int step)
-        {
-            column = ShiftForward(column, step);
-            return Context.Vertices[GetIndex(row, column)].y;
-        }
-
-        private float GetDown(int row, int column, int step)
-        {
-            row = ShiftForward(row, step);
-            return Context.Vertices[GetIndex(row, column)].y;
-        }
-
-        private float GetLeft(int row, int column, int step)
-        {
-            column = ShiftBackward(column, step);
-            return Context.Vertices[GetIndex(row, column)].y;
-        }
-
-        private int ShiftForward(int index, int step)
-        {
-            index += step;
-            if (index > Context.Length - 1)
-            {
-                index -= Context.Length - 1;
-            }
-            return index;
-        }
-
-        private int ShiftBackward(int index, int step)
-        {
-            index -= step;
-            if (index < 0)
-            {
-                index += Context.Length - 1;
-            }
-            return index;
-        }
-
         protected override float GetNeighboursHeightAverage(int row, int column, int halfStep)
         {
             return (GetUpHeight(row, column, halfStep) +
@@ -107,6 +53,26 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         {
             column = ShiftBackward(column, step);
             return Context.Heights[row, column];
+        }
+
+        private int ShiftForward(int index, int step)
+        {
+            index += step;
+            if (index > Context.Length - 1)
+            {
+                index -= Context.Length - 1;
+            }
+            return index;
+        }
+
+        private int ShiftBackward(int index, int step)
+        {
+            index -= step;
+            if (index < 0)
+            {
+                index += Context.Length - 1;
+            }
+            return index;
         }
     }
 }

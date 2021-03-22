@@ -1,6 +1,5 @@
 ﻿using ProceduralToolkit.Models;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
@@ -26,8 +25,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         {
             foreach (var (row, column) in GetRowsAndColumnsForStep(context))
             {
-                Context.Vertices[GetIndex(row, column)] = GetStepVertex(row, column, context);
-                
                 Context.Heights[row, column] = GetNeighboursHeightAverage(row, column, context.HalfStep) +
                                                displacer.GetNormalizedDisplacement(context.Iteration);
             }
@@ -35,25 +32,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
         protected abstract IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context);
 
-        private Vector3 GetStepVertex(int row, int column, DsaStepContext context)
-        {
-            var vertex = GetVertexOnGrid(row, column);
-            vertex.y = GetNeighboursAverage(row, column, context.HalfStep);
-            vertex.y += displacer.GetDisplacement(context.Iteration);
-            return vertex;
-        }
-
         protected abstract float GetNeighboursHeightAverage(int row, int column, int halfStep);
-
-        protected int GetIndex(int row, int column)
-            => row * Context.Length + column;
-
-        private Vector3 GetVertexOnGrid(int row, int column)
-            => Vector3.Scale(new Vector3(1, 0, 1), Context.Vertices[0] + GetShift(row, column));
-
-        private Vector3 GetShift(int row, int column)
-            => Vector3.Scale(new Vector3(column, 0, row), Context.GridSize);
-
-        protected abstract float GetNeighboursAverage(int row, int column, int step);
     }
 }

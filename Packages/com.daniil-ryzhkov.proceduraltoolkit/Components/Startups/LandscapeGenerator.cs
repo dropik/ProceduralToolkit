@@ -2,7 +2,6 @@
 using ProceduralToolkit.Models;
 using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
-using ProceduralToolkit.Services.Generators;
 using ProceduralToolkit.Services.Generators.DiamondSquare;
 using System.Collections.Generic;
 using UnityEditor;
@@ -78,7 +77,6 @@ namespace ProceduralToolkit.Components.Startups
                                                  settings,
                                                  context);
             });
-            services.AddTransient<IIndicesGenerator, IndicesGenerator>();
             services.AddSingleton<GeneratorStarter>();
         }
 

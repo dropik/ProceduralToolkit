@@ -12,12 +12,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             this.settings = settings;
         }
 
-        public float GetDisplacement(int iteration)
-        {
-            var magnitude = Mathf.Pow(2, -1 * iteration * settings.Hardness) * settings.Magnitude;
-            return Random.Range(-magnitude, magnitude);
-        }
-
         public float GetNormalizedDisplacement(int iteration)
         {
             var magnitude = Mathf.Pow(2, -1 * iteration * settings.Hardness) / 2;

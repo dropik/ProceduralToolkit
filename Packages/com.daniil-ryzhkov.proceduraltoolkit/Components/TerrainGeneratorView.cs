@@ -9,8 +9,6 @@ namespace ProceduralToolkit.Components
     {
         [Service]
         private readonly Terrain terrain;
-        [Service]
-        private readonly DsaSettings settings;
 
         public LandscapeContext NewContext { get; set; }
 

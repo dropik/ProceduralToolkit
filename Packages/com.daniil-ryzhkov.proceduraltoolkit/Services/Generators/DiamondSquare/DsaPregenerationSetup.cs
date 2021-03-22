@@ -27,15 +27,12 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             Random.InitState(settings.Seed);
             CopySettingsToContext();
             CalculateLength();
-            context.Vertices = CreateVerticesBuffer();
-            CalculateGridSize();
             context.Heights = CreateHeightsBuffer();
         }
 
         private void CopySettingsToContext()
         {
             context.Iterations = settings.Resolution;
-            context.SideLength = settings.SideLength;
         }
 
         private void CalculateLength()
@@ -43,35 +40,11 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             context.Length = (int)Mathf.Pow(2, context.Iterations) + 1;
         }
 
-        private Vector3[] CreateVerticesBuffer()
-        {
-            var vertices = AllocateVerticesBuffer();
-            SetCornerVertices(vertices);
-            return vertices;
-        }
-
-        private void CalculateGridSize()
-        {
-            context.GridSize = (context.Vertices[context.Length * context.Length - 1] - context.Vertices[0]) / (context.Length - 1);
-        }
-
         private float[,] CreateHeightsBuffer()
         {
             var heights = new float[context.Length, context.Length];
             SetCornerHeights(heights);
             return heights;
-        }
-
-        private Vector3[] AllocateVerticesBuffer()
-            => new Vector3[context.Length * context.Length];
-
-        private void SetCornerVertices(Vector3[] vertices)
-        {
-            var halfSide = context.SideLength / 2;
-            vertices[0] = new Vector3(-halfSide, 0, halfSide);
-            vertices[context.Length - 1] = new Vector3(halfSide, 0, halfSide);
-            vertices[(context.Length - 1) * context.Length] = new Vector3(-halfSide, 0, -halfSide);
-            vertices[context.Length * context.Length - 1] = new Vector3(halfSide, 0, -halfSide);
         }
 
         private void SetCornerHeights(float[,] heights)

@@ -32,7 +32,6 @@ namespace ProceduralToolkit.Components
             view = gameObject.AddComponent<TerrainGeneratorView>();
             var services = ServiceContainerFactory.Create();
             services.AddSingleton(terrain);
-            services.AddSingleton(new DsaSettings { Magnitude = 300 });
             services.InjectServicesTo(view);
         }
 

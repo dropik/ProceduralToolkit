@@ -36,7 +36,6 @@ namespace ProceduralToolkit.Components.Generators
         {
             Assert.That(ds.seed, Is.EqualTo(0));
             Assert.That(ds.resolution, Is.EqualTo(5));
-            Assert.That(ds.sideLength, Is.EqualTo(1000));
             Assert.That(ds.magnitude, Is.EqualTo(100));
             Assert.That(ds.hardness, Is.EqualTo(1));
         }
@@ -55,13 +54,11 @@ namespace ProceduralToolkit.Components.Generators
         {
             const int seed = 10;
             const int resolution = 5;
-            const float sideLength = 100;
             const float magnitude = 100;
             const float hardness = 1;
 
             ds.seed = seed;
             ds.resolution = resolution;
-            ds.sideLength = sideLength;
             ds.magnitude = magnitude;
             ds.hardness = hardness;
 
@@ -69,7 +66,6 @@ namespace ProceduralToolkit.Components.Generators
             {
                 Seed = seed,
                 Resolution = resolution,
-                SideLength = sideLength,
                 Magnitude = magnitude,
                 Hardness = hardness
             };

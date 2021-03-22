@@ -19,28 +19,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             }
         }
 
-        protected override float GetNeighboursAverage(int row, int column, int step)
-        {
-            return (GetUpLeft(row, column, step) +
-                    GetUpRight(row, column, step) +
-                    GetDownLeft(row, column, step) +
-                    GetDownRight(row, column, step))
-                    /
-                    4f;
-        }
-
-        private float GetUpLeft(int row, int column, int step)
-            => Context.Vertices[GetIndex(row - step, column - step)].y;
-
-        private float GetUpRight(int row, int column, int step)
-            => Context.Vertices[GetIndex(row - step, column + step)].y;
-
-        private float GetDownLeft(int row, int column, int step)
-            => Context.Vertices[GetIndex(row + step, column - step)].y;
-
-        private float GetDownRight(int row, int column, int step)
-            => Context.Vertices[GetIndex(row + step, column + step)].y;
-
         protected override float GetNeighboursHeightAverage(int row, int column, int halfStep)
         {
             return (GetUpLeftHeight(row, column, halfStep) +

@@ -31,10 +31,8 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
             var context = new LandscapeContext
             {
-                Vertices = new Vector3[N * N],
                 Heights = Heights,
-                Length = N,
-                GridSize = new Vector3(1, 0, -1)
+                Length = N
             };
             Step = CreateDsaStep(context, mockDisplacer.Object);
         }
