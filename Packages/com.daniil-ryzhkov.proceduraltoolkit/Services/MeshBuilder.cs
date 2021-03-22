@@ -19,6 +19,7 @@ namespace ProceduralToolkit.Services
         {
             var mesh = new Mesh();
             BuildMesh(mesh);
+            context.Mesh = mesh;
             return mesh;
         }
 

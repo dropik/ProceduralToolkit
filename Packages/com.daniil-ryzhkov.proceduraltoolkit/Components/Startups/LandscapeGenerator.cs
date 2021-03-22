@@ -97,7 +97,7 @@ namespace ProceduralToolkit.Components.Startups
             }
             services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(View);
-            services.GetService<IMeshAssembler>().Generated += (mesh) => View.NewContext = new LandscapeContext { Mesh = mesh };
+            services.GetService<IMeshAssembler>().Generated += (mesh) => View.NewContext = services.GetService<LandscapeContext>();
         }
 
         public override void RegisterUndo()
