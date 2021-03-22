@@ -57,7 +57,9 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
         private float[,] CreateHeightsBuffer()
         {
-            return new float[context.Length, context.Length];
+            var heights = new float[context.Length, context.Length];
+            SetCornerHeights(heights);
+            return heights;
         }
 
         private Vector3[] AllocateVerticesBuffer()
@@ -70,6 +72,14 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             vertices[context.Length - 1] = new Vector3(halfSide, 0, halfSide);
             vertices[(context.Length - 1) * context.Length] = new Vector3(-halfSide, 0, -halfSide);
             vertices[context.Length * context.Length - 1] = new Vector3(halfSide, 0, -halfSide);
+        }
+
+        private void SetCornerHeights(float[,] heights)
+        {
+            heights[0, 0] = 0.5f;
+            heights[0, context.Length - 1] = 0.5f;
+            heights[context.Length - 1, 0] = 0.5f;
+            heights[context.Length - 1, context.Length - 1] = 0.5f;
         }
     }
 }

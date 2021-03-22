@@ -91,5 +91,18 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             setup.Execute();
             Assert.That(context.Heights.Length, Is.EqualTo(25));
         }
+
+        [Test]
+        public void TestCornerHeightsAreSet()
+        {
+            Setup(2);
+
+            setup.Execute();
+            
+            Assert.That(context.Heights[0, 0], Is.EqualTo(0.5f));
+            Assert.That(context.Heights[0, 4], Is.EqualTo(0.5f));
+            Assert.That(context.Heights[4, 0], Is.EqualTo(0.5f));
+            Assert.That(context.Heights[4, 4], Is.EqualTo(0.5f));
+        }
     }
 }
