@@ -4,6 +4,7 @@ namespace ProceduralToolkit.Models
 {
     public class LandscapeContext
     {
+        public float[,] Heights { get; set; }
         public Mesh Mesh { get; set; }
         public Vector3[] Vertices { get; set; }
         public int[] Indices { get; set; }

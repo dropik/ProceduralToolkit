@@ -29,6 +29,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             CalculateLength();
             context.Vertices = CreateVerticesBuffer();
             CalculateGridSize();
+            context.Heights = CreateHeightsBuffer();
         }
 
         private void CopySettingsToContext()
@@ -52,6 +53,11 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         private void CalculateGridSize()
         {
             context.GridSize = (context.Vertices[context.Length * context.Length - 1] - context.Vertices[0]) / (context.Length - 1);
+        }
+
+        private float[,] CreateHeightsBuffer()
+        {
+            return new float[context.Length, context.Length];
         }
 
         private Vector3[] AllocateVerticesBuffer()

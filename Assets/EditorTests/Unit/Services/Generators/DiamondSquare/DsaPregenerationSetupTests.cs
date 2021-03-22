@@ -83,5 +83,13 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
             Assert.That(context.GridSize, Is.EqualTo(expectedGridSize));
         }
+
+        [Test]
+        public void TestHeightsBufferAllocated()
+        {
+            Setup(2);
+            setup.Execute();
+            Assert.That(context.Heights.Length, Is.EqualTo(25));
+        }
     }
 }
