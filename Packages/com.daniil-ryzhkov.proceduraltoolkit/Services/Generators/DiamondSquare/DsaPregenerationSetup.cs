@@ -24,7 +24,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
         private void SetupInitialValues()
         {
-            Random.InitState(settings.Seed);
             CopySettingsToContext();
             CalculateLength();
             context.Heights = CreateHeightsBuffer();

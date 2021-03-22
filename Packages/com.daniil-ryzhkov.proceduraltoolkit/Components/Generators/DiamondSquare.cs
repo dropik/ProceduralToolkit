@@ -49,5 +49,10 @@ namespace ProceduralToolkit.Components.Generators
                 settings.Hardness = hardness;
             }
         }
+
+        public void OnTerrainChanged(TerrainChangedFlags flags)
+        {
+            Debug.Log("Terrain changed");
+        }
     }
 }
