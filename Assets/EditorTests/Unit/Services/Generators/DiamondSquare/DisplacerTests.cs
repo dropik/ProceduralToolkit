@@ -8,16 +8,15 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
     public class DisplacerTests
     {
         [Test]
-        [TestCase(0, 0.5f, 2, 0, 2)]
-        [TestCase(123, 1, 10, 2, 2.5f)]
-        [TestCase(1024, 2, 100, 3, 1.5625f)]
-        public void TestDisplacement(int seed, float hardness, float magnitude, int iteration, float expectedMagnitude)
+        [TestCase(0, 0.5f, 0, 0.5f)]
+        [TestCase(123, 1, 2, 0.125f)]
+        [TestCase(1024, 2, 3, 0.0078125f)]
+        public void TestNormalizedDisplacement(int seed, float hardness, int iteration, float expectedMagnitude)
         {
             var settings = new DsaSettings
             {
                 Seed = seed,
-                Hardness = hardness,
-                Magnitude = magnitude
+                Hardness = hardness
             };
 
             Random.InitState(seed);
@@ -25,7 +24,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             Random.InitState(seed);
             var displacer = new Displacer(settings);
 
-            Assert.That(displacer.GetDisplacement(iteration), Is.EqualTo(expectedDisplacement));
+            Assert.That(displacer.GetNormalizedDisplacement(iteration), Is.EqualTo(expectedDisplacement));
         }
     }
 }
