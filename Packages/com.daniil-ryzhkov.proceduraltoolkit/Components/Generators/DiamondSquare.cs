@@ -14,9 +14,6 @@ namespace ProceduralToolkit.Components.Generators
         [Min(0)]
         public int seed;
 
-        [Range(0, 7)]
-        public int resolution;
-
         [Range(0, 1)]
         public float magnitude;
 
@@ -28,7 +25,6 @@ namespace ProceduralToolkit.Components.Generators
         public void Reset()
         {
             seed = 0;
-            resolution = 5;
             magnitude = 1;
             hardness = 1;
         }
@@ -44,7 +40,6 @@ namespace ProceduralToolkit.Components.Generators
             if (settings != null)
             {
                 settings.Seed = seed;
-                settings.Resolution = resolution;
                 settings.Magnitude = magnitude;
                 settings.Hardness = hardness;
             }

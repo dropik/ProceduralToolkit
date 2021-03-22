@@ -55,7 +55,7 @@ namespace ProceduralToolkit.IntegrationTests
             gameObject.AddComponent<LandscapeGeneratorWithMockGeneratorStarter>();
             var terrain = gameObject.GetComponent<Terrain>();
             var terrainData = terrain.terrainData;
-            Assert.That(terrainData.heightmapResolution, Is.EqualTo(33));
+            Assert.That(terrainData.heightmapResolution, Is.EqualTo(129));
             Assert.That(terrain.materialTemplate, Is.Not.Null);
         }
 

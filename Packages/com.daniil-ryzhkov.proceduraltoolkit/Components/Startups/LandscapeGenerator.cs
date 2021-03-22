@@ -36,7 +36,7 @@ namespace ProceduralToolkit.Components.Startups
         {
             var terrainData = new TerrainData
             {
-                heightmapResolution = 33,
+                heightmapResolution = 129,
                 size = new Vector3(1000, 1000, 1000)
             };
 

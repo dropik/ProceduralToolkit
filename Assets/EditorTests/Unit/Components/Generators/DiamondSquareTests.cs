@@ -39,7 +39,6 @@ namespace ProceduralToolkit.Components.Generators
         public void TestResetValues()
         {
             Assert.That(ds.seed, Is.EqualTo(0));
-            Assert.That(ds.resolution, Is.EqualTo(5));
             Assert.That(ds.magnitude, Is.EqualTo(1));
             Assert.That(ds.hardness, Is.EqualTo(1));
         }
@@ -55,19 +54,16 @@ namespace ProceduralToolkit.Components.Generators
         public void TestDSASettingsUpdated()
         {
             const int seed = 10;
-            const int resolution = 5;
             const float magnitude = 0.5f;
             const float hardness = 1;
 
             ds.seed = seed;
-            ds.resolution = resolution;
             ds.magnitude = magnitude;
             ds.hardness = hardness;
 
             var expectedSettings = new DsaSettings
             {
                 Seed = seed,
-                Resolution = resolution,
                 Magnitude = magnitude,
                 Hardness = hardness
             };
