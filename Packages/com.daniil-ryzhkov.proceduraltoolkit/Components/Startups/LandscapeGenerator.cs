@@ -59,11 +59,11 @@ namespace ProceduralToolkit.Components.Startups
         private void ConfigureServices()
         {
             services = ServiceContainerFactory.Create();
-            SetupMeshAssemblerServices(services);
+            SetupGeneratorStarterServices(services);
             SetupViewServices(services);
         }
 
-        protected virtual void SetupMeshAssemblerServices(IServiceContainer services)
+        protected virtual void SetupGeneratorStarterServices(IServiceContainer services)
         {
             services.AddSingleton<LandscapeContext>();
             services.AddSingleton<DsaSettings>();
@@ -79,8 +79,7 @@ namespace ProceduralToolkit.Components.Startups
                                                  context);
             });
             services.AddTransient<IIndicesGenerator, IndicesGenerator>();
-            services.AddSingleton<MeshBuilder>();
-            services.AddSingleton<MeshAssembler>();
+            services.AddSingleton<GeneratorStarter>();
         }
 
         protected virtual void SetupViewServices(IServiceContainer services)
@@ -93,11 +92,11 @@ namespace ProceduralToolkit.Components.Startups
             foreach (var generator in GeneratorSettings)
             {
                 services.InjectServicesTo(generator);
-                generator.Updated += services.GetService<IMeshAssembler>().Assemble;
+                generator.Updated += services.GetService<IGeneratorStarter>().Start;
             }
             services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(View);
-            services.GetService<IMeshAssembler>().Generated += (mesh) => View.NewContext = services.GetService<LandscapeContext>();
+            services.GetService<IGeneratorStarter>().Generated += () => View.NewContext = services.GetService<LandscapeContext>();
         }
 
         public override void RegisterUndo()

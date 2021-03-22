@@ -11,7 +11,7 @@ namespace ProceduralToolkit.Components
     {
         private GameObject obj;
         private GeneratorStarterComponent meshAssembler;
-        private Mock<IMeshAssembler> mockAssembler;
+        private Mock<IGeneratorStarter> mockAssembler;
         private IServiceContainer services;
         private UpdateSettingsListener listener;
 
@@ -34,7 +34,7 @@ namespace ProceduralToolkit.Components
             listener = obj.AddComponent<UpdateSettingsListener>();
 
             services = ServiceContainerFactory.Create();
-            mockAssembler = new Mock<IMeshAssembler>();
+            mockAssembler = new Mock<IGeneratorStarter>();
             services.AddSingleton(mockAssembler.Object);
             services.InjectServicesTo(meshAssembler);
         }
@@ -52,7 +52,7 @@ namespace ProceduralToolkit.Components
         public void TestAssemblerCalledOnStart()
         {
             meshAssembler.Start();
-            mockAssembler.Verify(m => m.Assemble(), Times.Once);
+            mockAssembler.Verify(m => m.Start(), Times.Once);
         }
 
         [Test]

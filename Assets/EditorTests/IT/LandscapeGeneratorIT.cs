@@ -14,13 +14,13 @@ namespace ProceduralToolkit.IntegrationTests
     [Category("IT")]
     public class LandscapeGeneratorIT
     {
-        internal class LandscapeGeneratorWithMockMeshAssembler : LandscapeGenerator
+        internal class LandscapeGeneratorWithMockGeneratorStarter : LandscapeGenerator
         {
-            public Mock<IMeshAssembler> MockMeshAssembler { get; private set; } = new Mock<IMeshAssembler>();
+            public Mock<IGeneratorStarter> MockGeneratorStarter { get; private set; } = new Mock<IGeneratorStarter>();
             
-            protected override void SetupMeshAssemblerServices(IServiceContainer services)
+            protected override void SetupGeneratorStarterServices(IServiceContainer services)
             {
-                services.AddSingleton(MockMeshAssembler.Object);
+                services.AddSingleton(MockGeneratorStarter.Object);
                 services.AddSingleton<DsaSettings>();
             }
         }
@@ -42,7 +42,7 @@ namespace ProceduralToolkit.IntegrationTests
         [Test]
         public void TestRegisterUndo()
         {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
+            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockGeneratorStarter>();
             landscapeGenerator.RegisterUndo();
             Undo.PerformUndo();
             Assert.That(gameObject == null);
@@ -51,7 +51,7 @@ namespace ProceduralToolkit.IntegrationTests
         [Test]
         public void TestViewInitialized()
         {
-            gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
+            gameObject.AddComponent<LandscapeGeneratorWithMockGeneratorStarter>();
             var terrain = gameObject.GetComponent<Terrain>();
             var terrainData = terrain.terrainData;
             Assert.That(terrainData.heightmapResolution, Is.EqualTo(33));
@@ -61,10 +61,10 @@ namespace ProceduralToolkit.IntegrationTests
         [Test]
         public void TestMockAssemblerCalled()
         {
-            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockMeshAssembler>();
+            var landscapeGenerator = gameObject.AddComponent<LandscapeGeneratorWithMockGeneratorStarter>();
             var assembler = gameObject.GetComponent<GeneratorStarterComponent>();
             assembler.Start();
-            landscapeGenerator.MockMeshAssembler.Verify(m => m.Assemble(), Times.Once);
+            landscapeGenerator.MockGeneratorStarter.Verify(m => m.Start(), Times.Once);
         }
 
         [Test]

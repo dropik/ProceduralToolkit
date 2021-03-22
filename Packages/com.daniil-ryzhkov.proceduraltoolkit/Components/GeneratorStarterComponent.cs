@@ -8,7 +8,7 @@ namespace ProceduralToolkit.Components
     public class GeneratorStarterComponent : MonoBehaviour
     {
         [Service]
-        private readonly IMeshAssembler meshAssembler;
+        private readonly IGeneratorStarter meshAssembler;
 
         private void Awake()
         {
@@ -18,7 +18,7 @@ namespace ProceduralToolkit.Components
         public void Start()
         {
             SendMessage("TryUpdateSettings", SendMessageOptions.DontRequireReceiver);
-            meshAssembler?.Assemble();
+            meshAssembler?.Start();
         }
     }
 }
