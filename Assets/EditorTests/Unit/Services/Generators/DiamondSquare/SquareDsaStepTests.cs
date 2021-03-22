@@ -1,103 +1,72 @@
-using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Models;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
-    public class SquareDsaStepTests
+    public class SquareDsaStepTests : BaseDsaStepTests
     {
-        const int DISPLACEMENT = 4;
-        const int N = 5;
-
-        private Vector3[] vertices;
-        private Mock<IDisplacer> mockDisplacer;
-        private SquareDsaStep square;
-
-        [SetUp]
-        public void Setup()
+        protected override BaseDsaStep CreateDsaStep(LandscapeContext context, IDisplacer displacer)
         {
-            vertices = new Vector3[N * N];
-            vertices[0] = new Vector3(0, 7, 4);
-            vertices[N - 1] = new Vector3(4, 4, 4);
-            vertices[(N - 1) * N] = new Vector3(0, 52, 0);
-            vertices[(N - 1) * N + N - 1] = new Vector3(4, 9, 0);
-
-            mockDisplacer = new Mock<IDisplacer>();
-            mockDisplacer.Setup(m => m.GetDisplacement(It.IsAny<int>())).Returns(DISPLACEMENT);
-
-            var gridSize = new Vector3(1, 0, -1);
-
-            var context = new LandscapeContext
-            {
-                Vertices = vertices,
-                Length = N,
-                GridSize = new Vector3(1, 0, -1)
-            };
-            square = new SquareDsaStep(context, mockDisplacer.Object);
+            return new SquareDsaStep(context, displacer);
         }
 
-        private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);
-
-        [Test]
-        public void TestOnFirstIteration()
+        protected override void SetupHeightsForFirstIteration()
         {
-            var mid = (N - 1) / 2;
-            vertices[mid * N + mid] = new Vector3(2, 18, 2) + Displace();
-
-            var expectedVertices = new Vector3[N * N];
-            vertices.CopyTo(expectedVertices, 0);
-            expectedVertices[mid] = new Vector3(2, 13.75f, 4) + Displace();
-            expectedVertices[mid * N] = new Vector3(0, 25.75f, 2) + Displace();
-            expectedVertices[mid * N + N - 1] = new Vector3(4, 14.25f, 2) + Displace();
-            expectedVertices[(N - 1) * N + mid] = new Vector3(2, 26.25f, 0) + Displace();
-
-            square.Execute(iteration: 1);
-
-            CollectionAssert.AreEqual(expectedVertices, vertices);
+            Heights[Mid, Mid] = 18 + Displace();
         }
 
-        [Test]
-        public void TestOnSecondIteration()
+        protected override float[,] CreateExpectedHeightsForFirstIteration()
         {
-            vertices[0 * N + 2] = new Vector3(2, 1, 4);
+            var expectedHeights = Heights.Clone() as float[,];
 
-            vertices[2 * N + 0] = new Vector3(0, 1, 2);
-            vertices[2 * N + 2] = new Vector3(2, 1, 2);
-            vertices[2 * N + 4] = new Vector3(4, 1, 2);
+            expectedHeights[0, Mid] = 13.75f + Displace();
+            expectedHeights[Mid, 0] = 25.75f + Displace();
+            expectedHeights[Mid, N - 1] = 14.25f + Displace();
+            expectedHeights[N - 1, Mid] = 26.25f + Displace();
 
-            vertices[4 * N + 2] = new Vector3(2, 1, 0);
+            return expectedHeights;
+        }
 
-            vertices[1 * N + 1] = new Vector3(1, 2.5f, 3) + Displace();
-            vertices[1 * N + 3] = new Vector3(3, 1.75f, 3) + Displace();
+        protected override void SetupHeightsForSecondIteration()
+        {
+            Heights[0, 2] = 1;
 
-            vertices[3 * N + 1] = new Vector3(1, 13.75f, 1) + Displace();
-            vertices[3 * N + 3] = new Vector3(3, 3, 1) + Displace();
+            Heights[2, 0] = 1;
+            Heights[2, 2] = 1;
+            Heights[2, 4] = 1;
 
-            var expectedVertices = new Vector3[N * N];
-            vertices.CopyTo(expectedVertices, 0);
+            Heights[4, 2] = 1;
 
-            expectedVertices[0 * N + 1] = new Vector3(1, 8.0625f, 4) + Displace();
-            expectedVertices[0 * N + 3] = new Vector3(3, 4.4375f, 4) + Displace();
+            Heights[1, 1] = 2.5f + Displace();
+            Heights[1, 3] = 1.75f + Displace();
 
-            expectedVertices[1 * N + 0] = new Vector3(0, 5.0625f, 3) + Displace();
-            expectedVertices[1 * N + 2] = new Vector3(2, 3.5625f, 3) + Displace();
-            expectedVertices[1 * N + 4] = new Vector3(4, 4.3125f, 3) + Displace();
+            Heights[3, 1] = 13.75f + Displace();
+            Heights[3, 3] = 3 + Displace();
+        }
 
-            expectedVertices[2 * N + 1] = new Vector3(1, 6.5625f, 2) + Displace();
-            expectedVertices[2 * N + 3] = new Vector3(3, 3.6875f, 2) + Displace();
+        protected override float[,] CreateExpectedHeightsForSecondIteration()
+        {
+            var expectedHeights = Heights.Clone() as float[,];
 
-            expectedVertices[3 * N + 0] = new Vector3(0, 19.4375f, 1) + Displace();
-            expectedVertices[3 * N + 2] = new Vector3(2, 6.6875f, 1) + Displace();
-            expectedVertices[3 * N + 4] = new Vector3(4, 8.6875f, 1) + Displace();
+            expectedHeights[0, 1] = 8.0625f + Displace();
+            expectedHeights[0, 3] = 4.4375f + Displace();
 
-            expectedVertices[4 * N + 1] = new Vector3(1, 19.3125f, 0) + Displace();
-            expectedVertices[4 * N + 3] = new Vector3(3, 5.6875f, 0) + Displace();
+            expectedHeights[1, 0] = 5.0625f + Displace();
+            expectedHeights[1, 2] = 3.5625f + Displace();
+            expectedHeights[1, 4] = 4.3125f + Displace();
 
-            square.Execute(iteration: 2);
+            expectedHeights[2, 1] = 6.5625f + Displace();
+            expectedHeights[2, 3] = 3.6875f + Displace();
 
-            CollectionAssert.AreEqual(expectedVertices, vertices);
+            expectedHeights[3, 0] = 19.4375f + Displace();
+            expectedHeights[3, 2] = 6.6875f + Displace();
+            expectedHeights[3, 4] = 8.6875f + Displace();
+
+            expectedHeights[4, 1] = 19.3125f + Displace();
+            expectedHeights[4, 3] = 5.6875f + Displace();
+
+            return expectedHeights;
         }
     }
 }

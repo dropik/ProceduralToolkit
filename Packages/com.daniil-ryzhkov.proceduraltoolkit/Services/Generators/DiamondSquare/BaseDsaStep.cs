@@ -27,6 +27,9 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             foreach (var (row, column) in GetRowsAndColumnsForStep(context))
             {
                 Context.Vertices[GetIndex(row, column)] = GetStepVertex(row, column, context);
+                
+                Context.Heights[row, column] = GetNeighboursHeightAverage(row, column, context.HalfStep) +
+                                               displacer.GetNormalizedDisplacement(context.Iteration);
             }
         }
 
@@ -35,10 +38,12 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         private Vector3 GetStepVertex(int row, int column, DsaStepContext context)
         {
             var vertex = GetVertexOnGrid(row, column);
-            vertex.y = GetNeighboursHeightAverage(row, column, context.HalfStep);
+            vertex.y = GetNeighboursAverage(row, column, context.HalfStep);
             vertex.y += displacer.GetDisplacement(context.Iteration);
             return vertex;
         }
+
+        protected abstract float GetNeighboursHeightAverage(int row, int column, int halfStep);
 
         protected int GetIndex(int row, int column)
             => row * Context.Length + column;
@@ -49,6 +54,6 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         private Vector3 GetShift(int row, int column)
             => Vector3.Scale(new Vector3(column, 0, row), Context.GridSize);
 
-        protected abstract float GetNeighboursHeightAverage(int row, int column, int step);
+        protected abstract float GetNeighboursAverage(int row, int column, int step);
     }
 }

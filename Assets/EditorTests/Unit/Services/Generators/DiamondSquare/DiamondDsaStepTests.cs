@@ -1,79 +1,47 @@
-using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Models;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
-    public class DiamondDsaStepTests
+    public class DiamondDsaStepTests : BaseDsaStepTests
     {
-        const int DISPLACEMENT = 4;
-        const int N = 5;
-
-        private Vector3[] vertices;
-        private Mock<IDisplacer> mockDisplacer;
-        private DiamondDsaStep diamond;
-
-        [SetUp]
-        public void Setup()
+        protected override BaseDsaStep CreateDsaStep(LandscapeContext context, IDisplacer displacer)
         {
-            vertices = new Vector3[N * N];
-            vertices[0] = new Vector3(0, 7, 4);
-            vertices[N - 1] = new Vector3(4, 4, 4);
-            vertices[(N - 1) * N] = new Vector3(0, 52, 0);
-            vertices[(N - 1) * N + N - 1] = new Vector3(4, 9, 0);
-
-            mockDisplacer = new Mock<IDisplacer>();
-            mockDisplacer.Setup(m => m.GetDisplacement(It.IsAny<int>())).Returns(DISPLACEMENT);
-
-            var context = new LandscapeContext
-            {
-                Vertices = vertices,
-                Length = N,
-                GridSize = new Vector3(1, 0, -1)
-            };
-            diamond = new DiamondDsaStep(context, mockDisplacer.Object);
+            return new DiamondDsaStep(context, displacer);
         }
 
-        private Vector3 Displace() => new Vector3(0, mockDisplacer.Object.GetDisplacement(2), 0);
+        protected override void SetupHeightsForFirstIteration() { }
 
-        [Test]
-        public void TestOnFirstIteration()
+        protected override float[,] CreateExpectedHeightsForFirstIteration()
         {
-            var mid = (N - 1) / 2;
-            var expectedVertices = new Vector3[N * N];
-            vertices.CopyTo(expectedVertices, 0);
-            expectedVertices[mid * N + mid] = new Vector3(2, 18, 2) + Displace();
-
-            diamond.Execute(iteration: 1);
-
-            CollectionAssert.AreEqual(expectedVertices, vertices);
+            var expectedHeights = Heights.Clone() as float[,];
+            expectedHeights[Mid, Mid] = 18 + Displace();
+            return expectedHeights;
         }
 
-        [Test]
-        public void TestOnSecondIteration()
+        protected override void SetupHeightsForSecondIteration()
         {
-            vertices[0 * N + 2] = new Vector3(2, 1, 4);
+            Heights[0, 2] = 1;
 
-            vertices[2 * N + 0] = new Vector3(0, 1, 2);
-            vertices[2 * N + 2] = new Vector3(2, 1, 2);
-            vertices[2 * N + 4] = new Vector3(4, 1, 2);
+            Heights[2, 0] = 1;
+            Heights[2, 2] = 1;
+            Heights[2, 4] = 1;
 
-            vertices[4 * N + 2] = new Vector3(2, 1, 0);
+            Heights[4, 2] = 1;
+        }
 
-            var expectedVertices = new Vector3[N * N];
-            vertices.CopyTo(expectedVertices, 0);
+        protected override float[,] CreateExpectedHeightsForSecondIteration()
+        {
+            var expectedHeights = Heights.Clone() as float[,];
 
-            expectedVertices[1 * N + 1] = new Vector3(1, 2.5f, 3) + Displace();
-            expectedVertices[1 * N + 3] = new Vector3(3, 1.75f, 3) + Displace();
+            expectedHeights[1, 1] = 2.5f + Displace();
+            expectedHeights[1, 3] = 1.75f + Displace();
 
-            expectedVertices[3 * N + 1] = new Vector3(1, 13.75f, 1) + Displace();
-            expectedVertices[3 * N + 3] = new Vector3(3, 3, 1) + Displace();
+            expectedHeights[3, 1] = 13.75f + Displace();
+            expectedHeights[3, 3] = 3 + Displace();
 
-            diamond.Execute(iteration: 2);
-
-            CollectionAssert.AreEqual(expectedVertices, vertices);
+            return expectedHeights;
         }
     }
 }
