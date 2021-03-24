@@ -4,7 +4,6 @@ using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
 using ProceduralToolkit.Services.Generators.DiamondSquare;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace ProceduralToolkit.Components.Startups
@@ -14,40 +13,12 @@ namespace ProceduralToolkit.Components.Startups
     [RequireComponent(typeof(Terrain))]
     [RequireComponent(typeof(TerrainCollider))]
     [RequireComponent(typeof(TerrainView))]
-    [ExecuteInEditMode]
-    public class LandscapeGenerator : Startup
+    public class LandscapeGenerator : MonoBehaviour
     {
         private IServiceContainer services;
 
         private IView View => GetComponent<IView>();
         private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
-
-        public void Awake()
-        {
-            hideFlags = HideFlags.HideInInspector;
-        }
-
-        public void Reset()
-        {
-            InitTerrain();
-        }
-
-        private GameObject InitTerrain()
-        {
-            var terrainData = new TerrainData
-            {
-                heightmapResolution = 129,
-                size = new Vector3(1000, 1000, 1000)
-            };
-
-            var terrain = GetComponent<Terrain>();
-            terrain.terrainData = terrainData;
-            terrain.materialTemplate = new Material(Shader.Find("Nature/Terrain/Standard"));
-
-            GetComponent<TerrainCollider>().terrainData = terrainData;
-
-            return default;
-        }
 
         public void OnValidate()
         {
@@ -111,11 +82,6 @@ namespace ProceduralToolkit.Components.Startups
             services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(View);
             services.GetService<IGeneratorStarter>().Generated += View.MarkDirty;
-        }
-
-        public override void RegisterUndo()
-        {
-            Undo.RegisterCreatedObjectUndo(gameObject, "New Landscape Generator");
         }
     }
 }
