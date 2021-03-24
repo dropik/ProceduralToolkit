@@ -1,6 +1,6 @@
 ﻿namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public interface IDsaStep
+    public interface IAlgorithmStep
     {
         void Execute(int iteration);
     }

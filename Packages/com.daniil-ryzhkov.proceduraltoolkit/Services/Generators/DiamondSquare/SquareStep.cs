@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public class SquareDsaStep : BaseDsaStep
+    public class SquareStep : BaseAlgorithmStep
     {
-        public SquareDsaStep(LandscapeContext context, IDisplacer displacer)
+        public SquareStep(LandscapeContext context, IDisplacer displacer)
             : base(context, displacer) { }
 
         protected override IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context)

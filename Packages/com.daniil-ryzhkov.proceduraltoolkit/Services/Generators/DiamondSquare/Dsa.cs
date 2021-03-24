@@ -5,10 +5,10 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
     public class Dsa : IDsa
     {
         private readonly LandscapeContext context;
-        private readonly IDsaStep diamondStep;
-        private readonly IDsaStep squareStep;
+        private readonly IAlgorithmStep diamondStep;
+        private readonly IAlgorithmStep squareStep;
 
-        public Dsa(LandscapeContext context, IDsaStep diamondStep, IDsaStep squareStep)
+        public Dsa(LandscapeContext context, IAlgorithmStep diamondStep, IAlgorithmStep squareStep)
         {
             this.context = context;
             this.diamondStep = diamondStep;

@@ -80,8 +80,8 @@ namespace ProceduralToolkit.Components.Startups
                             new HeightsInitializer(
                                 new Dsa(
                                     context,
-                                    new DiamondDsaStep(context, displacer),
-                                    new SquareDsaStep(context, displacer)
+                                    new DiamondStep(context, displacer),
+                                    new SquareStep(context, displacer)
                                 ),
                                 context,
                                 settings

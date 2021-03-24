@@ -1,11 +1,10 @@
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Models;
-using UnityEngine;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public abstract class BaseDsaStepTests
+    public abstract class BaseAlgorithmStepTests
     {
         private const int DISPLACEMENT = 4;
         protected int N { get; set; } = 5;
@@ -13,7 +12,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
         protected float[,] Heights { get; private set; }
         private Mock<IDisplacer> mockDisplacer;
-        protected BaseDsaStep Step { get; private set; }
+        protected BaseAlgorithmStep Step { get; private set; }
 
         protected float Displace() => mockDisplacer.Object.GetNormalizedDisplacement(2);
 
@@ -37,7 +36,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             Step = CreateDsaStep(context, mockDisplacer.Object);
         }
 
-        protected abstract BaseDsaStep CreateDsaStep(LandscapeContext context, IDisplacer displacer);
+        protected abstract BaseAlgorithmStep CreateDsaStep(LandscapeContext context, IDisplacer displacer);
 
         [Test]
         [TestCase(1)]

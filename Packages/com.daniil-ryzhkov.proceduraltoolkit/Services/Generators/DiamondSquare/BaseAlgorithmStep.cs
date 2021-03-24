@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public abstract class BaseDsaStep : IDsaStep
+    public abstract class BaseAlgorithmStep : IAlgorithmStep
     {
         private readonly IDisplacer displacer;
 
         protected LandscapeContext Context { get; private set; }
 
-        public BaseDsaStep(LandscapeContext context, IDisplacer displacer)
+        public BaseAlgorithmStep(LandscapeContext context, IDisplacer displacer)
         {
             Context = context;
             this.displacer = displacer;

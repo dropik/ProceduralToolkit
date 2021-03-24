@@ -4,11 +4,11 @@ using ProceduralToolkit.Models;
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
     [Category("Unit")]
-    public class DiamondDsaStepTests : BaseDsaStepTests
+    public class DiamondStepTests : BaseAlgorithmStepTests
     {
-        protected override BaseDsaStep CreateDsaStep(LandscapeContext context, IDisplacer displacer)
+        protected override BaseAlgorithmStep CreateDsaStep(LandscapeContext context, IDisplacer displacer)
         {
-            return new DiamondDsaStep(context, displacer);
+            return new DiamondStep(context, displacer);
         }
 
         protected override void SetupHeightsForFirstIteration() { }
