@@ -11,18 +11,22 @@ namespace ProceduralToolkit.Components.Generators
     public class DiamondSquareTests
     {
         private GameObject gameObject;
-        private DiamondSquare ds;
         private DsaSettings settings;
+        private Mock<Action> mockOnUpdatedAction;
+        private DiamondSquare ds;
 
         [SetUp]
         public void Setup()
         {
             settings = new DsaSettings();
+            mockOnUpdatedAction = new Mock<Action>();
+
             gameObject = new GameObject();
             ds = gameObject.AddComponent<DiamondSquare>();
             var services = ServiceContainerFactory.Create();
             services.AddSingleton(settings);
             services.InjectServicesTo(ds);
+            ds.Updated += mockOnUpdatedAction.Object;
         }
 
         [TearDown]
@@ -35,48 +39,56 @@ namespace ProceduralToolkit.Components.Generators
         public void TestResetValues()
         {
             Assert.That(ds.seed, Is.EqualTo(0));
-            Assert.That(ds.resolution, Is.EqualTo(5));
-            Assert.That(ds.sideLength, Is.EqualTo(1000));
-            Assert.That(ds.magnitude, Is.EqualTo(100));
-            Assert.That(ds.hardness, Is.EqualTo(0.5f));
+            Assert.That(ds.magnitude, Is.EqualTo(1));
+            Assert.That(ds.hardness, Is.EqualTo(1));
+            Assert.That(ds.bias, Is.EqualTo(0.5f));
         }
 
         [Test]
         public void TestUpdatedEventInvoked()
         {
-            var mockAction = new Mock<Action>();
-            ds.Updated += mockAction.Object;
             ds.OnValidate();
-            mockAction.Verify(m => m.Invoke(), Times.Once);
+            mockOnUpdatedAction.Verify(m => m.Invoke(), Times.Once);
         }
 
         [Test]
         public void TestDSASettingsUpdated()
         {
             const int seed = 10;
-            const int resolution = 5;
-            const float sideLength = 100;
-            const float magnitude = 100;
+            const float magnitude = 0.5f;
             const float hardness = 1;
+            const float bias = 0;
 
             ds.seed = seed;
-            ds.resolution = resolution;
-            ds.sideLength = sideLength;
             ds.magnitude = magnitude;
             ds.hardness = hardness;
+            ds.bias = bias;
 
             var expectedSettings = new DsaSettings
             {
                 Seed = seed,
-                Resolution = resolution,
-                SideLength = sideLength,
                 Magnitude = magnitude,
-                Hardness = hardness
+                Hardness = hardness,
+                Bias = bias
             };
 
             ds.OnValidate();
 
             Assert.That(settings, Is.EqualTo(expectedSettings));
+        }
+
+        [Test]
+        public void TestUpdatedEvent_NotInvoked_OnTerrainChanged_WithoutHeightmapResolutionFlag()
+        {
+            ds.OnTerrainChanged(TerrainChangedFlags.DelayedHeightmapUpdate);
+            mockOnUpdatedAction.Verify(m => m.Invoke(), Times.Never);
+        }
+
+        [Test]
+        public void TestUpdatedEvent_Invoked_OnTerrainChanged_WithHeightmapResolutionFlag()
+        {
+            ds.OnTerrainChanged(TerrainChangedFlags.DelayedHeightmapUpdate | TerrainChangedFlags.HeightmapResolution);
+            mockOnUpdatedAction.Verify(m => m.Invoke(), Times.Once);
         }
     }
 }

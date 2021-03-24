@@ -8,8 +8,8 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
     public class DsaTests
     {
         private LandscapeContext context;
-        private Mock<IDsaStep> mockDiamondStep;
-        private Mock<IDsaStep> mockSquareStep;
+        private Mock<IAlgorithmStep> mockDiamondStep;
+        private Mock<IAlgorithmStep> mockSquareStep;
         private Dsa dsa;
 
         private void Setup(int iterations)
@@ -18,8 +18,8 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             {
                 Iterations = iterations
             };
-            mockDiamondStep = new Mock<IDsaStep>();
-            mockSquareStep = new Mock<IDsaStep>();
+            mockDiamondStep = new Mock<IAlgorithmStep>();
+            mockSquareStep = new Mock<IAlgorithmStep>();
             dsa = new Dsa(context, mockDiamondStep.Object, mockSquareStep.Object);
         }
 
