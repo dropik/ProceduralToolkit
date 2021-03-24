@@ -17,6 +17,8 @@ This is a toolkit for procedural content generation for Unity.
 - The maximum altitude of the terrain can be adjusted by combining two settings: the Y size of the terrain itself, or the *magnitude* parameter in *Diamond Square* component.
 
 ## Changelog
+### v1.0.1
+- Fixed reset behaviour on Landscape Generator.
 ### v1.0.0
 - Landscape generated using Diamond Square algorithm.
 - Generation result is stored into a terrain heightmap.
