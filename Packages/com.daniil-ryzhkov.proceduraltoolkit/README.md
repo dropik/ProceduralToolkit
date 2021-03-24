@@ -2,10 +2,10 @@
 This is a toolkit for procedural content generation for Unity.
 
 ## Get started
-* Navigate to *GameObject* -> *ProceduralToolkit* -> *New LandscapeGenerator*
-* Locate your newly created *LandscapeGenerator* object on your scene and edit settings.
+* Navigate to *GameObject* -> *ProceduralToolkit* -> *Landscape Generator*
+* Locate your newly created *Landscape Generator* object on your scene and edit settings.
 
-## LandscapeGenerator settings
+## Landscape Generator settings
 ### Diamond Square
 - *Seed*: sets the seed for the randomizer. This ensures the equality of generation.
 - *Magnitude*: the maximum amount of magnitude relative to terrain Y size.

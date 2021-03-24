@@ -15,7 +15,7 @@ namespace ProceduralToolkit.E2E
 
         private const string TEST_SCENE = "Assets/EditorTests/E2E/Scenes/LandscapeGeneratorE2E.unity";
 
-        private GameObject Root => GameObject.Find("LandscapeGenerator");
+        private GameObject Root => GameObject.Find("Landscape Generator");
         private TerrainData TerrainData => Root.GetComponent<Terrain>().terrainData;
 
         [UnitySetUp]

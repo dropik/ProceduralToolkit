@@ -29,16 +29,10 @@ namespace ProceduralToolkit.Components.Startups
 
         public void Reset()
         {
-            var resetter = new StartupResetter(gameObject)
-            {
-                DefaultName = "LandscapeGenerator",
-                GeneratorSettings = GeneratorSettings
-            };
-            resetter.InitChild += InitView;
-            resetter.Reset();
+            InitTerrain();
         }
 
-        private GameObject InitView()
+        private GameObject InitTerrain()
         {
             var terrainData = new TerrainData
             {
