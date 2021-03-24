@@ -14,12 +14,18 @@ namespace ProceduralToolkit.Components.Startups
     [RequireComponent(typeof(Terrain))]
     [RequireComponent(typeof(TerrainCollider))]
     [RequireComponent(typeof(TerrainView))]
+    [ExecuteInEditMode]
     public class LandscapeGenerator : Startup
     {
         private IServiceContainer services;
 
         private IView View => GetComponent<IView>();
         private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
+
+        public void Awake()
+        {
+            hideFlags = HideFlags.HideInInspector;
+        }
 
         public void Reset()
         {
