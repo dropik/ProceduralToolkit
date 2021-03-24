@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace ProceduralToolkit.Services.Generators.DiamondSquare
 {
-    public class DiamondDsaStep : BaseDsaStep
+    public class DiamondStep : BaseAlgorithmStep
     {
-        public DiamondDsaStep(LandscapeContext context, IDisplacer displacer)
+        public DiamondStep(LandscapeContext context, IDisplacer displacer)
             : base(context, displacer) { }
 
         protected override IEnumerable<(int row, int column)> GetRowsAndColumnsForStep(DsaStepContext context)
@@ -19,26 +19,26 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             }
         }
 
-        protected override float GetNeighboursHeightAverage(int row, int column, int step)
+        protected override float GetNeighboursHeightAverage(int row, int column, int halfStep)
         {
-            return (GetUpLeftHeight(row, column, step) +
-                    GetUpRightHeight(row, column, step) +
-                    GetDownLeftHeight(row, column, step) +
-                    GetDownRightHeight(row, column, step))
+            return (GetUpLeftHeight(row, column, halfStep) +
+                    GetUpRightHeight(row, column, halfStep) +
+                    GetDownLeftHeight(row, column, halfStep) +
+                    GetDownRightHeight(row, column, halfStep))
                     /
                     4f;
         }
 
         private float GetUpLeftHeight(int row, int column, int step)
-            => Context.Vertices[GetIndex(row - step, column - step)].y;
+            => Context.Heights[row - step, column - step];
 
         private float GetUpRightHeight(int row, int column, int step)
-            => Context.Vertices[GetIndex(row - step, column + step)].y;
+            => Context.Heights[row - step, column + step];
 
         private float GetDownLeftHeight(int row, int column, int step)
-            => Context.Vertices[GetIndex(row + step, column - step)].y;
+            => Context.Heights[row + step, column - step];
 
         private float GetDownRightHeight(int row, int column, int step)
-            => Context.Vertices[GetIndex(row + step, column + step)].y;
+            => Context.Heights[row + step, column + step];
     }
 }

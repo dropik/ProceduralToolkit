@@ -14,27 +14,23 @@ namespace ProceduralToolkit.Components.Generators
         [Min(0)]
         public int seed;
 
-        [Range(0, 7)]
-        public int resolution;
-
-        [Min(0)]
-        public float sideLength;
-
-        [Min(0)]
+        [Range(0, 1)]
         public float magnitude;
 
         [Range(0, 2)]
         public float hardness;
+
+        [Range(0, 1)]
+        public float bias;
 
         public event Action Updated;
 
         public void Reset()
         {
             seed = 0;
-            resolution = 5;
-            sideLength = 1000;
-            magnitude = 100;
-            hardness = 0.5f;
+            magnitude = 1;
+            hardness = 1;
+            bias = 0.5f;
         }
 
         public void OnValidate()
@@ -48,10 +44,18 @@ namespace ProceduralToolkit.Components.Generators
             if (settings != null)
             {
                 settings.Seed = seed;
-                settings.Resolution = resolution;
-                settings.SideLength = sideLength;
                 settings.Magnitude = magnitude;
                 settings.Hardness = hardness;
+                settings.Bias = bias;
+            }
+        }
+
+        public void OnTerrainChanged(TerrainChangedFlags flags)
+        {
+            if ((flags & TerrainChangedFlags.HeightmapResolution) != 0)
+            {
+                TryUpdateSettings();
+                Updated?.Invoke();
             }
         }
     }
