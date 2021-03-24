@@ -83,7 +83,8 @@ namespace ProceduralToolkit.Components.Startups
                                     new DiamondDsaStep(context, displacer),
                                     new SquareDsaStep(context, displacer)
                                 ),
-                                context
+                                context,
+                                settings
                             ),
                             services.GetService<TerrainData>(),
                             context

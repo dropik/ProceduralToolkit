@@ -20,6 +20,9 @@ namespace ProceduralToolkit.Components.Generators
         [Range(0, 2)]
         public float hardness;
 
+        [Range(0, 1)]
+        public float bias;
+
         public event Action Updated;
 
         public void Reset()
@@ -27,6 +30,7 @@ namespace ProceduralToolkit.Components.Generators
             seed = 0;
             magnitude = 1;
             hardness = 1;
+            bias = 0.5f;
         }
 
         public void OnValidate()
@@ -42,6 +46,7 @@ namespace ProceduralToolkit.Components.Generators
                 settings.Seed = seed;
                 settings.Magnitude = magnitude;
                 settings.Hardness = hardness;
+                settings.Bias = bias;
             }
         }
 

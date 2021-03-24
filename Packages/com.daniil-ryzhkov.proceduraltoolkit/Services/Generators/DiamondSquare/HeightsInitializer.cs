@@ -5,10 +5,13 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
     public class HeightsInitializer : BaseDsaDecorator
     {
         private readonly LandscapeContext context;
+        private readonly DsaSettings settings;
 
-        public HeightsInitializer(IDsa wrappee, LandscapeContext context) : base(wrappee)
+        public HeightsInitializer(IDsa wrappee, LandscapeContext context, DsaSettings settings)
+            : base(wrappee)
         {
             this.context = context;
+            this.settings = settings;
         }
 
         public override void Execute()
@@ -29,10 +32,10 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
         private void SetCornerHeights(float[,] heights)
         {
-            heights[0, 0] = 0.5f;
-            heights[0, context.Length - 1] = 0.5f;
-            heights[context.Length - 1, 0] = 0.5f;
-            heights[context.Length - 1, context.Length - 1] = 0.5f;
+            heights[0, 0] = settings.Bias;
+            heights[0, context.Length - 1] = settings.Bias;
+            heights[context.Length - 1, 0] = settings.Bias;
+            heights[context.Length - 1, context.Length - 1] = settings.Bias;
         }
     }
 }

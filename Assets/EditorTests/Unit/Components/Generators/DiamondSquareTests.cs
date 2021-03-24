@@ -41,6 +41,7 @@ namespace ProceduralToolkit.Components.Generators
             Assert.That(ds.seed, Is.EqualTo(0));
             Assert.That(ds.magnitude, Is.EqualTo(1));
             Assert.That(ds.hardness, Is.EqualTo(1));
+            Assert.That(ds.bias, Is.EqualTo(0.5f));
         }
 
         [Test]
@@ -56,16 +57,19 @@ namespace ProceduralToolkit.Components.Generators
             const int seed = 10;
             const float magnitude = 0.5f;
             const float hardness = 1;
+            const float bias = 0;
 
             ds.seed = seed;
             ds.magnitude = magnitude;
             ds.hardness = hardness;
+            ds.bias = bias;
 
             var expectedSettings = new DsaSettings
             {
                 Seed = seed,
                 Magnitude = magnitude,
-                Hardness = hardness
+                Hardness = hardness,
+                Bias = bias
             };
 
             ds.OnValidate();
