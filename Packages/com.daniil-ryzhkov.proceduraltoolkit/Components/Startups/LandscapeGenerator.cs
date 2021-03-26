@@ -65,7 +65,6 @@ namespace ProceduralToolkit.Components.Startups
                     );
             });
 
-            services.AddSingleton<GeneratorStarter>();
             services.AddSingleton<GeneratorScheduler>();
         }
 
@@ -76,16 +75,17 @@ namespace ProceduralToolkit.Components.Startups
 
         private void InjectServices()
         {
-            var starter = services.GetService<GeneratorScheduler>();
+            var scheduler = services.GetService<GeneratorScheduler>();
             foreach (var generator in GeneratorSettings)
             {
                 services.InjectServicesTo(generator);
-                generator.Updated += starter.MarkDirty;
+                generator.Updated += scheduler.MarkDirty;
             }
             services.InjectServicesTo(View);
-            services.GetService<IGeneratorStarter>().Generated += View.MarkDirty;
 
-            EditorApplication.update += starter.Update;
+            scheduler.Generated += View.MarkDirty;
+
+            EditorApplication.update += scheduler.Update;
         }
 
         public void OnDisable()

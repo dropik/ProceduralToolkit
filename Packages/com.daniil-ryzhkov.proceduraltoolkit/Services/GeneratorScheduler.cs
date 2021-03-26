@@ -1,12 +1,17 @@
+using System;
+using ProceduralToolkit.Services.Generators.DiamondSquare;
+
 namespace ProceduralToolkit.Services
 {
     public class GeneratorScheduler
     {
-        private readonly IGeneratorStarter starter;
+        private readonly IDsa dsa;
 
-        public GeneratorScheduler(IGeneratorStarter starter)
+        public event Action Generated;
+
+        public GeneratorScheduler(IDsa dsa)
         {
-            this.starter = starter;
+            this.dsa = dsa;
         }
 
         private bool isDirty;
@@ -15,7 +20,8 @@ namespace ProceduralToolkit.Services
         {
             if (isDirty)
             {
-                starter?.Start();
+                dsa?.Execute();
+                Generated?.Invoke();
                 isDirty = false;
             }
         }
