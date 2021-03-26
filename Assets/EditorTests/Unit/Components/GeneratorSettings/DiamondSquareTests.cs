@@ -3,7 +3,7 @@ using NUnit.Framework;
 using System;
 using UnityEngine;
 
-namespace ProceduralToolkit.Components.Generators
+namespace ProceduralToolkit.Components.GeneratorSettings
 {
     [Category("Unit")]
     public class DiamondSquareTests

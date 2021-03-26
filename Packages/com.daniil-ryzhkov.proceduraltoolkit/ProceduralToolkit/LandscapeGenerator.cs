@@ -1,4 +1,4 @@
-﻿using ProceduralToolkit.Components.Generators;
+﻿using ProceduralToolkit.Components.GeneratorSettings;
 using ProceduralToolkit.Models;
 using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace ProceduralToolkit.Components.Startups
+namespace ProceduralToolkit
 {
     [RequireComponent(typeof(DiamondSquare))]
     [RequireComponent(typeof(Terrain))]

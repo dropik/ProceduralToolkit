@@ -2,7 +2,7 @@ using ProceduralToolkit.Models;
 using System;
 using UnityEngine;
 
-namespace ProceduralToolkit.Components.Generators
+namespace ProceduralToolkit.Components.GeneratorSettings
 {
     [ExecuteInEditMode]
     public class DiamondSquare : MonoBehaviour, IGeneratorSettings

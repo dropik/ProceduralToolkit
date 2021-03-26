@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using ProceduralToolkit.Components.Generators;
+using ProceduralToolkit.Components.GeneratorSettings;
 using System.Collections;
 using UnityEditor;
 using UnityEditor.SceneManagement;

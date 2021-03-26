@@ -1,5 +1,4 @@
-﻿using ProceduralToolkit.Components.Startups;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace ProceduralToolkit

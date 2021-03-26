@@ -1,6 +1,6 @@
 using System;
 
-namespace ProceduralToolkit.Components.Generators
+namespace ProceduralToolkit.Components.GeneratorSettings
 {
     public interface IGeneratorSettings
     {
