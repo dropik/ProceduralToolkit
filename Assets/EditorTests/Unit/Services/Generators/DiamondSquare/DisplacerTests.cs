@@ -15,9 +15,9 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         {
             var settings = new DsaSettings
             {
-                Seed = seed,
-                Hardness = hardness,
-                Magnitude = magnitude
+                seed = seed,
+                hardness = hardness,
+                magnitude = magnitude
             };
 
             Random.InitState(seed);

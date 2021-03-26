@@ -32,10 +32,10 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
         private void SetCornerHeights(float[,] heights)
         {
-            heights[0, 0] = settings.Bias;
-            heights[0, context.Length - 1] = settings.Bias;
-            heights[context.Length - 1, 0] = settings.Bias;
-            heights[context.Length - 1, context.Length - 1] = settings.Bias;
+            heights[0, 0] = settings.bias;
+            heights[0, context.Length - 1] = settings.bias;
+            heights[context.Length - 1, 0] = settings.bias;
+            heights[context.Length - 1, context.Length - 1] = settings.bias;
         }
     }
 }

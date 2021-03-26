@@ -94,7 +94,7 @@ namespace ProceduralToolkit.E2E
             var heights1 = terrainData.GetHeights(0, 0, 33, 33);
             
             var ds = Root.GetComponent<DiamondSquare>();
-            ds.seed = 10;
+            ds.settings.seed = 10;
             ds.OnValidate();
             Root.SendMessage("Update");
             yield return SkipFrames();

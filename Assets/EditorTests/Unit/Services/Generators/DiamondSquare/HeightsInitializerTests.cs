@@ -17,7 +17,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
             context = new LandscapeContext();
             settings = new DsaSettings
             {
-                Bias = BIAS
+                bias = BIAS
             };
         }
 

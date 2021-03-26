@@ -1,28 +1,39 @@
+using System;
+using UnityEngine;
+
 namespace ProceduralToolkit.Models
 {
+    [Serializable]
     public class DsaSettings
     {
-        public int Seed { get; set; }
-        public float Magnitude { get; set; }
-        public float Hardness { get; set; }
-        public float Bias { get; set; }
+        [Min(0)]
+        public int seed = 0;
+
+        [Range(0, 1)]
+        public float magnitude = 1;
+
+        [Range(0, 2)]
+        public float hardness = 1;
+
+        [Range(0, 1)]
+        public float bias = 0.5f;
 
         public override bool Equals(object obj)
         {
             return obj is DsaSettings settings &&
-                   Seed == settings.Seed &&
-                   Magnitude == settings.Magnitude &&
-                   Hardness == settings.Hardness &&
-                   Bias == settings.Bias;
+                   seed == settings.seed &&
+                   magnitude == settings.magnitude &&
+                   hardness == settings.hardness &&
+                   bias == settings.bias;
         }
 
         public override int GetHashCode()
         {
             int hashCode = -228455935;
-            hashCode = hashCode * -1521134295 + Seed.GetHashCode();
-            hashCode = hashCode * -1521134295 + Magnitude.GetHashCode();
-            hashCode = hashCode * -1521134295 + Hardness.GetHashCode();
-            hashCode = hashCode * -1521134295 + Bias.GetHashCode();
+            hashCode = hashCode * -1521134295 + seed.GetHashCode();
+            hashCode = hashCode * -1521134295 + magnitude.GetHashCode();
+            hashCode = hashCode * -1521134295 + hardness.GetHashCode();
+            hashCode = hashCode * -1521134295 + bias.GetHashCode();
             return hashCode;
         }
     }

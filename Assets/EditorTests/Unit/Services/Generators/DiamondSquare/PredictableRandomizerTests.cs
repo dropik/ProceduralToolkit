@@ -15,7 +15,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
         {
             settings = new DsaSettings
             {
-                Seed = 123
+                seed = 123
             };
         }
 

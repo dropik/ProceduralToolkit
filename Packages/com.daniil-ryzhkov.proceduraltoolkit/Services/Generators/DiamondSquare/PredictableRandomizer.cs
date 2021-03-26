@@ -14,7 +14,7 @@ namespace ProceduralToolkit.Services.Generators.DiamondSquare
 
         public override void Execute()
         {
-            Random.InitState(settings.Seed);
+            Random.InitState(settings.seed);
             base.Execute();
         }
     }

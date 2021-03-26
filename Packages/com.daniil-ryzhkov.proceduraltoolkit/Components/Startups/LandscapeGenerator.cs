@@ -4,6 +4,7 @@ using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
 using ProceduralToolkit.Services.Generators.DiamondSquare;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace ProceduralToolkit.Components.Startups
@@ -36,7 +37,7 @@ namespace ProceduralToolkit.Components.Startups
         protected virtual void SetupGeneratorStarterServices(IServiceContainer services)
         {
             services.AddSingleton<LandscapeContext>();
-            services.AddSingleton<DsaSettings>();
+            services.AddSingleton(() => GetComponent<DiamondSquare>().settings);
             services.AddTransient<IDisplacer, Displacer>();
 
             services.AddSingleton<IDsa>(() =>
