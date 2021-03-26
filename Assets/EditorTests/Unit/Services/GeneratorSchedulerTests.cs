@@ -1,4 +1,3 @@
-using System;
 using Moq;
 using NUnit.Framework;
 using ProceduralToolkit.Services.Generators.DiamondSquare;
@@ -19,50 +18,20 @@ namespace ProceduralToolkit.Services
         }
 
         [Test]
-        public void TestDsaNotExecutedOnUpdateIfNotDirty()
+        public void TestDsaExecutedOnce()
         {
-            scheduler.Update();
-            mockDsa.Verify(m => m.Execute(), Times.Never);
-        }
-
-        [Test]
-        public void TestDsaExecutedOnceOnOneDirtyMark()
-        {
-            scheduler.MarkDirty();
             scheduler.Update();
             scheduler.Update();
             mockDsa.Verify(m => m.Execute(), Times.Once);
         }
 
         [Test]
-        public void TestGeneratedEventNotInvokedIfNotDirty()
+        public void TestDsaExecutedOnMarkedDirty()
         {
-            var mockGeneratedAction = new Mock<Action>();
-            scheduler.Generated += mockGeneratedAction.Object;
-
             scheduler.Update();
-
-            mockGeneratedAction.Verify(m => m.Invoke(), Times.Never);
-        }
-
-        [Test]
-        public void TestGeneratedEventInvokedOnceOnOneDirtyMark()
-        {
-            var mockGeneratedAction = new Mock<Action>();
-            scheduler.Generated += mockGeneratedAction.Object;
-
             scheduler.MarkDirty();
             scheduler.Update();
-            scheduler.Update();
-
-            mockGeneratedAction.Verify(m => m.Invoke(), Times.Once);
-        }
-
-        [Test]
-        public void TestOnGeneratedCallbacksNotSet()
-        {
-            scheduler.MarkDirty();
-            scheduler.Update();
+            mockDsa.Verify(m => m.Execute(), Times.Exactly(2));
         }
     }
 }

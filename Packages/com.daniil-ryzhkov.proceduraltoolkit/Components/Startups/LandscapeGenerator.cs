@@ -12,13 +12,11 @@ namespace ProceduralToolkit.Components.Startups
     [RequireComponent(typeof(DiamondSquare))]
     [RequireComponent(typeof(Terrain))]
     [RequireComponent(typeof(TerrainCollider))]
-    [RequireComponent(typeof(TerrainView))]
     [ExecuteInEditMode]
     public class LandscapeGenerator : MonoBehaviour
     {
         private IServiceContainer services;
 
-        private IView View => GetComponent<IView>();
         private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
 
         public void OnValidate()
@@ -45,23 +43,28 @@ namespace ProceduralToolkit.Components.Startups
                 var context = services.GetService<LandscapeContext>();
                 var settings = services.GetService<DsaSettings>();
                 var displacer = services.GetService<IDisplacer>();
+                var terrainData = services.GetService<TerrainData>();
                 
                 return
-                    new PredictableRandomizer(
-                        new TerrainDataToContextConverter(
-                            new HeightsInitializer(
-                                new Dsa(
+                    new HeightsSaver(
+                        new PredictableRandomizer(
+                            new TerrainDataToContextConverter(
+                                new HeightsInitializer(
+                                    new Dsa(
+                                        context,
+                                        new DiamondStep(context, displacer),
+                                        new SquareStep(context, displacer)
+                                    ),
                                     context,
-                                    new DiamondStep(context, displacer),
-                                    new SquareStep(context, displacer)
+                                    settings
                                 ),
-                                context,
-                                settings
+                                terrainData,
+                                context
                             ),
-                            services.GetService<TerrainData>(),
-                            context
+                            settings
                         ),
-                        settings
+                        terrainData,
+                        context
                     );
             });
 
@@ -81,9 +84,6 @@ namespace ProceduralToolkit.Components.Startups
                 services.InjectServicesTo(generator);
                 generator.Updated += scheduler.MarkDirty;
             }
-            services.InjectServicesTo(View);
-
-            scheduler.Generated += View.MarkDirty;
 
             EditorApplication.update += scheduler.Update;
         }
