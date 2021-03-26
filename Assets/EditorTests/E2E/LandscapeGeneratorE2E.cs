@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using ProceduralToolkit.Components.Generators;
 using System.Collections;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -35,6 +36,7 @@ namespace ProceduralToolkit.E2E
         private IEnumerator ComposeGenerator()
         {
             MenuEntries.NewLandscapeGenerator();
+            EditorApplication.QueuePlayerLoopUpdate();
             yield return SkipFrames();
         }
 
@@ -51,39 +53,23 @@ namespace ProceduralToolkit.E2E
         [UnityTest]
         public IEnumerator TestNewLandscapeGeneratorSavedOnSceneReload()
         {
-            yield return ReloadScene();
-            AssertGeneration();
-        }
+            var ds = Root.GetComponent<DiamondSquare>();
+            ds.settings.seed = 10;
+            ds.OnValidate();
+            EditorApplication.QueuePlayerLoopUpdate();
+            yield return SkipFrames();
 
-        private IEnumerator ReloadScene()
-        {
+            var resolution = TerrainData.heightmapResolution;
+            var heights1 = TerrainData.GetHeights(0, 0, resolution, resolution);
+
             EditorSceneManager.SaveScene(testScene);
             yield return OpenScene();
-        }
+            EditorApplication.QueuePlayerLoopUpdate();
+            yield return SkipFrames();
 
-        private void AssertGeneration()
-        {
-            AssertViewCreated();
-            AssertMeshCreated();
-            AssertMaterialAssigned();
-        }
-
-        private void AssertViewCreated()
-        {
-            Assert.That(TerrainData, Is.Not.Null);
-        }
-
-        private void AssertMeshCreated()
-        {
-            var resolution = TerrainData.heightmapResolution;
-            var heights = TerrainData.GetHeights(0, 0, resolution, resolution);
-            CollectionAssert.DoesNotContain(heights, 0);
-        }
-
-        private void AssertMaterialAssigned()
-        {
-            var material = Root.GetComponent<Terrain>().materialTemplate;
-            Assert.That(material, Is.Not.Null);
+            var heights2 = TerrainData.GetHeights(0, 0, resolution, resolution);
+            CollectionAssert.AreEqual(heights1, heights2);
+            Assert.That(Root.GetComponent<Terrain>().materialTemplate, Is.Not.Null);
         }
 
         [UnityTest]
@@ -96,7 +82,7 @@ namespace ProceduralToolkit.E2E
             var ds = Root.GetComponent<DiamondSquare>();
             ds.settings.seed = 10;
             ds.OnValidate();
-            Root.SendMessage("Update");
+            EditorApplication.QueuePlayerLoopUpdate();
             yield return SkipFrames();
 
             var heights2 = terrainData.GetHeights(0, 0, 33, 33);

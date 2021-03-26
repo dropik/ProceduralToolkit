@@ -10,10 +10,10 @@ using UnityEngine;
 namespace ProceduralToolkit.Components.Startups
 {
     [RequireComponent(typeof(DiamondSquare))]
-    [RequireComponent(typeof(GeneratorStarterComponent))]
     [RequireComponent(typeof(Terrain))]
     [RequireComponent(typeof(TerrainCollider))]
     [RequireComponent(typeof(TerrainView))]
+    [ExecuteInEditMode]
     public class LandscapeGenerator : MonoBehaviour
     {
         private IServiceContainer services;
@@ -66,6 +66,7 @@ namespace ProceduralToolkit.Components.Startups
             });
 
             services.AddSingleton<GeneratorStarter>();
+            services.AddSingleton<GeneratorScheduler>();
         }
 
         protected virtual void SetupViewServices(IServiceContainer services)
@@ -75,14 +76,21 @@ namespace ProceduralToolkit.Components.Startups
 
         private void InjectServices()
         {
+            var starter = services.GetService<GeneratorScheduler>();
             foreach (var generator in GeneratorSettings)
             {
                 services.InjectServicesTo(generator);
-                generator.Updated += GetComponent<GeneratorStarterComponent>().MarkDirty;
+                generator.Updated += starter.MarkDirty;
             }
-            services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(View);
             services.GetService<IGeneratorStarter>().Generated += View.MarkDirty;
+
+            EditorApplication.update += starter.Update;
+        }
+
+        public void OnDisable()
+        {
+            EditorApplication.update -= services.GetService<GeneratorScheduler>().Update;
         }
     }
 }
