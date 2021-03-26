@@ -77,7 +77,7 @@ namespace ProceduralToolkit.Components.Startups
             foreach (var generator in GeneratorSettings)
             {
                 services.InjectServicesTo(generator);
-                generator.Updated += services.GetService<IGeneratorStarter>().Start;
+                generator.Updated += GetComponent<GeneratorStarterComponent>().MarkDirty;
             }
             services.InjectServicesTo(GetComponent<GeneratorStarterComponent>());
             services.InjectServicesTo(View);

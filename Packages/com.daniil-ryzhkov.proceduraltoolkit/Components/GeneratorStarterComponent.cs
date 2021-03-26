@@ -10,6 +10,8 @@ namespace ProceduralToolkit.Components
         [Service]
         private readonly IGeneratorStarter starter;
 
+        private bool isDirty;
+
         private void Awake()
         {
             hideFlags = HideFlags.HideInInspector;
@@ -19,6 +21,20 @@ namespace ProceduralToolkit.Components
         {
             SendMessage("TryUpdateSettings", SendMessageOptions.DontRequireReceiver);
             starter?.Start();
+        }
+
+        public void Update()
+        {
+            if (isDirty)
+            {
+                starter?.Start();
+                isDirty = false;
+            }
+        }
+
+        public void MarkDirty()
+        {
+            isDirty = true;
         }
     }
 }

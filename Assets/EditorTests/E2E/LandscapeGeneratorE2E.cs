@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using ProceduralToolkit.Components.Generators;
 using System.Collections;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -83,6 +84,23 @@ namespace ProceduralToolkit.E2E
         {
             var material = Root.GetComponent<Terrain>().materialTemplate;
             Assert.That(material, Is.Not.Null);
+        }
+
+        [UnityTest]
+        public IEnumerator TestMeshUpdatedOnDsaSettingsChange()
+        {
+            var terrain = Root.GetComponent<Terrain>();
+            var terrainData = terrain.terrainData;
+            var heights1 = terrainData.GetHeights(0, 0, 33, 33);
+            
+            var ds = Root.GetComponent<DiamondSquare>();
+            ds.seed = 10;
+            ds.OnValidate();
+            Root.SendMessage("Update");
+            yield return SkipFrames();
+
+            var heights2 = terrainData.GetHeights(0, 0, 33, 33);
+            CollectionAssert.AreNotEqual(heights1, heights2);
         }
     }
 }

@@ -61,5 +61,21 @@ namespace ProceduralToolkit.Components
             meshAssembler.Start();
             Assert.That(listener.Updated);
         }
+
+        [Test]
+        public void TestAssemblerNotCalledOnUpdateIfNotDirty()
+        {
+            meshAssembler.Update();
+            mockAssembler.Verify(m => m.Start(), Times.Never);
+        }
+
+        [Test]
+        public void TestAssemblerCalledOnceOnOneDirtyMark()
+        {
+            meshAssembler.MarkDirty();
+            meshAssembler.Update();
+            meshAssembler.Update();
+            mockAssembler.Verify(m => m.Start(), Times.Once);
+        }
     }
 }
