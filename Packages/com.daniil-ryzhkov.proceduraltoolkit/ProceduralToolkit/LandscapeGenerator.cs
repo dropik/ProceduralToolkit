@@ -3,7 +3,6 @@ using ProceduralToolkit.Models;
 using ProceduralToolkit.Services;
 using ProceduralToolkit.Services.DI;
 using ProceduralToolkit.Services.Generators.DiamondSquare;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,8 +16,6 @@ namespace ProceduralToolkit
     {
         private IServiceContainer services;
 
-        private IEnumerable<IGeneratorSettings> GeneratorSettings => GetComponents<IGeneratorSettings>();
-
         public void OnValidate()
         {
             ConfigureServices();
@@ -28,14 +25,11 @@ namespace ProceduralToolkit
         private void ConfigureServices()
         {
             services = ServiceContainerFactory.Create();
-            SetupGeneratorStarterServices(services);
-            SetupViewServices(services);
-        }
 
-        protected virtual void SetupGeneratorStarterServices(IServiceContainer services)
-        {
-            services.AddSingleton<LandscapeContext>();
+            services.AddSingleton(() => GetComponent<Terrain>().terrainData);
             services.AddSingleton(() => GetComponent<DiamondSquare>().settings);
+            services.AddSingleton<GeneratorScheduler>();
+            services.AddSingleton<LandscapeContext>();
             services.AddTransient<IDisplacer, Displacer>();
 
             services.AddSingleton<IDsa>(() =>
@@ -67,23 +61,15 @@ namespace ProceduralToolkit
                         context
                     );
             });
-
-            services.AddSingleton<GeneratorScheduler>();
-        }
-
-        protected virtual void SetupViewServices(IServiceContainer services)
-        {
-            services.AddSingleton(() => GetComponent<Terrain>().terrainData);
         }
 
         private void InjectServices()
         {
             var scheduler = services.GetService<GeneratorScheduler>();
-            foreach (var generator in GeneratorSettings)
-            {
-                services.InjectServicesTo(generator);
-                generator.Updated += scheduler.MarkDirty;
-            }
+
+            var settings = GetComponent<IGeneratorSettings>();
+            services.InjectServicesTo(settings);
+            settings.Updated += scheduler.MarkDirty;
 
             EditorApplication.update += scheduler.Update;
         }
